@@ -306,8 +306,13 @@ export function unenrollMfaFactor(
  * (backend/scripts/vercel-start.sh sets MIKE_FIRST_RUN_SETUP=true): an
  * install that creates its accounts some other way never exposes it.
  */
+export function publicSignupDisabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  return env.MIKE_DISABLE_SIGNUP?.trim().toLowerCase() === "true";
+}
+
 export function firstRunSetupEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env.MIKE_FIRST_RUN_SETUP?.trim().toLowerCase() === "true";
+  return !publicSignupDisabled(env) &&
+    env.MIKE_FIRST_RUN_SETUP?.trim().toLowerCase() === "true";
 }
 
 /**
@@ -320,6 +325,7 @@ export function firstRunSetupEnabled(env: NodeJS.ProcessEnv = process.env): bool
  * unchanged.
  */
 export function emailSignupOpen(env: NodeJS.ProcessEnv = process.env): boolean {
+  if (publicSignupDisabled(env)) return false;
   if (!firstRunSetupEnabled(env)) return true;
   return env.MIKE_SIGNUP_EMAIL_CONFIGURED?.trim().toLowerCase() === "true";
 }

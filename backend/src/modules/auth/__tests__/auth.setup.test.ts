@@ -65,6 +65,16 @@ describe("emailSignupOpen", () => {
   });
 });
 
+it("closes registration and first-run setup when public signup is disabled", () => {
+  const env = {
+    MIKE_DISABLE_SIGNUP: "true",
+    MIKE_FIRST_RUN_SETUP: "true",
+    MIKE_SIGNUP_EMAIL_CONFIGURED: "true",
+  };
+  expect(emailSignupOpen(env)).toBe(false);
+  expect(firstRunSetupEnabled(env)).toBe(false);
+});
+
 describe("createFirstAccount", () => {
   const credentials = { email: "owner@example.com", password: "correct-horse-battery" };
 

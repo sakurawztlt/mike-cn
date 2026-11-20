@@ -368,14 +368,24 @@ export default function LoginPage() {
                         </form>
                     </details>
                 </div>
+                {signInOptionsLoaded && signInOptions.signup && (
+                    <div className="text-center text-sm text-gray-500">
+                        Don&apos;t have an account?{" "}
+                        <Link
+                            href="/signup"
+                            className="font-medium transition-colors hover:text-gray-950"
+                        >
+                            Sign up
+                        </Link>
+                    </div>
+                )}
                 <div className="text-center text-sm text-gray-500">
-                    Don&apos;t have an account?{" "}
-                    <Link
-                        href="/signup"
-                        className="font-medium transition-colors hover:text-gray-950"
+                    <a
+                        href={`https://github.com/sakurawztlt/mike-cn/tree/${process.env.NEXT_PUBLIC_GIT_SHA || "main"}`}
+                        className="underline underline-offset-4 hover:text-gray-950"
                     >
-                        Sign up
-                    </Link>
+                        源代码
+                    </a>
                 </div>
             </div>
             <WarningPopup

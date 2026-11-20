@@ -1,0 +1,10 @@
+[Unit]
+Description=Update the Mike China workbench from GitHub
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/mike-cn/update.sh
+TimeoutStartSec=1800

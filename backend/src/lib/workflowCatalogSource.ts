@@ -561,7 +561,10 @@ async function parseArchive(
       });
     }
 
-    const defaultConfig = DEFAULT_WORKFLOW_BY_KEY.get(workflowKey) ?? null;
+    const isChinaCatalog = repository.toLowerCase() === "sakurawztlt/mike-cn";
+    const defaultConfig = isChinaCatalog && workflowKey === "cn-labor-case-research"
+      ? { sortOrder: 0, quickAction: true, wordQuickAction: false }
+      : DEFAULT_WORKFLOW_BY_KEY.get(workflowKey) ?? null;
     const jurisdictions = requiredString(
       metadata.jurisdictions,
       `${skillPath}.metadata.jurisdictions`,
@@ -630,7 +633,10 @@ async function parseArchive(
     });
   }
 
-  for (const workflow of DEFAULT_WORKFLOWS) {
+  const requiredDefaults = repository.toLowerCase() === "sakurawztlt/mike-cn"
+    ? [{ key: "cn-labor-case-research" }]
+    : DEFAULT_WORKFLOWS;
+  for (const workflow of requiredDefaults) {
     if (!seenKeys.has(workflow.key)) {
       throw new Error(
         `Workflow archive is missing required default '${workflow.key}'`,

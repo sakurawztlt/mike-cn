@@ -132,3 +132,7 @@ packaged and synchronized with this application.
 Mike is available under the [GNU Affero General Public License v3.0](LICENSE).
 Bundled [public contract templates](docs/preset-templates.md#maintaining-the-catalog)
 retain their publishers' separate licenses and notices.
+
+## Mike 中国法
+
+本 fork 增加中国大陆劳动争议类案研究工作流、限定范围的官方来源索引和关闭自助注册的家庭部署配置。流程参考 [Claude for Legal 中国法版](https://github.com/CSlawyer1985/claude-for-legal-ZH/tree/main/legal-research-cn)（Apache-2.0）。参见[部署说明](deploy/home/README.md)。

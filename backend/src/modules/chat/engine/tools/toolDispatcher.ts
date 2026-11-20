@@ -1,3 +1,4 @@
+import { searchChinaLegalSources } from "./chinaLegalSources";
 import type { ConnectorApprovalItem, DocumentSearchEvent } from "@mike/contracts";
 import { textCardEvent } from "./textCard";
 import { internalFailure } from "../../../../lib/serviceResult";
@@ -714,6 +715,12 @@ export async function runToolCalls(
               },
         ),
       });
+      continue;
+    }
+
+    if (tc.function.name === "search_cn_legal_sources") {
+      const payload = searchChinaLegalSources(args.query);
+      toolResults.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(payload) });
       continue;
     }
 

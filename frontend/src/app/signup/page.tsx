@@ -216,10 +216,8 @@ function SignupContent() {
                             Sign-up isn&apos;t open yet
                         </h1>
                         <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                            This Mike deployment can&apos;t send confirmation
-                            emails yet. Ask the person who set it up to
-                            configure email, or log in if you already have an
-                            account.
+                            Registration is currently closed. Ask your administrator
+                            for an account, or log in with an existing one.
                         </p>
                         <Link
                             href="/login"

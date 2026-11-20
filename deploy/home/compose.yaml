@@ -1,0 +1,77 @@
+services:
+  db:
+    ports: !reset []
+    environment:
+      POSTGRES_PASSWORD: ${MIKE_DB_PASSWORD:?Generate a private database password}
+      JWT_SECRET: ${MIKE_JWT_SECRET:?Generate a private JWT signing secret}
+    volumes:
+      - ./deploy/home/roles.sql:/docker-entrypoint-initdb.d/zz-roles.sql:ro
+  auth:
+    environment:
+      GOTRUE_DB_DATABASE_URL: postgres://supabase_auth_admin:${MIKE_DB_PASSWORD}@db:5432/postgres
+      GOTRUE_JWT_SECRET: ${MIKE_JWT_SECRET}
+      GOTRUE_DISABLE_SIGNUP: "true"
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: "false"
+      GOTRUE_MAILER_AUTOCONFIRM: "false"
+      GOTRUE_URI_ALLOW_LIST: ${FRONTEND_URL:?Set the canonical application URL}
+  rest:
+    environment:
+      PGRST_DB_URI: postgres://authenticator:${MIKE_DB_PASSWORD}@db:5432/postgres
+      PGRST_JWT_SECRET: ${MIKE_JWT_SECRET}
+  gateway:
+    ports: !reset []
+  db-init:
+    environment:
+      DB: postgres://postgres:${MIKE_DB_PASSWORD}@db:5432/postgres
+      DATABASE_URL: postgres://postgres:${MIKE_DB_PASSWORD}@db:5432/postgres
+  mailpit:
+    ports: !reset []
+  redis:
+    ports: !reset []
+  storage:
+    ports: !reset []
+    environment:
+      RUSTFS_ACCESS_KEY: ${MIKE_STORAGE_ACCESS_KEY:?Generate a private storage access key}
+      RUSTFS_SECRET_KEY: ${MIKE_STORAGE_SECRET_KEY:?Generate a private storage secret}
+      RUSTFS_CONSOLE_ENABLE: "false"
+  createbucket:
+    environment:
+      AWS_ACCESS_KEY_ID: ${MIKE_STORAGE_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${MIKE_STORAGE_SECRET_KEY}
+  workflow-sync:
+    env_file: !override
+      - path: ${MIKE_RUNTIME_ENV:?Set the private runtime file path}
+    environment:
+      SUPABASE_SECRET_KEY: ${SUPABASE_SECRET_KEY:?Generate the private service role key}
+      R2_ACCESS_KEY_ID: ${MIKE_STORAGE_ACCESS_KEY}
+      R2_SECRET_ACCESS_KEY: ${MIKE_STORAGE_SECRET_KEY}
+      MIKE_WORKFLOWS_REPOSITORY: sakurawztlt/mike-cn
+      MIKE_WORKFLOWS_REF: ${GIT_SHA:?Supply the deployed commit}
+  storage-cors:
+    env_file: !override
+      - path: ${MIKE_RUNTIME_ENV}
+  backend:
+    env_file: !override
+      - path: ${MIKE_RUNTIME_ENV}
+    environment:
+      SUPABASE_SECRET_KEY: ${SUPABASE_SECRET_KEY:?Generate the private service role key}
+      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY:?Generate the signed anonymous key}
+      R2_ACCESS_KEY_ID: ${MIKE_STORAGE_ACCESS_KEY}
+      R2_SECRET_ACCESS_KEY: ${MIKE_STORAGE_SECRET_KEY}
+      MIKE_DISABLE_SIGNUP: "true"
+      MIKE_FIRST_RUN_SETUP: "false"
+      SENTRY_DISABLED: "true"
+  frontend:
+    ports: !reset []
+    environment:
+      SENTRY_DISABLED: "true"
+  edge:
+    image: nginx:1.28-alpine
+    ports:
+      - "${MIKE_EDGE_BIND:-127.0.0.1}:${MIKE_EDGE_PORT:-18080}:8080"
+    volumes:
+      - ./deploy/home/edge.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - storage
+    restart: unless-stopped

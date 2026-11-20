@@ -224,7 +224,7 @@ describe("SignupPage", () => {
         expect(
             screen.getByRole("heading", { name: "Sign-up isn't open yet" }),
         ).toBeInTheDocument();
-        expect(screen.getByText(/can't send confirmation emails/)).toBeInTheDocument();
+        expect(screen.getByText(/Registration is currently closed/)).toBeInTheDocument();
         expect(screen.getByRole("link", { name: "Log in" })).toHaveAttribute("href", "/login");
         expect(screen.queryByRole("button", { name: "Sign up" })).toBeNull();
     });

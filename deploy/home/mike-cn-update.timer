@@ -1,0 +1,10 @@
+[Unit]
+Description=Check for a new Mike China release
+
+[Timer]
+OnBootSec=90s
+OnUnitInactiveSec=90s
+Unit=mike-cn-update.service
+
+[Install]
+WantedBy=timers.target
