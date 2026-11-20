@@ -768,7 +768,16 @@ export async function prepareWorkflowCatalog(
     await mkdir(assetDirectory, { mode: 0o700 });
     const { repository, ref, commit } =
       await resolveWorkflowSourceCommit(options);
-    await downloadArchive(archivePath, repository, commit, options);
+    const localSkill = process.env.MIKE_CHINA_WORKFLOW_PATH;
+    if (repository.toLowerCase() === "sakurawztlt/mike-cn" && localSkill) {
+      const bytes = await readFile(localSkill);
+      if (bytes.length > MAX_FILE_BYTES) throw new Error("China workflow exceeds the per-file limit");
+      const zip = new JSZip();
+      zip.file("bundled/assistant-workflows/cn-labor-case-research/SKILL.md", bytes);
+      await writeFile(archivePath, await zip.generateAsync({ type: "nodebuffer" }));
+    } else {
+      await downloadArchive(archivePath, repository, commit, options);
+    }
     const document = await parseArchive(
       archivePath,
       assetDirectory,

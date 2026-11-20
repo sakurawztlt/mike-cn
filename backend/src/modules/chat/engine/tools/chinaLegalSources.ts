@@ -1,3 +1,5 @@
+import { readWebPage } from "../../../../lib/webSearch/pageReader";
+
 const SOURCE_WARNING =
   "这是有限的官方公开资料索引。命中只提供检索线索和原文入口。请核对裁判全文、法条版本与案件时点后再引用。";
 
@@ -82,4 +84,42 @@ export function searchChinaLegalSources(query: unknown) {
   }).sort((a, b) => b.matched.length - a.matched.length);
 
   return { coverage: SOURCE_WARNING, hits };
+}
+
+
+export const CHINA_LEGAL_READ = {
+  type: "function",
+  function: {
+    name: "read_cn_legal_source",
+    description: "Read the published official Supreme People's Court text from an exact URL returned by search_cn_legal_sources. Accessing a publication is not judicial status verification.",
+    parameters: {
+      type: "object",
+      properties: { url: { type: "string" } },
+      required: ["url"],
+    },
+  },
+};
+
+export async function readChinaLegalSource(url: unknown, signal?: AbortSignal) {
+  const source = SOURCES.find((entry) => entry.url === url);
+  if (!source) return { error: "只能读取本索引返回的官方来源链接。" };
+  if (!source.url.startsWith("https://www.court.gov.cn/")) {
+    return { url: source.url, error: "法规库详情由浏览器加载。请在官方链接核对条文和时点。" };
+  }
+  try {
+    const page = await readWebPage(source.url, { signal });
+    if (new URL(page.url).hostname !== "www.court.gov.cn") {
+      return { url: source.url, error: "来源发生跨站跳转，请人工核对原文。" };
+    }
+    return {
+      url: source.url,
+      title: source.title,
+      publicationType: source.kind,
+      truncated: page.text.length > 24000,
+      text: page.text.slice(0, 24000),
+    };
+  } catch (error) {
+    if (signal?.aborted) throw error;
+    return { url: source.url, error: "暂时无法取得官方正文，请使用链接人工核验。" };
+  }
 }

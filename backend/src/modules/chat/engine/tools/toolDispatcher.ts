@@ -1,4 +1,4 @@
-import { searchChinaLegalSources } from "./chinaLegalSources";
+import { readChinaLegalSource, searchChinaLegalSources } from "./chinaLegalSources";
 import type { ConnectorApprovalItem, DocumentSearchEvent } from "@mike/contracts";
 import { textCardEvent } from "./textCard";
 import { internalFailure } from "../../../../lib/serviceResult";
@@ -721,6 +721,16 @@ export async function runToolCalls(
     if (tc.function.name === "search_cn_legal_sources") {
       const payload = searchChinaLegalSources(args.query);
       toolResults.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(payload) });
+      continue;
+    }
+
+    if (tc.function.name === "read_cn_legal_source") {
+      const payload = await readChinaLegalSource(args.url, options.signal);
+      const content = JSON.stringify(payload);
+      toolResults.push({
+        role: "tool", tool_call_id: tc.id,
+        content: nonce ? spotlight(content, nonce) : content,
+      });
       continue;
     }
 

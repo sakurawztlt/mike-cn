@@ -47,6 +47,9 @@ services:
       R2_SECRET_ACCESS_KEY: ${MIKE_STORAGE_SECRET_KEY}
       MIKE_WORKFLOWS_REPOSITORY: sakurawztlt/mike-cn
       MIKE_WORKFLOWS_REF: ${GIT_SHA:?Supply the deployed commit}
+      MIKE_CHINA_WORKFLOW_PATH: /workflows/cn-labor-case-research.md
+    volumes:
+      - ./assistant-workflows/cn-labor-case-research/SKILL.md:/workflows/cn-labor-case-research.md:ro
   storage-cors:
     env_file: !override
       - path: ${MIKE_RUNTIME_ENV}

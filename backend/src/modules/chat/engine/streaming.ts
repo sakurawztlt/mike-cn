@@ -28,7 +28,7 @@ import type { StreamRunWriteOptions } from "../../../lib/streamRuns";
 import { buildUserMcpTools } from "../../../lib/mcpConnectors";
 import { buildGoogleDriveTools } from "../../../lib/integrations/googleDrive";
 import { COURTLISTENER_TOOLS } from "./tools/courtlistenerTools";
-import { CHINA_LEGAL_SEARCH } from "./tools/chinaLegalSources";
+import { CHINA_LEGAL_READ, CHINA_LEGAL_SEARCH } from "./tools/chinaLegalSources";
 import { createProviderWebSearchTracker } from "./tools/providerWebSearch";
 import {
   MIKE_WEB_SEARCH_SYSTEM_PROMPT,
@@ -479,6 +479,7 @@ export async function runLLMStream(params: {
   const baseTools = [
     ...conversationTools,
     CHINA_LEGAL_SEARCH,
+    CHINA_LEGAL_READ,
     ...researchTools,
     ...WORKFLOW_TOOLS,
     ...PLAYBOOK_TOOLS,
