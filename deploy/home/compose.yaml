@@ -54,6 +54,7 @@ services:
     env_file: !override
       - path: ${MIKE_RUNTIME_ENV}
   backend:
+    ports: !reset []
     env_file: !override
       - path: ${MIKE_RUNTIME_ENV}
     environment:
