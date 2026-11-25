@@ -9,7 +9,8 @@
 `NODE_ENV=production`、公开的 HTTPS `FRONTEND_URL`、
 `API_PUBLIC_URL=<FRONTEND_URL>/api` 和
 `R2_PUBLIC_ENDPOINT_URL=<FRONTEND_URL>`。前端入口代理必须保留 Host，并为
-流式回复禁用响应缓冲。只把公网 HTTPS 反代到来宾回环端口 18080。
+流式回复禁用响应缓冲。隧道只连接来宾的回环端口 18080，并通过
+`X-Forwarded-Proto` 传递访问者使用的协议，使 HTTP 链接跳转到同域的 HTTPS。
 签名对象请求由同域的 `/mike/` 路径转给内部对象存储。
 
 模型由 `MIKE_MODEL_CONFIG_JSON` 声明，通过 `apiKeyEnv` 引用私有文件中的
