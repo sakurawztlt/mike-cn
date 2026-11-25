@@ -99,6 +99,15 @@ describe("SettingsPage Google email changes", () => {
         expect(state.updateOrganisation).not.toHaveBeenCalled();
     });
 
+    it("offers the running version's source in account settings", () => {
+        render(<SettingsPage />);
+
+        expect(screen.getByRole("link", { name: "查看当前版本的源代码" })).toHaveAttribute(
+            "href",
+            `https://github.com/sakurawztlt/mike-cn/tree/${process.env.NEXT_PUBLIC_GIT_SHA || "main"}`,
+        );
+    });
+
     it("directs Google-created accounts without a password to Security", async () => {
         const user = userEvent.setup();
         render(<SettingsPage />);

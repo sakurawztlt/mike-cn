@@ -55,10 +55,6 @@ vi.mock("@/app/contexts/AuthContext", () => ({
     }),
 }));
 
-vi.mock("@/app/components/site-logo", () => ({
-    SiteLogo: () => <div>Mike</div>,
-}));
-
 const signInOptions = vi.hoisted(() => ({
     current: {
         options: { google: true, sso: true, setupRequired: false, signup: true },
@@ -92,6 +88,18 @@ describe("LoginPage", () => {
         completeUserOnboarding
             .mockReset()
             .mockResolvedValue({ onboardingComplete: true });
+    });
+
+    it("keeps the public login page free of download and source links", () => {
+        signInOptions.current = {
+            options: { google: false, sso: false, setupRequired: false, signup: false },
+            loaded: true,
+        };
+        render(<LoginPage />);
+
+        expect(screen.queryByRole("link", { name: "Mike" })).not.toBeInTheDocument();
+        expect(screen.queryByRole("link", { name: "源代码" })).not.toBeInTheDocument();
+        expect(screen.getByRole("button", { name: "Log in" })).toBeEnabled();
     });
 
     it("allows an existing account to submit a password shorter than the new minimum", async () => {

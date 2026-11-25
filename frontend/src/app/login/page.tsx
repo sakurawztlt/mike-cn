@@ -263,7 +263,7 @@ export default function LoginPage() {
     return (
         <div className="relative flex min-h-dvh items-center justify-center bg-gray-50/80 px-6 py-10">
             <div className="absolute top-4 md:top-8 left-1/2 -translate-x-1/2">
-                <SiteLogo size="lg" asLink />
+                <SiteLogo size="lg" />
             </div>
             <div className="w-full max-w-md">
                 {/* Login Form */}
@@ -379,14 +379,6 @@ export default function LoginPage() {
                         </Link>
                     </div>
                 )}
-                <div className="text-center text-sm text-gray-500">
-                    <a
-                        href={`https://github.com/sakurawztlt/mike-cn/tree/${process.env.NEXT_PUBLIC_GIT_SHA || "main"}`}
-                        className="underline underline-offset-4 hover:text-gray-950"
-                    >
-                        源代码
-                    </a>
-                </div>
             </div>
             <WarningPopup
                 open={!!error || sessionWarningOpen}
