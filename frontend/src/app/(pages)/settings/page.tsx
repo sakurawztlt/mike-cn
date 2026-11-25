@@ -332,20 +332,6 @@ export default function SettingsPage() {
         </GlassCardUI>
       </section>
 
-      <section aria-labelledby="open-source-license" className="space-y-3">
-        <SettingsHeading id="open-source-license">开源许可 · AGPL-3.0</SettingsHeading>
-        <GlassCardUI>
-          <SettingsRow layout="stacked">
-            <a
-              href={`https://github.com/sakurawztlt/mike-cn/tree/${process.env.NEXT_PUBLIC_GIT_SHA || "main"}`}
-              className="inline-flex min-h-11 w-fit items-center rounded-sm text-sm font-medium text-gray-800 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-blue-500"
-            >
-              查看当前版本的源代码
-            </a>
-          </SettingsRow>
-        </GlassCardUI>
-      </section>
-
       {/* Danger Zone */}
       <section className="space-y-3">
         <SettingsHeading id="danger-zone" tone="danger">Danger Zone</SettingsHeading>

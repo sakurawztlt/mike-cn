@@ -99,13 +99,11 @@ describe("SettingsPage Google email changes", () => {
         expect(state.updateOrganisation).not.toHaveBeenCalled();
     });
 
-    it("offers the running version's source in account settings", () => {
+    it("keeps the license and source links out of account settings", () => {
         render(<SettingsPage />);
 
-        expect(screen.getByRole("link", { name: "查看当前版本的源代码" })).toHaveAttribute(
-            "href",
-            `https://github.com/sakurawztlt/mike-cn/tree/${process.env.NEXT_PUBLIC_GIT_SHA || "main"}`,
-        );
+        expect(screen.queryByRole("heading", { name: /开源许可/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole("link", { name: /源代码/ })).not.toBeInTheDocument();
     });
 
     it("directs Google-created accounts without a password to Security", async () => {
