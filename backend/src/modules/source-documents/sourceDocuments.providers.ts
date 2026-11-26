@@ -8,6 +8,7 @@ import type { McpCallRecord } from "../../lib/mcpConnectors";
 import type { ExternalSource, SourceDocument } from "../../lib/sourceDocuments";
 import { courtlistenerSourceProvider } from "./sourceDocuments.courtlistener";
 import { legalDataHunterSourceProvider } from "./sourceDocuments.legalDataHunter";
+import { chinaLegalSourceProvider } from "./sourceDocuments.chinaLegal";
 import type {
   SourceDocumentResult,
   SourceProvider,
@@ -17,6 +18,7 @@ import type {
 export const SOURCE_PROVIDERS: readonly SourceProvider[] = [
   courtlistenerSourceProvider,
   legalDataHunterSourceProvider,
+  chinaLegalSourceProvider,
 ];
 
 /** The provider that issued an opaque source-document id, if any. */

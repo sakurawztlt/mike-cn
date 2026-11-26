@@ -719,17 +719,29 @@ export async function runToolCalls(
     }
 
     if (tc.function.name === "search_cn_legal_sources") {
-      const payload = searchChinaLegalSources(args.query);
-      toolResults.push({ role: "tool", tool_call_id: tc.id, content: JSON.stringify(payload) });
+      const content = JSON.stringify(searchChinaLegalSources(args));
+      toolResults.push({ role: "tool", tool_call_id: tc.id, content: nonce ? spotlight(content, nonce) : content });
       continue;
     }
 
     if (tc.function.name === "read_cn_legal_source") {
-      const payload = await readChinaLegalSource(args.url, options.signal);
+      const result = await readChinaLegalSource(args, options.signal);
+      const limit = 24_000;
+      const truncated = result.ok && result.selectedText.length > limit;
+      const payload = result.ok
+        ? { ...result.reference, text: result.selectedText.slice(0, limit), truncated }
+        : result;
       const content = JSON.stringify(payload);
+      let hint = "";
+      if (result.ok && docIndex) {
+        const document = stampSourceDocument(result.source.document);
+        const handle = registerExternalSource({ document, text: result.source.text }, docIndex, docStore);
+        hint = externalSourceCitationHint(handle, truncated || result.selectedText !== result.source.text);
+        (results.externalSourceHandles ??= new Map()).set(tc.id, handle);
+      }
       toolResults.push({
         role: "tool", tool_call_id: tc.id,
-        content: nonce ? spotlight(content, nonce) : content,
+        content: (nonce ? spotlight(content, nonce) : content) + hint,
       });
       continue;
     }

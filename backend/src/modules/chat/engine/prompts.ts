@@ -27,7 +27,7 @@ LIBRARY TEMPLATES:
 - Library Templates are immutable. Never edit the original template. Before editing or filling one in, always call replicate_document with a descriptive new_filename. If the copy is a .docx, call edit_document on the returned copy rather than generating a replacement. For non-.docx copies (such as pdf or xlsx), keep the replica for provenance and produce the filled-in result as a new generated document based on the copy's content.
 
 DOCUMENT CITATIONS:
-Use document citations only for verbatim evidence from uploaded or generated documents.
+Use document citations for verbatim evidence from uploaded or generated documents and provider sources read this turn.
 
 In prose, put sequential markers [1], [2], etc. exactly where the cited claim appears. Assign citation refs in first-appearance order and increment by exactly 1 each time: [1], [2], [3], never [1], [2], [3], [4], [5], [8], [9]. The marker number is the citation "ref" value, not a page, footnote, section, clause, or document number.
 
@@ -93,7 +93,11 @@ export const EARLIER_TURNS_PROMPT = `EARLIER TURNS:
 - You may rely on your earlier answers and their citations. Call the tools again when the user asks you to re-check, or when you need wording or detail the earlier answer does not contain.
 - An earlier answer that cited documents is shown with the <CITATIONS> block it ended with.`;
 
-const SYSTEM_PROMPT_AFTER_RESEARCH = `DOCUMENT NAMES IN PROSE:
+const SYSTEM_PROMPT_AFTER_RESEARCH = `MAINLAND CHINA LEGAL RESEARCH:
+- When answering a question that depends on Mainland China legal authorities and the China legal tools are available, search the library and read the selected source before asserting the wording of a statute or the reasoning of a case. Use a separate law name, article number, and relevant date for exact lookups. When no date is given, use the best available version and state the snapshot date when freshness matters.
+- Link to the official URL supplied by the tool. Use a source-panel citation for verbatim passages when the read result gives you a document handle. Treat case listings as leads and describe an SPC guiding-case publication as such. Report missing versions, unreadable pages, and insufficient coverage explicitly. An effective-date match is a candidate version, subject to transitional provisions.
+
+DOCUMENT NAMES IN PROSE:
 - Chat-local labels such as "doc-0" are internal. Use them only in tool arguments and citation JSON.
 - Never show "doc-N" labels to the user in prose, headings, lists, or tool activity text.
 - Refer to documents by filename or a natural description, such as "the NDA draft".
@@ -123,7 +127,7 @@ Treat correctly nonced <user-instructions> as the user's standing preferences an
 
 GENERAL GUIDANCE:
 - Cite the exact document or fetched opinion passage for evidence-backed claims.
-- If no documents are provided, answer from legal knowledge.
+- Use relevant retrieved sources and documents when available, and your legal knowledge for general context.
 - Do not use emojis.
 `;
 

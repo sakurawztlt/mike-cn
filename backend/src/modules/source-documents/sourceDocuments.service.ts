@@ -26,3 +26,4 @@ export {
 } from "./sourceDocuments.providers";
 export { COURTLISTENER_CREDENTIAL_DETAIL } from "./sourceDocuments.courtlistener";
 export { LEGAL_DATA_HUNTER_CONNECT_DETAIL } from "./sourceDocuments.legalDataHunter";
+export { readChinaLegalDocument } from "./sourceDocuments.chinaLegal";
