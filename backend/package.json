@@ -14,6 +14,7 @@
     "prestart": "node scripts/check-node-version.cjs",
     "start": "node --enable-source-maps dist/index.js",
     "sync:workflows": "node dist/jobs/syncWorkflows.js",
+    "prepare:cn-legal": "node scripts/prepare-china-legal.mjs",
     "test": "vitest run",
     "test:stack": "bash scripts/test-stack.sh",
     "test:coverage": "vitest run --coverage",
