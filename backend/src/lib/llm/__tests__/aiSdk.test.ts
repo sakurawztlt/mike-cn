@@ -1,11 +1,52 @@
 import { describe, expect, it } from "vitest";
-import { withPrefixCacheHints } from "../aiSdk";
+import { streamAiSdk, withPrefixCacheHints } from "../aiSdk";
 
 const messages = [
   { role: "user" as const, content: "memory" },
   { role: "assistant" as const, content: "ok" },
   { role: "user" as const, content: "question" },
 ];
+
+it("sends tool-read photos as native image input through the compatible adapter", async () => {
+  const { createOpenAICompatible } = await import("@ai-sdk/openai-compatible");
+  const requests: { messages: { role: string; content: unknown }[] }[] = [];
+  const tool = { id: "photo-call", index: 0, type: "function", function: { name: "read_document", arguments: '{"doc_id":"doc-0"}' } };
+  const image = Buffer.from("ffd8ffe000104a4649460001", "hex");
+  const model = createOpenAICompatible({
+    name: "photo-fixture", baseURL: "https://photo-fixture.example/v1", apiKey: "fixture",
+    fetch: async (_url, request) => {
+      requests.push(JSON.parse(String(request?.body)));
+      const first = requests.length === 1;
+      const chunk = (delta: object, finish_reason: string | null) =>
+        `data: ${JSON.stringify({ id: "fixture", model: "fixture", object: "chat.completion.chunk", created: 1,
+          choices: [{ index: 0, delta, finish_reason }] })}\n\n`;
+      return new Response(
+        chunk(first ? { role: "assistant", tool_calls: [tool] } : { role: "assistant", content: "I can see the photo." }, null) +
+        chunk({}, first ? "tool_calls" : "stop") + "data: [DONE]\n\n",
+        { headers: { "content-type": "text/event-stream" } },
+      );
+    },
+  }).chatModel("fixture");
+  const result = await streamAiSdk({
+    model: "fixture",
+    systemPrompt: "Read the attached source.",
+    messages: [{ role: "user", content: "What is visible in the photo?" }],
+    tools: [{ type: "function", function: { name: "read_document", description: "Read a document",
+      parameters: { type: "object", properties: { doc_id: { type: "string" } }, required: ["doc_id"] } } }],
+    runTools: async (calls) => {
+      expect(calls[0]?.input).toEqual({ doc_id: "doc-0" });
+      return [{ tool_use_id: "photo-call", content: "Original photo supplied.",
+        images: [{ label: "doc-0", mediaType: "image/jpeg", bytes: image }] }];
+    },
+  }, { provider: "openai-compatible", label: "Test model", modelId: "fixture", model });
+  expect(result.fullText).toBe("I can see the photo.");
+  expect(requests).toHaveLength(2);
+  expect(requests[1].messages.find((message) => message.role === "tool")?.content).toBe("Original photo supplied.");
+  expect(requests[1].messages.at(-1)).toMatchObject({
+    role: "user",
+    content: expect.arrayContaining([{ type: "image_url", image_url: { url: `data:image/jpeg;base64,${image.toString("base64")}` } }]),
+  });
+});
 
 describe("withPrefixCacheHints", () => {
   it("cache regression: places the extraction breakpoint before changing column instructions", () => {

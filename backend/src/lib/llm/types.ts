@@ -62,6 +62,14 @@ export type NormalizedToolCall = {
 export type NormalizedToolResult = {
     tool_use_id: string;
     content: string;
+    /** Private request-scoped media. Keep it out of transcripts and SSE. */
+    images?: readonly LlmToolImage[];
+};
+
+export type LlmToolImage = {
+    label: string;
+    mediaType: "image/jpeg" | "image/png" | "image/webp";
+    bytes: Uint8Array;
 };
 
 export type StreamCallbacks = {
