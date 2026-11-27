@@ -1,10 +1,21 @@
 import fs from "fs";
 import path from "path";
-import { test as base, expect } from "@playwright/test";
+import { test as base, expect, type Page } from "@playwright/test";
 import { completeOnboardingIfRequired } from "./onboarding";
 import { ensureUser, workerAccount, type E2eAccount } from "./users";
 export { expect };
 export type { Page } from "@playwright/test";
+
+async function preferEnglishForExistingSelectors(page: Page) {
+    // The existing tests use named English controls. Set a test preference
+    // without changing the application's Simplified Chinese default.
+    await page.addInitScript(() => {
+        if (window === window.top && /^https?:$/.test(window.location.protocol) &&
+            !window.localStorage.getItem("mike-ui-language")) {
+            window.localStorage.setItem("mike-ui-language", "en");
+        }
+    });
+}
 
 type WorkerFixtures = {
     /** The user this worker signs in as; see workerAccount() in users.ts. */
@@ -39,6 +50,7 @@ export const test = base.extend<object, WorkerFixtures>({
                     storageState: undefined,
                     baseURL: workerInfo.project.use.baseURL,
                 });
+                await preferEnglishForExistingSelectors(page);
                 await page.goto("/login");
                 await expect(page).toHaveURL(/\/login/);
                 await page.fill("#email", e2eAccount.email);
@@ -62,6 +74,7 @@ export const test = base.extend<object, WorkerFixtures>({
 
     /** Opt-in development stress profile shared by every browser flow. */
     page: async ({ page, browserName }, use) => {
+        await preferEnglishForExistingSelectors(page);
         if (process.env.REACT_STRESS !== "1") {
             await use(page);
             return;

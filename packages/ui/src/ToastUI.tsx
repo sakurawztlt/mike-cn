@@ -30,6 +30,7 @@ import {
     noticeActionClassName,
     noticeActionEmphasis,
 } from "./NoticeCardUI";
+import { useUiCopy } from "./UiCopyProvider";
 
 import {
     dismissToast,
@@ -101,6 +102,7 @@ export function toastHasActions(toast: ToastRecord): boolean {
 
 /** A toast's "Contact support" link and action buttons, for a card's action row. */
 export function ToastActionsUI({ toast }: { toast: ToastRecord }): ReactElement {
+    const t = useUiCopy();
     const runAction = async (action: ToastAction) => {
         if (!action.keepOpen) dismissToast(toast.id);
         await action.onClick();
@@ -120,7 +122,7 @@ export function ToastActionsUI({ toast }: { toast: ToastRecord }): ReactElement 
                         noticeActionEmphasis(0, count),
                     )}
                 >
-                    {toast.supportLabel ?? "Contact support"}
+                    {t(toast.supportLabel ?? "Contact support")}
                 </a>
             )}
             {toast.actions?.map((action, index) => (
@@ -133,7 +135,7 @@ export function ToastActionsUI({ toast }: { toast: ToastRecord }): ReactElement 
                         action.tone,
                     )}
                 >
-                    {action.label}
+                    {t(action.label)}
                 </button>
             ))}
         </>
@@ -145,6 +147,7 @@ export function useToasts(): readonly ToastRecord[] {
 }
 
 function ToastItemUI({ toast }: { toast: ToastRecord }) {
+    const t = useUiCopy();
     const pausedRef = useRef(false);
     const hoveredRef = useRef(false);
     const focusedRef = useRef(false);
@@ -198,8 +201,8 @@ function ToastItemUI({ toast }: { toast: ToastRecord }) {
     return (
         <NoticeCardUI
             tone={toast.tone}
-            title={toast.title}
-            message={toast.message}
+            title={typeof toast.title === "string" ? t(toast.title) : toast.title}
+            message={typeof toast.message === "string" ? t(toast.message) : toast.message}
             onDismiss={() => dismissToast(toast.id)}
             dismissLabel="Dismiss notification"
             // The item owns the live semantics: `alert` is implicitly
@@ -252,6 +255,7 @@ export function ToastViewportUI({
     showErrors = true,
     className,
 }: ToastViewportUIProps) {
+    const t = useUiCopy();
     const toasts = useToasts();
     const items = showErrors
         ? toasts
@@ -263,7 +267,7 @@ export function ToastViewportUI({
             // through its own role, and `aria-label` needs a role to be
             // exposed at all.
             role="region"
-            aria-label="Notifications"
+            aria-label={t("Notifications")}
             className={twMerge(
                 clsx(
                     "pointer-events-none fixed left-1/2 top-5 z-[260] flex w-[min(92vw,520px)] -translate-x-1/2 flex-col gap-2 px-4",

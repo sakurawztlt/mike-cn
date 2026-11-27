@@ -1,0 +1,13 @@
+{
+  "项目编号（选填）": "Project reference (optional)",
+  "例如：律所内部编号": "For example, your firm's reference number",
+  "项目编号": "Project reference",
+  "按项目编号排序": "Sort by project reference",
+  "编辑项目编号": "Edit project reference",
+  "拖放上传文件": "Drop files to upload",
+  "待添加文件": "Files to add",
+  "松开鼠标添加文件": "Drop to add files",
+  "拖放文件到这里，也可以点击 Upload 选择文件。": "Drop files here, or use Upload to choose them.",
+  "移除": "Remove",
+  "移除 {0}": "Remove {0}"
+}

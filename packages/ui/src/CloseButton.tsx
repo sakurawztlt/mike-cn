@@ -1,5 +1,8 @@
+"use client";
+
 import { X } from "lucide-react";
 import { PillButtonUI } from "./PillButtonUI";
+import { useUiCopy } from "./UiCopyProvider";
 
 export type CloseButtonSize = "sm" | "md";
 
@@ -22,14 +25,15 @@ export function CloseButton({
     size?: CloseButtonSize;
     className?: string;
 }) {
+    const t = useUiCopy();
     const classes = sizeClasses[size];
     return (
         <PillButtonUI
             tone="white"
             size="icon-xs"
             onClick={onClick}
-            aria-label={label}
-            title={label}
+            aria-label={t(label)}
+            title={t(label)}
             className={`${classes.button} shrink-0 ${className ?? ""}`}
         >
             <X aria-hidden="true" className={classes.icon} />
