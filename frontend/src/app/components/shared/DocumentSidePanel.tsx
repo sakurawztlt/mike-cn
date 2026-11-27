@@ -20,6 +20,7 @@ import { DocumentPaneTitle } from "@/app/components/shared/DocumentPaneTitle";
 import { PdfView } from "@/app/components/shared/views/PdfView";
 import { DocxView } from "@/app/components/shared/views/DocxView";
 import { SpreadsheetView } from "@/app/components/shared/views/SpreadsheetView";
+import { ImageDocumentView } from "@/app/components/shared/views/ImageDocumentView";
 import { CloseButton, PillButtonUI } from "@mike/ui";
 import type { Document } from "@/app/components/shared/types";
 import type { DocumentVersion } from "@/app/lib/mikeApi";
@@ -29,6 +30,11 @@ import { reportFault,
     notifyError,
 } from "@/app/lib/userFacingError";
 import { resolveDocumentViewType } from "@/app/lib/documentViewType";
+import {
+    isRasterDocument,
+    RASTER_DOCUMENT_ACCEPT,
+    SUPPORTED_DOCUMENT_ACCEPT,
+} from "@/app/lib/documentUploadValidation";
 import { textLayerWarning } from "@/app/lib/textLayerWarning";
 import {
     LIQUID_FLOAT_PANEL_SURFACE_CLASS,
@@ -246,7 +252,7 @@ export function DocumentSidePanel({
 
     const activeDoc = doc;
     const documentId = activeDoc.id;
-    const newVersionAccept = ".pdf,.docx,.doc,.xlsx,.xlsm,.xls,.pptx,.ppt";
+    const newVersionAccept = SUPPORTED_DOCUMENT_ACCEPT;
     // Latest first: by version number, then by upload time.
     const orderedVersions = [...versions].sort(
         (a, b) =>
@@ -294,7 +300,7 @@ export function DocumentSidePanel({
         ? fileTypeForVersion(replaceTargetVersion, selectedFileType)
         : selectedFileType;
     const replaceVersionAccept =
-        replaceFileType === "pdf" ? ".pdf" : ".docx,.doc";
+        replaceFileType === "pdf" ? ".pdf" : isRasterDocument(replaceFileType) ? RASTER_DOCUMENT_ACCEPT : ".docx,.doc";
     const ownerLabel =
         doc.owner_display_name?.trim() || doc.owner_email?.trim() || "—";
 
@@ -597,7 +603,14 @@ export function DocumentSidePanel({
                         versionNumber={selectedVersionNumber}
                     />
                     <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-                        {selectedViewType === "spreadsheet" ? (
+                        {selectedViewType === "image" ? (
+                            <ImageDocumentView
+                                documentId={doc.id}
+                                versionId={selectedVersionId}
+                                filename={selectedFilename}
+                                displayUrl={displayUrl}
+                            />
+                        ) : selectedViewType === "spreadsheet" ? (
                             <SpreadsheetView
                                 rounded="top-right"
                                 key={`${selectedVersionId ?? "current"}:${selectedUploadedAt ?? ""}:${selectedSizeBytes ?? ""}`}
@@ -1184,6 +1197,7 @@ function versionFilenameFor(version: DocumentVersion) {
 
 function fileTypeForVersion(version: DocumentVersion, fallback: string | null) {
     const name = version.filename?.trim().toLowerCase() ?? "";
+    if (isRasterDocument(name)) return name.split(".").at(-1) ?? fallback;
     if (name.endsWith(".pdf")) return "pdf";
     if (name.endsWith(".doc") || name.endsWith(".docx")) return "docx";
     return fallback;

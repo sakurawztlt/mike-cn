@@ -1,4 +1,6 @@
-export type DocumentViewType = "pdf" | "docx" | "spreadsheet";
+import { isRasterDocument } from "./documentUploadValidation";
+
+export type DocumentViewType = "pdf" | "docx" | "spreadsheet" | "image";
 
 type LegacyDocViewType = Extract<DocumentViewType, "pdf" | "docx">;
 
@@ -55,6 +57,7 @@ export function resolveDocumentViewType({
   legacyDocViewType = "pdf",
   preferPdfForWord = false,
 }: ResolveDocumentViewTypeOptions): DocumentViewType {
+  if (isRasterDocument(fileType) || isRasterDocument(filename)) return "image";
   const fileTypeToken = documentTypeToken(fileType);
   const filenameToken = documentTypeToken(filename);
 

@@ -141,6 +141,7 @@ export const PANEL_DOCUMENT_TYPES: readonly PanelDocumentType[] = [
   "docx",
   "pdf",
   "spreadsheet",
+  "image",
   "case",
   "legislation",
   "legal_research",

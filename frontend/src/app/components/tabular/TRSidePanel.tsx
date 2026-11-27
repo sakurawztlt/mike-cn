@@ -29,6 +29,7 @@ import { preprocessCitations, type ParsedCitation } from "./citation-utils";
 import { getPillClass } from "./pillUtils";
 import { PdfView } from "../shared/views/PdfView";
 import { SpreadsheetView } from "../shared/views/SpreadsheetView";
+import { ImageDocumentView } from "../shared/views/ImageDocumentView";
 import { DocxView } from "../shared/views/DocxView";
 import { FileTypeIcon } from "../shared/FileTypeIcon";
 import { DocumentPaneTitle } from "../shared/DocumentPaneTitle";
@@ -374,7 +375,9 @@ export function TRSidePanel({
                             />
                         </div>
                     )}
-                    {documentViewType === "docx" ? (
+                    {documentViewType === "image" ? (
+                        <ImageDocumentView documentId={doc.id} filename={doc.filename} />
+                    ) : documentViewType === "docx" ? (
                         <DocxView
                             rounded="top-right"
                             documentId={doc.id}

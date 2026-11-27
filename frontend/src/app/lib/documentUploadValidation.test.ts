@@ -30,7 +30,7 @@ describe("isSupportedDocumentFile", () => {
 
     it("rejects unsupported types", () => {
         expect(isSupportedDocumentFile(file("notes.txt"))).toBe(false);
-        expect(isSupportedDocumentFile(file("photo.png"))).toBe(false);
+        expect(isSupportedDocumentFile(file("photo.svg"))).toBe(false);
         expect(isSupportedDocumentFile(file("archive.zip"))).toBe(false);
     });
 

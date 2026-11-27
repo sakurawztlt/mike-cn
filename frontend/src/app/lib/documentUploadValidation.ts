@@ -1,7 +1,17 @@
+export const RASTER_DOCUMENT_ACCEPT = ".jpg,.jpeg,.png,.webp";
 export const SUPPORTED_DOCUMENT_ACCEPT =
-    ".pdf,.docx,.doc,.xlsx,.xlsm,.xls,.pptx,.ppt";
+    ".pdf,.docx,.doc,.xlsx,.xlsm,.xls,.pptx,.ppt," + RASTER_DOCUMENT_ACCEPT;
 export const UNSUPPORTED_DOCUMENT_WARNING_MESSAGE =
-    "Unsupported file type. Only PDF, Word, Excel, and PowerPoint files can be uploaded.";
+    "Unsupported file type. Upload PDF, Word, Excel, PowerPoint, JPEG, PNG or WebP files.";
+
+const RASTER_EXTENSIONS = new Set(["jpg", "jpeg", "png", "webp"]);
+
+export function isRasterDocument(value: string | null | undefined): boolean {
+    const normalized = (value ?? "").trim().toLowerCase();
+    if (normalized === "image/jpeg" || normalized === "image/png" || normalized === "image/webp") return true;
+    const filename = normalized.split(/[?#]/, 1)[0];
+    return RASTER_EXTENSIONS.has(filename.split(".").at(-1) ?? "");
+}
 
 const SUPPORTED_DOCUMENT_EXTENSIONS = new Set([
     "pdf",
@@ -12,6 +22,7 @@ const SUPPORTED_DOCUMENT_EXTENSIONS = new Set([
     "xls",
     "pptx",
     "ppt",
+    ...RASTER_EXTENSIONS,
 ]);
 
 export function isSupportedDocumentFile(file: File): boolean {

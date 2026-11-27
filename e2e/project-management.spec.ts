@@ -314,7 +314,7 @@ test("file upload type validation — .txt file is rejected", async ({ page }) =
     // (UNSUPPORTED_DOCUMENT_WARNING_MESSAGE in documentUploadValidation.ts).
     await expect(
         page.getByText(
-            "Unsupported file type. Only PDF, Word, Excel, and PowerPoint files can be uploaded.",
+            "Unsupported file type. Upload PDF, Word, Excel, PowerPoint, JPEG, PNG or WebP files.",
         ),
     ).toBeVisible({ timeout: 10_000 });
 

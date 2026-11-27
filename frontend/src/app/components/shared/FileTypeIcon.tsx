@@ -1,5 +1,6 @@
-import { File } from "lucide-react";
+import { File, ImageIcon } from "lucide-react";
 import { SvgAssetIcon } from "@/app/components/ui/svg-asset-icon";
+import { isRasterDocument } from "@/app/lib/documentUploadValidation";
 import pdf from "../../../../public/icons/file-types/pdf.svg";
 import word from "../../../../public/icons/file-types/word.svg";
 import excel from "../../../../public/icons/file-types/excel.svg";
@@ -7,7 +8,7 @@ import ppt from "../../../../public/icons/file-types/ppt.svg";
 
 const icons = { pdf, word, excel, ppt };
 
-export type FileTypeKind = "pdf" | "word" | "excel" | "ppt" | "other";
+export type FileTypeKind = "pdf" | "word" | "excel" | "ppt" | "image" | "other";
 
 /**
  * Normalize a file_type value (e.g. "pdf") or a filename (e.g. "deck.pptx")
@@ -16,6 +17,7 @@ export type FileTypeKind = "pdf" | "word" | "excel" | "ppt" | "other";
  * carry the document's `file_type` field.
  */
 export function fileTypeKind(value: string | null | undefined): FileTypeKind {
+    if (isRasterDocument(value)) return "image";
     const raw = (value ?? "").toLowerCase().trim();
     const ext = raw.includes(".") ? (raw.split(".").pop() ?? "") : raw;
     if (ext === "pdf") return "pdf";
@@ -41,6 +43,9 @@ export function FileTypeIcon({
 }) {
     const cls = `${className} shrink-0`;
     const kind = fileTypeKind(fileType);
+    if (kind === "image") {
+        return <ImageIcon className={cls + (muted ? " text-gray-300" : " text-gray-500")} aria-hidden="true" />;
+    }
     if (kind === "other")
         return <File className={`${cls} ${muted ? "text-gray-300" : "text-gray-500"}`} />;
     return (

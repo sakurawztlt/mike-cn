@@ -49,6 +49,7 @@ export function DocumentTitleRow({
         !external &&
         (document.type === "docx" ||
             document.type === "pdf" ||
+            document.type === "image" ||
             document.type === "spreadsheet");
     // A provider's links are shown only when credential-free HTTPS.
     const actions = (document.actions ?? []).filter(

@@ -14,6 +14,7 @@ import { Modal } from "../modals/Modal";
 import { FileTypeIcon } from "../shared/FileTypeIcon";
 import { PdfView } from "../shared/views/PdfView";
 import { SpreadsheetView } from "../shared/views/SpreadsheetView";
+import { ImageDocumentView } from "../shared/views/ImageDocumentView";
 import { workflowAddonAssetDisplayUrl } from "@/app/lib/mikeApi";
 import { resolveDocumentViewType } from "@/app/lib/documentViewType";
 
@@ -216,6 +217,9 @@ function AddonAssetViewer({
     preferPdfForWord: true,
   });
 
+  if (viewType === "image") {
+    return <ImageDocumentView documentId={asset.id} filename={asset.filename} displayUrl={displayUrl} />;
+  }
   if (viewType === "spreadsheet") {
     // The modal offers no download or upload, so failure copy must not
     // advise one.

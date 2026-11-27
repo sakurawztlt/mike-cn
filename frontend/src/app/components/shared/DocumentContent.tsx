@@ -5,6 +5,7 @@ import { PdfView } from "./views/PdfView";
 import { DocxView } from "./views/DocxView";
 import type { DocxCloseGuard, DocxSaveState } from "./views/DocxRenderer.types";
 import { SpreadsheetView } from "./views/SpreadsheetView";
+import { ImageDocumentView } from "./views/ImageDocumentView";
 import {
     CitationQuotesSection,
     documentQuoteId,
@@ -299,6 +300,8 @@ export function DocumentContent({
                         onRetry={retryDocument}
                         onClearQuote={() => setActiveCitationQuoteId(null)}
                     />
+                ) : viewType === "image" ? (
+                    <ImageDocumentView documentId={documentId} versionId={versionId} filename={resolvedDocument.title} />
                 ) : viewType === "docx" ? (
                     <DocxView
                         onDownloadReady={handleDownloadReady}
