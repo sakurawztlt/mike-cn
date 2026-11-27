@@ -64,7 +64,15 @@ services:
       R2_SECRET_ACCESS_KEY: ${MIKE_STORAGE_SECRET_KEY}
       MIKE_DISABLE_SIGNUP: "true"
       MIKE_FIRST_RUN_SETUP: "false"
+      MIKE_CN_LEGAL_DB: /data/mike-cn/legal/legal.sqlite
       SENTRY_DISABLED: "true"
+    volumes:
+      - type: bind
+        source: /var/lib/mike-cn/legal-data
+        target: /data/mike-cn/legal
+        read_only: true
+        bind:
+          create_host_path: false
   frontend:
     ports: !reset []
     environment:

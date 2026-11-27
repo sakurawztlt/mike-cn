@@ -27,9 +27,10 @@
 
 运行 `npm run prepare:cn-legal --prefix backend` 生成中国法只读 SQLite 库，
 默认路径为 `~/.local/share/mike-cn/legal.sqlite`。也可以在 `--` 后指定输出路径，
-以及已下载的快照归档文件。后端用 `MIKE_CN_LEGAL_DB` 读取自定义位置。容器部署时，
-为后端提供库文件的只读挂载，并将该变量设为容器内的库文件路径。准备完成后重启后端，
-让进程使用新的库文件。
+以及已下载的快照归档文件。后端用 `MIKE_CN_LEGAL_DB` 读取自定义位置。家庭容器首次部署前，
+在来宾的 `/var/lib/mike-cn/legal-data/legal.sqlite` 放置已经校验的库文件。家庭 Compose
+把这个目录只读挂载给后端，并配置相应的容器内路径。更新资料时先校验新文件，再原子替换旧文件，
+并重启后端以读入新版本。
 
 导入器核对 [chinalaw 法规快照](https://law.newcombmath.com/about/data.html) 的
 归档校验值，仅导入带国家法律法规数据库出处的法规版本和条文。输出库内保留快照日期、
