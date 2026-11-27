@@ -1,0 +1,10 @@
+[Unit]
+Description=Refresh the Mike China public legal library
+After=docker.service network-online.target
+Requires=docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/lib/mike-cn/sync-legal.sh
+TimeoutStartSec=600

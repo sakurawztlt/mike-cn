@@ -1,21 +1,17 @@
 import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { createReadStream, createWriteStream, closeSync, openSync } from "node:fs";
-import { mkdir, mkdtemp, readFile, rename, rm } from "node:fs/promises";
+import { createReadStream, createWriteStream, closeSync, existsSync, openSync } from "node:fs";
+import { link, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
 import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { pipeline } from "node:stream/promises";
 import { DatabaseSync } from "node:sqlite";
-import { parseHTML } from "linkedom";
+import { casesUrl, fetchCaseCatalogue } from "./china-legal-publications.mjs";
 
 const snapshot = "2026-09-30";
 const archiveName = `chinalaw-public-${snapshot}-sqlite.tar.gz`;
 const snapshotUrl = `https://github.com/nh59yytyd5-dev/chinalaw-cli/releases/download/v0.7.1/${archiveName}`;
 const archiveHash = "883df3177b553d5918a383c8511d1e6a56a5228668183df11f518e803c795011";
-const courtOrigin = "https://www.court.gov.cn";
-const casesUrl = `${courtOrigin}/fabu/gengduo/151.html`;
-const courtPage = /^\/(?:fabu|zixun|shenpan)\/xiangqing\/(\d+)\.html$/;
-const listPage = /^\/fabu\/gengduo\/151(?:_\d+)?\.html$/;
 const schema = await readFile(new URL("./china-legal-schema.sql", import.meta.url), "utf8");
 
 async function downloadArchive(path) {
@@ -44,42 +40,6 @@ function extract(path, filename, destination) {
   }
 }
 
-async function fetchCaseCatalogue() {
-  const cases = new Map();
-  const visited = new Set();
-  let page = casesUrl;
-  while (page) {
-    const url = new URL(page);
-    if (url.origin !== courtOrigin || !listPage.test(url.pathname) || visited.has(page) || visited.size >= 40) {
-      throw new Error("Unexpected pagination in the court's guiding-case catalogue");
-    }
-    visited.add(page);
-    const response = await fetch(url, {
-      redirect: "error",
-      headers: { "user-agent": "Mike-CN public guiding-case index" },
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (!response.ok) throw new Error(`Court catalogue request failed (HTTP ${response.status})`);
-    const { document } = parseHTML(await response.text());
-    const entries = document.querySelectorAll(".sec_list > ul:first-of-type > li");
-    if (!entries.length) throw new Error("The court catalogue no longer has the expected case list");
-    for (const entry of entries) {
-      const link = entry.querySelector("a[href]");
-      if (!link) continue;
-      const target = new URL(link.getAttribute("href"), url);
-      const match = courtPage.exec(target.pathname);
-      const title = (link.getAttribute("title") || link.textContent).trim();
-      if (target.origin !== courtOrigin || !match || !title) continue;
-      cases.set(match[1], { id: match[1], title, date: entry.querySelector(".date")?.textContent.trim() ?? null,
-        url: `${courtOrigin}${target.pathname}` });
-    }
-    const next = document.querySelector(".yiiPager .next:not(.hidden) a[href]")?.getAttribute("href");
-    page = next ? new URL(next, url).href : null;
-  }
-  if (cases.size < 100 || visited.size < 2) throw new Error("The court catalogue result is incomplete; refusing to replace the library");
-  return [...cases.values()];
-}
-
 function importSnapshot(output, source) {
   const laws = output.prepare(`INSERT INTO laws VALUES (${Array(13).fill("?").join(",")})`);
   const names = output.prepare("INSERT OR IGNORE INTO law_names VALUES (?, ?)");
@@ -103,6 +63,7 @@ function importSnapshot(output, source) {
 }
 
 const output = resolve(process.argv[2] || process.env.MIKE_CN_LEGAL_DB || join(homedir(), ".local/share/mike-cn/legal.sqlite"));
+if (existsSync(output)) throw new Error("The legal library already exists; use sync:cn-legal to keep historical editions");
 await mkdir(dirname(output), { recursive: true });
 const stage = await mkdtemp(join(dirname(output), ".mike-cn-legal-"));
 try {
@@ -142,7 +103,7 @@ try {
     source.close();
     database.close();
   }
-  await rename(databasePath, output);
+  await link(databasePath, output);
   console.log(output);
 } finally {
   await rm(stage, { force: true, recursive: true });

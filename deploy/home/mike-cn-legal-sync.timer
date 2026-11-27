@@ -1,0 +1,10 @@
+[Unit]
+Description=Check for newly published Chinese regulations and guiding cases
+
+[Timer]
+OnCalendar=*-*-* 04:15:00 Asia/Shanghai
+Persistent=true
+Unit=mike-cn-legal-sync.service
+
+[Install]
+WantedBy=timers.target

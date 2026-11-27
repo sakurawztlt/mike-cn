@@ -25,12 +25,21 @@
 
 ## 中国法资料库
 
-运行 `npm run prepare:cn-legal --prefix backend` 生成中国法只读 SQLite 库，
+首次运行 `npm run prepare:cn-legal --prefix backend` 生成中国法只读 SQLite 库，
 默认路径为 `~/.local/share/mike-cn/legal.sqlite`。也可以在 `--` 后指定输出路径，
 以及已下载的快照归档文件。后端用 `MIKE_CN_LEGAL_DB` 读取自定义位置。家庭容器首次部署前，
 在来宾的 `/var/lib/mike-cn/legal-data/legal.sqlite` 放置已经校验的库文件。家庭 Compose
-把这个目录只读挂载给后端，并配置相应的容器内路径。更新资料时先校验新文件，再原子替换旧文件，
-并重启后端以读入新版本。
+把这个目录只读挂载给后端，并配置相应的容器内路径。
+
+运行 `npm run sync:cn-legal --prefix backend -- /path/to/legal.sqlite` 可更新已有资料库。
+同步读取司法部国家行政法规库的新版本正文及最高法指导性案例发布目录。脚本在副本中写入，
+保留旧法规正文和来源，校验后原子替换。后端下一次检索会读到新版，无需重启。
+国家法律法规数据库的基础快照仍有独立的截止日期，行政法规增量只覆盖司法部这一路来源。
+
+家庭定时任务为 `mike-cn-legal-sync.timer`，每天北京时间 04:15 检查。把 `sync-legal.sh`
+安装到 `/usr/local/lib/mike-cn/`，与服务和定时器文件一同安装。需要先发布包含同步脚本的
+后端镜像。定时任务使用已部署的镜像和同一把发布锁，给同步容器写权限，给应用容器保留只读挂载。
+检查 `mike-cn-legal-sync.service` 的日志可查看本次读取和新增数量。
 
 导入器核对 [chinalaw 法规快照](https://law.newcombmath.com/about/data.html) 的
 归档校验值，仅导入带国家法律法规数据库出处的法规版本和条文。输出库内保留快照日期、

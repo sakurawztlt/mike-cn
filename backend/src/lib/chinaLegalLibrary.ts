@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs";
+import { statSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 import type { DatabaseSync } from "node:sqlite";
@@ -17,6 +17,7 @@ type LawVersion = {
   repealed_at: string | null;
   status: string;
   source_url: string;
+  source_checked_at: string | null;
   next_effective_at: string | null;
 };
 
@@ -36,18 +37,20 @@ const STATUS_LABELS: Record<string, string> = {
   unknown: "效力待核验",
 };
 
-let opened: { path: string; db: DatabaseSync } | undefined;
+let opened: { path: string; version: string; db: DatabaseSync } | undefined;
 
-/** The importer publishes a complete read-only database. A restart adopts a new snapshot. */
+/** The importer swaps a complete read-only snapshot; each request sees one version. */
 export function getChinaLegalLibrary(): DatabaseSync | undefined {
   const path = process.env.MIKE_CN_LEGAL_DB || join(homedir(), ".local/share/mike-cn/legal.sqlite");
-  if (opened?.path === path) return opened.db;
-  if (!existsSync(path)) return undefined;
+  const stat = statSync(path, { throwIfNoEntry: false });
+  if (!stat?.isFile()) return undefined;
+  const version = [stat.dev, stat.ino, stat.mtimeMs].join(":");
+  if (opened?.path === path && opened.version === version) return opened.db;
   const { DatabaseSync: OpenDatabase } = require("node:sqlite") as typeof import("node:sqlite");
   const db = new OpenDatabase(path, { readOnly: true });
   db.exec("PRAGMA trusted_schema = OFF");
   opened?.db.close();
-  opened = { path, db };
+  opened = { path, version, db };
   return db;
 }
 
@@ -56,7 +59,8 @@ function libraryValue(db: DatabaseSync, key: string): string | null {
 }
 
 export function chinaLegalCoverage(db: DatabaseSync) {
-  return { law_snapshot: libraryValue(db, "law_snapshot"), case_checked_at: libraryValue(db, "case_checked_at") };
+  return { law_snapshot: libraryValue(db, "law_snapshot"), moj_checked_at: libraryValue(db, "moj_checked_at"),
+    case_checked_at: libraryValue(db, "case_checked_at") };
 }
 
 function versionEnd(law: LawVersion) {
@@ -72,7 +76,8 @@ function timeStatus(law: LawVersion, asOf: string, snapshot: string | null) {
       (law.status === "repealed" && !law.repealed_at) || (law.status === "amended" && !end)) {
     return "当日效力待核验";
   }
-  if (!snapshot || asOf > snapshot) return "目标日期超出快照，须核对该日效力";
+  const editionChecked = law.id.startsWith("moj:") ? law.source_checked_at?.slice(0, 10) : snapshot;
+  if (!editionChecked || asOf > editionChecked) return "目标日期超出已核验范围，须核对该日效力";
   return "当日版本候选，仍须核对过渡规定";
 }
 

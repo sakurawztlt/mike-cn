@@ -15,6 +15,7 @@
     "start": "node --enable-source-maps dist/index.js",
     "sync:workflows": "node dist/jobs/syncWorkflows.js",
     "prepare:cn-legal": "node scripts/prepare-china-legal.mjs",
+    "sync:cn-legal": "node scripts/sync-china-legal.mjs",
     "test": "vitest run",
     "test:stack": "bash scripts/test-stack.sh",
     "test:coverage": "vitest run --coverage",
