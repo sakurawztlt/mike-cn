@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { nextRevealLength } from "./tabularReveal";
 
 import { useMarkdownCheckpoint } from "../assistant/message/markdownCheckpoint";
@@ -279,7 +280,7 @@ function TRAssistantMessage({
         if (event.type === "thinking") {
             return (
                 <EventBlock key={key} showConnector={showConnector} isStreaming>
-                    <span>Thinking...</span>
+                    <span><UiText message={"Thinking..."} /></span>
                 </EventBlock>
             );
         }
@@ -463,6 +464,7 @@ export function TRChatPanel({
     onChatIdChange,
     canSend = true,
 }: Props) {
+    const tUi = useUiText();
     const [chats, setChats] = useState<TRChat[]>([]);
     const [currentChatId, setCurrentChatId] = useState<string | null>(
         initialChatId ?? null,
@@ -2375,18 +2377,16 @@ export function TRChatPanel({
             </div>
             <WarningPopup
                 open={messageLoadWarning}
-                title="Chat unavailable"
-                message="This chat’s messages could not be loaded. Please try again."
+                title={tUi("Chat unavailable")}
+                message={tUi("This chat’s messages could not be loaded. Please try again.")}
                 onClose={() => setMessageLoadWarning(false)}
             />
             <ApiKeyMissingPopup
                 open={rejectedApiKey !== null}
-                title="API key rejected"
-                message={`${
-                    rejectedApiKey?.provider
+                title={tUi("API key rejected")}
+                message={tUi("{0} was rejected. If it is your own key, check it in Settings; otherwise contact your administrator.", rejectedApiKey?.provider
                         ? `The ${providerLabel(rejectedApiKey.provider)} API key`
-                        : "That API key"
-                } was rejected. If it is your own key, check it in Settings; otherwise contact your administrator.`}
+                        : "That API key")}
                 onClose={() => setRejectedApiKey(null)}
             />
         </div>

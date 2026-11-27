@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import {
@@ -241,6 +242,7 @@ export function PlaybookTable({
   /** A new import becomes the caller's own private playbook. */
   showNewImports?: boolean;
 }) {
+    const tUi = useUiText();
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
 
   const options = useMemo(() => {
@@ -346,7 +348,7 @@ export function PlaybookTable({
     <TableScrollArea>
       <div
         role="table"
-        aria-label="Playbooks"
+        aria-label={tUi("Playbooks")}
         aria-busy={loading}
         className="flex min-h-full min-w-0 flex-col"
       >
@@ -358,7 +360,7 @@ export function PlaybookTable({
             <TableHeaderCell role="columnheader" className={NAME_COLUMN}>
               <input
                 type="checkbox"
-                aria-label="Select all playbooks"
+                aria-label={tUi("Select all playbooks")}
                 className={TABLE_CHECKBOX_CLASS}
                 disabled={loading || disabled || !displayed.length}
                 checked={
@@ -379,16 +381,16 @@ export function PlaybookTable({
                   )
                 }
               />
-              Name
+              <UiText message={"Name"} />
             </TableHeaderCell>
             <TableHeaderCell
               role="columnheader"
               className={`${CREATOR_COLUMN} gap-1`}
             >
-              <span>Creator</span>
+              <span><UiText message={"Creator"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by creator"
+                  label={tUi("Filter by creator")}
                   value={active.creator}
                   allLabel="All Creators"
                   widthClassName="w-48"
@@ -401,10 +403,10 @@ export function PlaybookTable({
               role="columnheader"
               className={`${ACCESS_COLUMN} gap-1`}
             >
-              <span>Access</span>
+              <span><UiText message={"Access"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by access"
+                  label={tUi("Filter by access")}
                   value={active.access}
                   allLabel="All Access"
                   widthClassName="w-40"
@@ -417,10 +419,10 @@ export function PlaybookTable({
               role="columnheader"
               className={`${TYPE_COLUMN} gap-1`}
             >
-              <span>Type</span>
+              <span><UiText message={"Type"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by document type"
+                  label={tUi("Filter by document type")}
                   value={active.type}
                   allLabel="All Types"
                   widthClassName="w-48"
@@ -433,10 +435,10 @@ export function PlaybookTable({
               role="columnheader"
               className={`${REPRESENTED_COLUMN} gap-1`}
             >
-              <span>Represented</span>
+              <span><UiText message={"Represented"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by represented party"
+                  label={tUi("Filter by represented party")}
                   value={active.represented}
                   allLabel="All Parties"
                   widthClassName="w-48"
@@ -449,10 +451,10 @@ export function PlaybookTable({
               role="columnheader"
               className={`${JURISDICTION_COLUMN} gap-1`}
             >
-              <span>Jurisdiction</span>
+              <span><UiText message={"Jurisdiction"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by jurisdiction"
+                  label={tUi("Filter by jurisdiction")}
                   value={active.jurisdiction}
                   allLabel="All Jurisdictions"
                   widthClassName="w-52"
@@ -462,13 +464,13 @@ export function PlaybookTable({
               )}
             </TableHeaderCell>
             <TableHeaderCell role="columnheader" className={RULES_COLUMN}>
-              Rules
+              <UiText message={"Rules"} />
             </TableHeaderCell>
             <TableHeaderCell role="columnheader" className={UPDATED_COLUMN}>
-              Updated
+              <UiText message={"Updated"} />
             </TableHeaderCell>
             <TableHeaderCell role="columnheader" className={ACTIONS_COLUMN}>
-              <span className="sr-only">Actions</span>
+              <span className="sr-only"><UiText message={"Actions"} /></span>
             </TableHeaderCell>
           </TableHeaderRow>
         </div>
@@ -516,11 +518,11 @@ export function PlaybookTable({
           <TableEmptyState>
             <EmptyState
               tone="error"
-              title="Couldn’t load playbooks"
+              title={tUi("Couldn’t load playbooks")}
               description={error}
               action={
                 <PillButtonUI tone="white" onClick={onRetry}>
-                  Try again
+                  <UiText message={"Try again"} />
                 </PillButtonUI>
               }
             />
@@ -530,21 +532,21 @@ export function PlaybookTable({
             <EmptyState
               title={
                 filtered
-                  ? "No matching playbooks"
+                  ? tUi("No matching playbooks")
                   : emptyContext === "shared"
-                    ? "No shared playbooks"
+                    ? tUi("No shared playbooks")
                     : emptyContext === "public"
-                      ? "No public playbooks"
-                      : "No playbooks yet"
+                      ? tUi("No public playbooks")
+                      : tUi("No playbooks yet")
               }
               description={
                 filtered
-                  ? "Try another name or description."
+                  ? tUi("Try another name or description.")
                   : emptyContext === "shared"
-                    ? "Playbooks shared with your email address will appear here."
+                    ? tUi("Playbooks shared with your email address will appear here.")
                     : emptyContext === "public"
-                      ? "Playbooks made public to this workspace will appear here."
-                      : "Turn a Word negotiation guide into rules, or write your own."
+                      ? tUi("Playbooks made public to this workspace will appear here.")
+                      : tUi("Turn a Word negotiation guide into rules, or write your own.")
               }
               action={
                 !filtered &&
@@ -555,14 +557,14 @@ export function PlaybookTable({
                       onClick={onImport}
                       disabled={disabled}
                     >
-                      Import
+                      <UiText message={"Import"} />
                     </PillButtonUI>
                     <PillButtonUI
                       tone="white"
                       onClick={onCreate}
                       disabled={disabled}
                     >
-                      Create
+                      <UiText message={"Create"} />
                     </PillButtonUI>
                   </div>
                 )
@@ -572,8 +574,8 @@ export function PlaybookTable({
         ) : displayed.length === 0 && newImports.length === 0 ? (
           <TableEmptyState>
             <EmptyState
-              title="No matching playbooks"
-              description="Adjust the table filters to see more playbooks."
+              title={tUi("No matching playbooks")}
+              description={tUi("Adjust the table filters to see more playbooks.")}
               action={
                 <PillButtonUI
                   tone="white"
@@ -582,7 +584,7 @@ export function PlaybookTable({
                     onSelect(new Set());
                   }}
                 >
-                  Clear filters
+                  <UiText message={"Clear filters"} />
                 </PillButtonUI>
               }
             />
@@ -609,11 +611,11 @@ export function PlaybookTable({
                       className="mr-3 h-2.5 w-2.5 shrink-0 animate-spin text-gray-400 motion-reduce:animate-none"
                     />
                     <span className="min-w-0 truncate text-gray-500" title={name}>
-                      <span className="sr-only">Compiling </span>
+                      <span className="sr-only"><UiText message={"Compiling"} />{" "}</span>
                       {name}
                     </span>
                     <span className="ml-2 shrink-0 text-xs text-gray-400" aria-hidden="true">
-                      Compiling…
+                      <UiText message={"Compiling…"} />
                     </span>
                   </TableCell>
                   <TableCell role="cell" className={CREATOR_COLUMN}>
@@ -661,7 +663,7 @@ export function PlaybookTable({
                 <TableCell role="cell" className={NAME_COLUMN}>
                   <input
                     type="checkbox"
-                    aria-label={`Select ${playbook.name}`}
+                    aria-label={tUi("Select {0}", playbook.name)}
                     className={TABLE_CHECKBOX_CLASS}
                     disabled={disabled}
                     checked={selectedIds.has(playbook.id)}
@@ -710,7 +712,7 @@ export function PlaybookTable({
                         aria-hidden="true"
                         className="h-3 w-3 animate-spin motion-reduce:animate-none"
                       />
-                      Compiling…
+                      <UiText message={"Compiling…"} />
                     </span>
                   )}
                 </TableCell>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { SelectionActionsMenu } from "@/app/components/shared/SelectionActionsMenu";
 import {
   useCallback,
@@ -129,6 +130,7 @@ const ASSISTANT_TABS: readonly AssistantTab[] = ["prompt", "assets"];
 // Page
 // ---------------------------------------------------------------------------
 export function WorkflowDetailPage({ id, workflowType }: Props) {
+    const tUi = useUiText();
   // Every failure on this screen belongs to the workflow it edits.
   const workflowOperation: Operation = "workflows.run";
   const router = useRouter();
@@ -528,9 +530,9 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
           shrink
           breadcrumbs={[
             {
-              label: "Workflows",
+              label: tUi("Workflows"),
               onClick: () => router.push("/workflows"),
-              title: "Back to Workflows",
+              title: tUi("Back to Workflows"),
             },
             { loading: true, skeletonClassName: "w-40" },
           ]}
@@ -551,8 +553,8 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
       <div className="flex-1 flex items-center justify-center">
         <EmptyState
           tone="error"
-          title="Couldn't load this workflow"
-          description="The workflow could not be loaded. It has not been changed."
+          title={tUi("Couldn't load this workflow")}
+          description={tUi("The workflow could not be loaded. It has not been changed.")}
           action={
             <PillButtonUI
               type="button"
@@ -560,7 +562,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
               size="sm"
               onClick={retryLoad}
             >
-              Try again
+              <UiText message={"Try again"} />
             </PillButtonUI>
           }
         />
@@ -571,7 +573,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
   if (notFound || !workflow) {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <p className="text-gray-400 font-serif">Workflow not found.</p>
+        <p className="text-gray-400 font-serif"><UiText message={"Workflow not found."} /></p>
       </div>
     );
   }
@@ -623,16 +625,16 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
     >
       <UploadOverlay
         open={draggingAssets}
-        label="Drop files here to add as workflow assets"
+        label={tUi("Drop files here to add as workflow assets")}
       />
       {/* Page header */}
       <PageHeader
         shrink
         breadcrumbs={[
           {
-            label: "Workflows",
+            label: tUi("Workflows"),
             onClick: () => router.push("/workflows"),
-            title: "Back to Workflows",
+            title: tUi("Back to Workflows"),
           },
           {
             label: (
@@ -660,10 +662,10 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                         <Check className="h-3.5 w-3.5 text-green-600" />
                       ) : null}
                       {saveStatus === "saving"
-                        ? "Saving…"
+                        ? (<><UiText message={"Saving…"} /></>)
                         : saveStatus === "error"
-                          ? "Couldn't save"
-                          : "Saved"}
+                          ? (<><UiText message={"Couldn't save"} /></>)
+                          : (<><UiText message={"Saved"} /></>)}
                     </span>
                   ),
                 },
@@ -703,7 +705,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
               type: "custom",
               render: (
                 <HeaderActionsMenu
-                  title="Workflow actions"
+                  title={tUi("Workflow actions")}
                   items={workflowActionItems}
                 />
               ),
@@ -814,13 +816,13 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
       )}
       <ConfirmPopup
         open={deleteOpen}
-        title="Delete workflow?"
+        title={tUi("Delete workflow?")}
         message={
           workflow.is_default
-            ? "Deleting this default workflow also permanently deletes its corresponding Quick Action. The default workflow will not be created again automatically."
-            : "This workflow will be permanently deleted."
+            ? tUi("Deleting this default workflow also permanently deletes its corresponding Quick Action. The default workflow will not be created again automatically.")
+            : tUi("This workflow will be permanently deleted.")
         }
-        confirmLabel="Delete"
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={deleteStatus}
         onConfirm={() => void handleDeleteWorkflow()}
@@ -896,7 +898,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                       )}
                     <TabPillButtonUI onClick={() => setAddColumnOpen(true)}>
                       <Plus className="h-3.5 w-3.5" />
-                      Add Column
+                      <UiText message={"Add Column"} />
                     </TabPillButtonUI>
                   </div>
                 }
@@ -905,7 +907,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
             {readOnly && (
               <div className="flex h-10 shrink-0 items-center bg-gray-50 px-4 md:px-10">
                 <span className="text-xs font-medium text-gray-500">
-                  Read-only
+                  <UiText message={"Read-only"} />
                 </span>
               </div>
             )}
@@ -942,17 +944,17 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                         aria-hidden="true"
                       />
                     )}
-                    <span>Column Title</span>
+                    <span><UiText message={"Column Title"} /></span>
                   </TableStickyCell>
                   <TableHeaderCell className="ml-auto w-36">
-                    Format
+                    <UiText message={"Format"} />
                   </TableHeaderCell>
                   <TableHeaderCell
                     className={
                       readOnly ? PROMPT_COL_W : PROMPT_HEADER_WITH_ACTIONS_W
                     }
                   >
-                    Prompt
+                    <UiText message={"Prompt"} />
                   </TableHeaderCell>
                 </TableHeaderRow>
               }
@@ -961,8 +963,8 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                 <TableEmptyState>
                   <EmptyState
                     icon={<TabularReviewSkeuoIcon />}
-                    title="Columns"
-                    description="Add columns to define what this tabular review workflow extracts from each document."
+                    title={tUi("Columns")}
+                    description={tUi("Add columns to define what this tabular review workflow extracts from each document.")}
                     action={
                       !readOnly && (
                         <PillButtonUI
@@ -971,7 +973,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                           onClick={() => setAddColumnOpen(true)}
                         >
                           <Plus className="h-3.5 w-3.5" />
-                          Add Column
+                          <UiText message={"Add Column"} />
                         </PillButtonUI>
                       )
                     }
@@ -1048,8 +1050,8 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                             aria-expanded={expandedPromptIndex === col.index}
                             title={
                               expandedPromptIndex === col.index
-                                ? "Collapse prompt"
-                                : "Expand prompt"
+                                ? tUi("Collapse prompt")
+                                : tUi("Expand prompt")
                             }
                             onClick={(event) => {
                               event.stopPropagation();
@@ -1065,7 +1067,7 @@ export function WorkflowDetailPage({ id, workflowType }: Props) {
                             <TRExpandedCellSurface>
                               <button
                                 type="button"
-                                aria-label="Collapse prompt"
+                                aria-label={tUi("Collapse prompt")}
                                 onClick={(event) => {
                                   event.stopPropagation();
                                   setExpandedPromptIndex(null);

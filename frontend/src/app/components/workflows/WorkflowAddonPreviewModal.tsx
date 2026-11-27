@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronLeft, Code2, Plus } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -76,6 +77,7 @@ function withoutLeadingTitle(markdown: string) {
 }
 
 function SkillViewer({ skill }: { skill: string }) {
+    const tUi = useUiText();
   const [showRaw, setShowRaw] = useState(false);
   const [copied, setCopied] = useState(false);
   const previewRef = useRef<HTMLDivElement | null>(null);
@@ -113,19 +115,19 @@ function SkillViewer({ skill }: { skill: string }) {
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
       <div className="flex min-h-10 shrink-0 items-center justify-between border-b border-white/60 px-3 py-1.5">
-        <span className="text-xs font-medium text-gray-500">SKILL.md</span>
+        <span className="text-xs font-medium text-gray-500"><UiText message={"SKILL.md"} /></span>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => void copy()}
             className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-gray-700"
           >
-            {copied ? <Check className="h-3 w-3" /> : "Copy"}
+            {copied ? <Check className="h-3 w-3" /> : (<><UiText message={"Copy"} /></>)}
           </button>
           <button
             type="button"
             aria-label={
-              showRaw ? "Show rendered SKILL.md" : "Show raw SKILL.md"
+              showRaw ? tUi("Show rendered SKILL.md") : tUi("Show raw SKILL.md")
             }
             aria-pressed={showRaw}
             onClick={() => setShowRaw((current) => !current)}
@@ -151,7 +153,7 @@ function SkillViewer({ skill }: { skill: string }) {
               remarkPlugins={[remarkGfm]}
               components={markdownComponents}
             >
-              {markdown || "_No instructions provided._"}
+              {markdown || tUi("_No instructions provided._")}
             </ReactMarkdown>
           </div>
         )}
@@ -271,6 +273,7 @@ function WorkflowAddonPreviewDialog({
   onClose: () => void;
   onImport: (addon: WorkflowAddon) => Promise<void>;
 }) {
+    const tUi = useUiText();
   const [view, setView] = useState<DetailView>(
     addon.type === "tabular" ? "columns" : "skill",
   );
@@ -306,14 +309,14 @@ function WorkflowAddonPreviewDialog({
       open
       onClose={onClose}
       breadcrumbs={[
-        "Workflows",
-        "Add-ons",
+        tUi("Workflows"),
+        tUi("Add-ons"),
         addon.title,
         ...(selectedAsset ? [selectedAsset.filename] : []),
       ]}
       size={selectedAsset ? "xl" : "lg"}
       primaryAction={{
-        label: importing ? "Importing…" : "Import",
+        label: importing ? tUi("Importing…") : tUi("Import"),
         icon: <Plus className="h-4 w-4" />,
         disabled: importing,
         onClick: () => void onImport(addon),
@@ -321,7 +324,7 @@ function WorkflowAddonPreviewDialog({
       secondaryAction={
         selectedAsset
           ? {
-              label: "Back",
+              label: tUi("Back"),
               icon: <ChevronLeft className="h-4 w-4" />,
               onClick: () => setSelectedAsset(null),
             }
@@ -360,19 +363,19 @@ function WorkflowAddonPreviewDialog({
           <section className="shrink-0">
             <div className="flex flex-wrap items-end gap-x-8 gap-y-3">
               <MetadataItem
-                label="Contributor"
+                label={tUi("Contributor")}
                 value={addon.contributors
                   .map((contributor) => contributor.name)
                   .join(", ")}
               />
-              <MetadataItem label="Language" value={addon.language || "—"} />
-              <MetadataItem label="Version" value={addon.version || "—"} />
+              <MetadataItem label={tUi("Language")} value={addon.language || "—"} />
+              <MetadataItem label={tUi("Version")} value={addon.version || "—"} />
               <MetadataItem
-                label="Practice"
+                label={tUi("Practice")}
                 value={addon.practice || "General"}
               />
               <MetadataItem
-                label="Jurisdiction"
+                label={tUi("Jurisdiction")}
                 value={addon.jurisdictions?.join(", ") || "—"}
               />
             </div>
@@ -392,7 +395,7 @@ function WorkflowAddonPreviewDialog({
                       }
                       className="ml-1 inline font-medium text-blue-600 transition-colors hover:text-blue-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/60"
                     >
-                      {descriptionExpanded ? "Show less" : "Show more"}
+                      {descriptionExpanded ? (<><UiText message={"Show less"} /></>) : (<><UiText message={"Show more"} /></>)}
                     </button>
                   )}
                 </p>
@@ -414,10 +417,10 @@ function WorkflowAddonPreviewDialog({
                   <div className="grid min-h-10 shrink-0 grid-cols-[52px_0.8fr_1.8fr] items-center border-b border-white/60 text-xs font-medium text-gray-500">
                     <div className="px-3 py-1.5">#</div>
                     <div className="border-l border-white/60 px-3 py-1.5">
-                      Column
+                      <UiText message={"Column"} />
                     </div>
                     <div className="border-l border-white/60 px-3 py-1.5">
-                      Prompt
+                      <UiText message={"Prompt"} />
                     </div>
                   </div>
                   <div className="min-h-0 flex-1 overflow-y-auto">
@@ -442,12 +445,12 @@ function WorkflowAddonPreviewDialog({
               ) : view === "assets" ? (
                 <div className="flex h-full min-h-0 flex-col">
                   <div className="flex min-h-10 shrink-0 items-center border-b border-white/60 px-3 py-1.5 text-xs font-medium text-gray-500">
-                    Assets
+                    <UiText message={"Assets"} />
                   </div>
                   <div className="min-h-0 flex-1 overflow-y-auto">
                     {assets.length === 0 ? (
                       <div className="flex h-full min-h-24 items-center justify-center px-4 text-xs text-gray-400">
-                        No assets included.
+                        <UiText message={"No assets included."} />
                       </div>
                     ) : (
                       assets.map((file) => (

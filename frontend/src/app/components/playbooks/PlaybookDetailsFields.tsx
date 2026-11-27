@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useId } from "react";
 import { ModalTextarea } from "@/app/components/modals/ModalTextarea";
 import { FieldLabel, FormTextInput } from "@/app/components/ui/form-field";
@@ -61,18 +62,19 @@ export function PlaybookDetailsFields({
   disabled?: boolean;
   autoFocus?: boolean;
 }) {
+    const tUi = useUiText();
   const nameId = useId();
   const partyId = useId();
   const descriptionId = useId();
   return (
     <>
       <div>
-        <FieldLabel htmlFor={nameId}>Playbook name</FieldLabel>
+        <FieldLabel htmlFor={nameId}><UiText message={"Playbook name"} /></FieldLabel>
         <FormTextInput
           id={nameId}
           value={value.name}
           onChange={(event) => onChange({ ...value, name: event.target.value })}
-          placeholder="Add playbook name"
+          placeholder={tUi("Add playbook name")}
           variant="minimal"
           maxLength={200}
           disabled={disabled}
@@ -80,41 +82,41 @@ export function PlaybookDetailsFields({
         />
       </div>
       <div>
-        <FieldLabel htmlFor={partyId}>Represented party</FieldLabel>
+        <FieldLabel htmlFor={partyId}><UiText message={"Represented party"} /></FieldLabel>
         <FormTextInput
           id={partyId}
           value={value.representedParty}
           onChange={(event) =>
             onChange({ ...value, representedParty: event.target.value })
           }
-          placeholder="Buyer, Licensee"
+          placeholder={tUi("Buyer, Licensee")}
           disabled={disabled}
         />
       </div>
       <PlaybookListField
-        label="Document types"
+        label={tUi("Document types")}
         value={value.documentTypes}
-        placeholder="NDA, MSA"
+        placeholder={tUi("NDA, MSA")}
         onChange={(documentTypes) => onChange({ ...value, documentTypes })}
         disabled={disabled}
       />
       <PlaybookListField
-        label="Jurisdictions"
+        label={tUi("Jurisdictions")}
         value={value.jurisdictions}
-        placeholder="England and Wales, New York"
+        placeholder={tUi("England and Wales, New York")}
         options={PLAYBOOK_JURISDICTION_OPTIONS}
         onChange={(jurisdictions) => onChange({ ...value, jurisdictions })}
         disabled={disabled}
       />
       <div>
-        <FieldLabel htmlFor={descriptionId}>Description</FieldLabel>
+        <FieldLabel htmlFor={descriptionId}><UiText message={"Description"} /></FieldLabel>
         <ModalTextarea
           id={descriptionId}
           value={value.description}
           onChange={(event) =>
             onChange({ ...value, description: event.target.value })
           }
-          placeholder="What this playbook is for"
+          placeholder={tUi("What this playbook is for")}
           disabled={disabled}
         />
       </div>

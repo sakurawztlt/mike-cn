@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { SelectionActionsMenu } from "@/app/components/shared/SelectionActionsMenu";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -112,6 +113,7 @@ export function WorkflowList({
   initialTab?: WorkflowListTab;
   packKey?: string | null;
 }) {
+    const tUi = useUiText();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [addons, setAddons] = useState<WorkflowAddon[]>([]);
@@ -434,7 +436,7 @@ export function WorkflowList({
             ? () => router.push(workflowDetailPath(workflow))
             : undefined
         }
-        editDetailsLabel="Edit"
+        editDetailsLabel={tUi("Edit")}
         onDelete={
           appliesToSelection || !workflow
             ? () => {
@@ -449,7 +451,7 @@ export function WorkflowList({
               : undefined
         }
         deleteLabel={
-          appliesToSelection ? `Delete ${actionIds.length} workflows` : undefined
+          appliesToSelection ? tUi("Delete {0} workflows", actionIds.length) : undefined
         }
       />
     );
@@ -471,7 +473,7 @@ export function WorkflowList({
       >
         <Plus className="h-3.5 w-3.5" />
         {bulkImportingAddons
-          ? "Importing…"
+          ? (<><UiText message={"Importing…"} /></>)
           : `Import${selectedAddonIds.length > 1 ? ` (${selectedAddonIds.length})` : ""}`}
       </TabPillButtonUI>
     ) : undefined;
@@ -499,10 +501,10 @@ export function WorkflowList({
           packKey
             ? [
                 {
-                  label: "Workflows",
+                  label: tUi("Workflows"),
                   onClick: () => router.push("/workflows"),
                 },
-                { label: "Add-ons", onClick: closeAddonPack },
+                { label: tUi("Add-ons"), onClick: closeAddonPack },
                 {
                   label: activePack?.title || packKey,
                   loading: addonsLoading && !activePack,
@@ -516,17 +518,17 @@ export function WorkflowList({
             value: search,
             onChange: setSearch,
             placeholder:
-              activeTab === "addons" ? "Search add-ons…" : "Search workflows…",
+              activeTab === "addons" ? tUi("Search add-ons…") : tUi("Search workflows…"),
           },
           {
             type: "new",
             onClick: () => setNewModalOpen(true),
-            title: "New workflow",
+            title: tUi("New workflow"),
           },
         ]}
       >
         <h1 className={`${PAGE_HEADER_TITLE_CLASS} text-gray-900`}>
-          Workflows
+          <UiText message={"Workflows"} />
         </h1>
       </PageHeader>
 
@@ -538,7 +540,7 @@ export function WorkflowList({
           packKey ? (
             <TabPillButtonUI onClick={closeAddonPack}>
               <ChevronLeft className="h-3.5 w-3.5" />
-              Back
+              <UiText message={"Back"} />
             </TabPillButtonUI>
           ) : undefined
         }
@@ -558,7 +560,7 @@ export function WorkflowList({
             onClick={() => setActionError("")}
             className="shrink-0 text-xs font-medium text-red-500 hover:text-red-700"
           >
-            Dismiss
+            <UiText message={"Dismiss"} />
           </button>
         </div>
       )}
@@ -653,11 +655,11 @@ export function WorkflowList({
         open={pendingDeleteIds.length > 0}
         title={
           pendingDeleteIds.length === 1
-            ? "Delete workflow?"
-            : "Delete workflows?"
+            ? tUi("Delete workflow?")
+            : tUi("Delete workflows?")
         }
         message={deleteWarningMessage}
-        confirmLabel="Delete"
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={deleteStatus}
         onConfirm={() => void confirmWorkflowDeletion()}
@@ -733,6 +735,7 @@ function WorkflowTable({
   loadMoreError: boolean;
   onLoadMore: () => void;
 }) {
+    const tUi = useUiText();
   const rowSelectionAnchorIdRef = useRef<string | null>(null);
   const selectedIdSet = useIdSet(selectedIds);
   const typeOptions = useMemo<TableFilterOption<string>[]>(
@@ -821,13 +824,13 @@ function WorkflowTable({
                 disabled={selectableIds.length === 0 || selectingAll}
                 onChange={toggleAll}
                 className={TABLE_CHECKBOX_CLASS}
-                title="Select all deletable workflows"
+                title={tUi("Select all deletable workflows")}
               />
             )}
-            <span className="mr-1">Name</span>
+            <span className="mr-1"><UiText message={"Name"} /></span>
             {!loading && (
               <TableSortFilter
-                label="Sort by workflow name"
+                label={tUi("Sort by workflow name")}
                 value={nameSortDirection}
                 align="right"
                 onChange={handleNameSortChange}
@@ -835,10 +838,10 @@ function WorkflowTable({
             )}
           </TableStickyCell>
           <TableHeaderCell className="ml-auto w-32">
-            <span className="mr-1">Access</span>
+            <span className="mr-1"><UiText message={"Access"} /></span>
             {!loading && (
               <TableFilters
-                label="Filter by access"
+                label={tUi("Filter by access")}
                 value={accessFilter}
                 allLabel="All Access"
                 widthClassName="w-40"
@@ -850,10 +853,10 @@ function WorkflowTable({
             )}
           </TableHeaderCell>
           <TableHeaderCell className="flex w-28 items-center gap-1">
-            <span>Type</span>
+            <span><UiText message={"Type"} /></span>
             {!loading && (
               <TableFilters
-                label="Filter by workflow type"
+                label={tUi("Filter by workflow type")}
                 value={typeFilter}
                 allLabel="All Types"
                 widthClassName="w-40"
@@ -865,10 +868,10 @@ function WorkflowTable({
             )}
           </TableHeaderCell>
           <TableHeaderCell className="flex w-52 items-center gap-1">
-            <span>Practice</span>
+            <span><UiText message={"Practice"} /></span>
             {!loading && (
               <TableFilters
-                label="Filter by practice"
+                label={tUi("Filter by practice")}
                 value={practiceFilter}
                 allLabel="All Practices"
                 widthClassName="w-52"
@@ -880,10 +883,10 @@ function WorkflowTable({
             )}
           </TableHeaderCell>
           <TableHeaderCell className="flex w-40 items-center gap-1">
-            <span>Jurisdiction</span>
+            <span><UiText message={"Jurisdiction"} /></span>
             {!loading && (
               <TableFilters
-                label="Filter by jurisdiction"
+                label={tUi("Filter by jurisdiction")}
                 value={jurisdictionFilter}
                 allLabel="All Jurisdictions"
                 widthClassName="w-48"
@@ -895,10 +898,10 @@ function WorkflowTable({
             )}
           </TableHeaderCell>
           <TableHeaderCell className="flex w-28 items-center gap-1">
-            <span>Language</span>
+            <span><UiText message={"Language"} /></span>
             {!loading && (
               <TableFilters
-                label="Filter by language"
+                label={tUi("Filter by language")}
                 value={languageFilter}
                 allLabel="All Languages"
                 widthClassName="w-44"
@@ -946,13 +949,13 @@ function WorkflowTable({
         <TableEmptyState>
           <EmptyState
             icon={<WorkflowSkeuoIcon />}
-            title="Workflows"
+            title={tUi("Workflows")}
             description={
-              error || "Create a reusable workflow or import one from Add-ons."
+              error || tUi("Create a reusable workflow or import one from Add-ons.")
             }
             action={
               <PillButtonUI tone="black" size="sm" onClick={onCreate}>
-                Create
+                <UiText message={"Create"} />
               </PillButtonUI>
             }
           />
@@ -961,8 +964,8 @@ function WorkflowTable({
         <TableEmptyState>
           <EmptyState
             icon={<WorkflowSkeuoIcon />}
-            title="No matching workflows"
-            description="Adjust the table filters to see more workflows."
+            title={tUi("No matching workflows")}
+            description={tUi("Adjust the table filters to see more workflows.")}
           />
         </TableEmptyState>
       ) : (
@@ -1021,8 +1024,8 @@ function WorkflowTable({
                           type="checkbox"
                           disabled
                           className={TABLE_CHECKBOX_CLASS}
-                          title="Shared workflows cannot be deleted"
-                          aria-label={`Select ${workflow.metadata.title}`}
+                          title={tUi("Shared workflows cannot be deleted")}
+                          aria-label={tUi("Select {0}", workflow.metadata.title)}
                         />
                       )
                     }
@@ -1045,8 +1048,8 @@ function WorkflowTable({
                     <span className="inline-flex items-center gap-1.5 text-xs text-gray-600">
                       <Icon className="h-3 w-3 shrink-0" />
                       {workflow.metadata.type === "tabular"
-                        ? "Tabular"
-                        : "Assistant"}
+                        ? (<><UiText message={"Tabular"} /></>)
+                        : (<><UiText message={"Assistant"} /></>)}
                     </span>
                   </TableCell>
                   <TableCell className="w-52 text-xs text-gray-600">
@@ -1067,7 +1070,7 @@ function WorkflowTable({
                       onEditDetails={
                         canManage ? () => onEdit(workflow) : undefined
                       }
-                      editDetailsLabel="Edit"
+                      editDetailsLabel={tUi("Edit")}
                       onDelete={
                         canManage ? () => onDelete(workflow) : undefined
                       }
@@ -1120,6 +1123,7 @@ function AddonTable({
   onImport: (addon: WorkflowAddon) => Promise<void>;
   onImportMany: (addons: WorkflowAddon[]) => void;
 }) {
+    const tUi = useUiText();
   const bulkImporting = bulkImportingIds.length > 0;
   const [expandedPackKeys, setExpandedPackKeys] = useState<Set<string>>(
     () => new Set(),
@@ -1317,7 +1321,7 @@ function AddonTable({
         <TableCell className="ml-auto w-28">
           <span className="inline-flex items-center gap-1.5 text-xs text-gray-600">
             <Icon className="h-3 w-3 shrink-0" />
-            {addon.type === "tabular" ? "Tabular" : "Assistant"}
+            {addon.type === "tabular" ? (<><UiText message={"Tabular"} /></>) : (<><UiText message={"Assistant"} /></>)}
           </span>
         </TableCell>
         <TableCell className="w-52 text-xs text-gray-600">
@@ -1353,15 +1357,15 @@ function AddonTable({
                 disabled={addonIds.length === 0 || bulkImporting}
                 onChange={toggleAll}
                 className={TABLE_CHECKBOX_CLASS}
-                title="Select all add-ons"
+                title={tUi("Select all add-ons")}
               />
             )}
-            Name
+            <UiText message={"Name"} />
           </TableStickyCell>
-          <TableHeaderCell className="ml-auto w-28">Type</TableHeaderCell>
-          <TableHeaderCell className="w-52">Practice</TableHeaderCell>
-          <TableHeaderCell className="w-40">Jurisdiction</TableHeaderCell>
-          <TableHeaderCell className="w-28">Language</TableHeaderCell>
+          <TableHeaderCell className="ml-auto w-28"><UiText message={"Type"} /></TableHeaderCell>
+          <TableHeaderCell className="w-52"><UiText message={"Practice"} /></TableHeaderCell>
+          <TableHeaderCell className="w-40"><UiText message={"Jurisdiction"} /></TableHeaderCell>
+          <TableHeaderCell className="w-28"><UiText message={"Language"} /></TableHeaderCell>
           <TableHeaderCell className="w-8" />
         </TableHeaderRow>
       }
@@ -1397,10 +1401,10 @@ function AddonTable({
         <TableEmptyState>
           <EmptyState
             icon={<WorkflowSkeuoIcon />}
-            title="Add-ons"
+            title={tUi("Add-ons")}
             description={
               error ||
-              (activePackKey ? "This pack is empty." : "No add-ons found.")
+              (activePackKey ? tUi("This pack is empty.") : tUi("No add-ons found."))
             }
           />
         </TableEmptyState>
@@ -1480,8 +1484,8 @@ function AddonTable({
                           onChange={() => togglePackSelection(pack.addons)}
                           onClick={(event) => event.stopPropagation()}
                           className={TABLE_CHECKBOX_CLASS}
-                          title={`Select ${pack.title}`}
-                          aria-label={`Select ${pack.title}`}
+                          title={tUi("Select {0}", pack.title)}
+                          aria-label={tUi("Select {0}", pack.title)}
                         />
                       }
                       label={
@@ -1490,8 +1494,8 @@ function AddonTable({
                             type="button"
                             aria-label={
                               expanded
-                                ? `Collapse ${pack.title}`
-                                : `Expand ${pack.title}`
+                                ? tUi("Collapse {0}", pack.title)
+                                : tUi("Expand {0}", pack.title)
                             }
                             onClick={(event) => {
                               event.stopPropagation();
@@ -1516,10 +1520,10 @@ function AddonTable({
                       }
                     />
                     <TableCell className="ml-auto w-28 text-xs text-gray-600">
-                      Pack
+                      <UiText message={"Pack"} />
                     </TableCell>
                     <TableCell className="w-52 text-xs text-gray-600">
-                      {pack.addons.length} workflow
+                      {pack.addons.length}{" "}<UiText message={"workflow"} />
                       {pack.addons.length === 1 ? "" : "s"}
                     </TableCell>
                     <TableCell className="w-40 text-xs text-gray-600">

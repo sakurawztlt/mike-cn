@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { SkeletonLine } from "@/app/components/shared/TablePrimitive";
 import { TableToolbar } from "@/app/components/shared/TableToolbar";
 import { EDITOR_SURFACE_CLASS } from "@/app/components/ui/liquid-surface";
@@ -25,11 +26,12 @@ function PillSkeleton({ className }: { className: string }) {
  * the toolbar, the rule list, and the rule editor.
  */
 export function PlaybookPageSkeleton() {
+    const tUi = useUiText();
   return (
     <div
       role="status"
       aria-busy="true"
-      aria-label="Loading playbook"
+      aria-label={tUi("Loading playbook")}
       className="flex min-h-0 flex-1 flex-col"
     >
       <div className="shrink-0">

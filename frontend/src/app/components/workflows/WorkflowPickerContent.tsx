@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, X } from "lucide-react";
 import { SearchBar } from "@/app/components/ui/search-bar";
@@ -57,6 +58,7 @@ export function WorkflowPickerContent({
     showTypeIcon = false,
     allowClearPreview = true,
 }: WorkflowPickerContentProps) {
+    const tUi = useUiText();
     const selectedRowRef = useRef<HTMLButtonElement>(null);
     const selectedId = selected?.id ?? null;
     const [mobilePaneState, setMobilePaneState] = useState<{
@@ -120,7 +122,7 @@ export function WorkflowPickerContent({
                 <SearchBar
                     value={search}
                     onValueChange={onSearchChange}
-                    placeholder="Search workflows..."
+                    placeholder={tUi("Search workflows...")}
                 />
 
                 <div
@@ -280,10 +282,11 @@ function WorkflowPreview({
 }
 
 function WorkflowPreviewSkeleton({ mode }: { mode: "prompt" | "columns" }) {
+    const tUi = useUiText();
     return (
         <div
             role="status"
-            aria-label={`Loading workflow ${mode}`}
+            aria-label={tUi("Loading workflow {0}", mode)}
             className="min-w-0 flex-1 space-y-3 px-3 py-3"
         >
             {(mode === "columns"
@@ -396,7 +399,7 @@ function WorkflowColumnPreview({ columns }: { columns: ColumnConfig[] }) {
         <div className="min-w-0 flex-1 space-y-px rounded-sm">
             {sortedColumns.length === 0 ? (
                 <p className="px-4 py-6 text-center text-xs text-gray-400">
-                    No columns defined
+                    <UiText message={"No columns defined"} />
                 </p>
             ) : (
                 sortedColumns.map((column) => {
@@ -435,7 +438,7 @@ function WorkflowColumnPreview({ columns }: { columns: ColumnConfig[] }) {
                                     {column.tags && column.tags.length > 0 ? (
                                         <div>
                                             <p className="mb-1.5 text-[11px] font-medium text-gray-600">
-                                                Tags
+                                                <UiText message={"Tags"} />
                                             </p>
                                             <div className="flex flex-wrap gap-1.5">
                                                 {column.tags.map(
@@ -453,7 +456,7 @@ function WorkflowColumnPreview({ columns }: { columns: ColumnConfig[] }) {
                                     ) : null}
                                     <div>
                                         <p className="mb-1 text-[11px] font-medium text-gray-600">
-                                            Prompt
+                                            <UiText message={"Prompt"} />
                                         </p>
                                         <WorkflowPromptMarkdown
                                             content={

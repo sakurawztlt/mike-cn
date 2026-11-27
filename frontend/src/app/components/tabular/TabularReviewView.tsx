@@ -1,4 +1,6 @@
 "use client";
+
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { BACKEND_REPORTING_OWNER } from "@mike/client";
 
 import { RowActionMenuItems } from "@/app/components/shared/RowActions";
@@ -124,6 +126,7 @@ interface Props {
 
 /** Display a review grid and resume its active generation through the latest stream handler. */
 export function TRView({ reviewId, projectId }: Props) {
+    const tUi = useUiText();
     const configuredModels = useConfiguredModels();
     const configuredModelIds = useMemo(
         () => configuredModels.map((model) => model.id),
@@ -1778,7 +1781,7 @@ export function TRView({ reviewId, projectId }: Props) {
                                   skeletonClassName: "w-40",
                               }
                             : {
-                                  label: review?.title || "Untitled Review",
+                                  label: review?.title || tUi("Untitled Review"),
                               },
                     ]}
                     actionGroups={[
@@ -1873,7 +1876,7 @@ export function TRView({ reviewId, projectId }: Props) {
                                     ),
                                     label: (
                                         <span className="hidden sm:inline">
-                                            Chat
+                                            <UiText message={"Chat"} />
                                         </span>
                                     ),
                                 },
@@ -1896,7 +1899,7 @@ export function TRView({ reviewId, projectId }: Props) {
                                 <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-3 gap-y-2">
                                     <fieldset
                                         disabled={loading}
-                                        aria-label="Review generation"
+                                        aria-label={tUi("Review generation")}
                                         // The group owns the glass surface; its buttons only add hover states.
                                         className={[
                                             `flex h-7 min-w-0 max-w-full items-center rounded-full p-0 ${LIQUID_GLASS_SUBTLE_CLASS}`,
@@ -1935,10 +1938,10 @@ export function TRView({ reviewId, projectId }: Props) {
                                             }
                                             title={
                                                 stoppingGeneration
-                                                    ? "Stopping generation"
+                                                    ? tUi("Stopping generation")
                                                     : generating
-                                                      ? "Stop generation"
-                                                      : "Run review"
+                                                      ? tUi("Stop generation")
+                                                      : tUi("Run review")
                                             }
                                             className="shrink-0 whitespace-nowrap rounded-l-none"
                                         >
@@ -1949,7 +1952,7 @@ export function TRView({ reviewId, projectId }: Props) {
                                             ) : (
                                                 <Play aria-hidden="true" className="h-3.5 w-3.5" />
                                             )}
-                                            {stoppingGeneration ? "Stopping…" : generating ? "Stop" : "Run"}
+                                            {stoppingGeneration ? (<><UiText message={"Stopping…"} /></>) : generating ? (<><UiText message={"Stop"} /></>) : (<><UiText message={"Run"} /></>)}
                                         </TabPillButtonUI>
                                     </fieldset>
                                     <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
@@ -2003,7 +2006,7 @@ export function TRView({ reviewId, projectId }: Props) {
                                                 className="pl-2"
                                             >
                                                 <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                                                Add Columns
+                                                <UiText message={"Add Columns"} />
                                             </TabPillButtonUI>
                                         )}
                                         {!loading && selectedRowIds.length > 0 && (
@@ -2303,18 +2306,18 @@ export function TRView({ reviewId, projectId }: Props) {
                                       : ""),
                           ]
                         : []),
-                    "Tabular Reviews",
-                    review?.title || "Untitled Review",
-                    "Add workflow",
+                    tUi("Tabular Reviews"),
+                    review?.title || tUi("Untitled Review"),
+                    tUi("Add workflow"),
                 ]}
                 applying={applyingWorkflow}
             />
 
             <ConfirmPopup
                 open={deleteReviewConfirmOpen}
-                title="Delete tabular review?"
-                message="This will permanently delete the tabular review and its generated cells."
-                confirmLabel="Delete"
+                title={tUi("Delete tabular review?")}
+                message={tUi("This will permanently delete the tabular review and its generated cells.")}
+                confirmLabel={tUi("Delete")}
                 confirmVariant="danger"
                 confirmStatus={
                     deleteReviewStatus === "deleting"
@@ -2323,7 +2326,7 @@ export function TRView({ reviewId, projectId }: Props) {
                           ? "complete"
                           : "idle"
                 }
-                cancelLabel="Cancel"
+                cancelLabel={tUi("Cancel")}
                 onCancel={() => {
                     if (deleteReviewStatus === "deleting") return;
                     setDeleteReviewConfirmOpen(false);
@@ -2340,19 +2343,19 @@ export function TRView({ reviewId, projectId }: Props) {
             <WarningPopup
                 open={generationError !== null}
                 onClose={() => setGenerationError(null)}
-                title="Review stopped"
+                title={tUi("Review stopped")}
                 message={generationError}
             />
             <ApiKeyMissingPopup
                 open={apiKeyWarning !== null}
                 title={
                     apiKeyWarning?.kind === "rejected"
-                        ? "API key rejected"
+                        ? tUi("API key rejected")
                         : undefined
                 }
                 message={
                     apiKeyWarning?.kind === "rejected"
-                        ? `The ${apiKeyWarning.provider ? providerLabel(apiKeyWarning.provider) : "model provider"} API key was rejected. If you added your own key, check it in Settings → Bring Your Own Keys; otherwise contact your administrator.`
+                        ? tUi("The {0} API key was rejected. If you added your own key, check it in Settings → Bring Your Own Keys; otherwise contact your administrator.", apiKeyWarning.provider ? providerLabel(apiKeyWarning.provider) : "model provider")
                         : undefined
                 }
                 onClose={() => setApiKeyWarning(null)}
@@ -2365,20 +2368,20 @@ export function TRView({ reviewId, projectId }: Props) {
 
             <WarningPopup
                 open={modelRequiredWarning}
-                title="Select a model"
-                message="Select a model for this tabular review before running it."
+                title={tUi("Select a model")}
+                message={tUi("Select a model for this tabular review before running it.")}
                 onClose={() => setModelRequiredWarning(false)}
             />
 
             <WarningPopup
                 open={generationGuard === "running"}
-                title="Tabular review is already running"
-                message="This review is being run in another tab or by another collaborator. Wait for that run to finish or be stopped before trying again."
+                title={tUi("Tabular review is already running")}
+                message={tUi("This review is being run in another tab or by another collaborator. Wait for that run to finish or be stopped before trying again.")}
                 onClose={() => {
                     if (!reloadingLatestReview) setGenerationGuard(null);
                 }}
                 primaryAction={{
-                    label: reloadingLatestReview ? "Checking…" : "Check again",
+                    label: reloadingLatestReview ? tUi("Checking…") : tUi("Check again"),
                     disabled: reloadingLatestReview,
                     onClick: () => void loadLatestReview(),
                 }}
@@ -2386,13 +2389,13 @@ export function TRView({ reviewId, projectId }: Props) {
 
             <WarningPopup
                 open={generationGuard === "stale"}
-                title="A newer version is available"
-                message="Load the latest version of this tabular review before running it."
+                title={tUi("A newer version is available")}
+                message={tUi("Load the latest version of this tabular review before running it.")}
                 onClose={() => {
                     if (!reloadingLatestReview) setGenerationGuard(null);
                 }}
                 primaryAction={{
-                    label: reloadingLatestReview ? "Loading…" : "Load latest",
+                    label: reloadingLatestReview ? tUi("Loading…") : tUi("Load latest"),
                     disabled: reloadingLatestReview,
                     onClick: () => void loadLatestReview(),
                 }}

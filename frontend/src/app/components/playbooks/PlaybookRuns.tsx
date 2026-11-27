@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   useEffect,
   useId,
@@ -144,6 +145,7 @@ export function PlaybookRuns({
   /** Choosing a run leaves the new-run form; what it holds is kept. */
   onCloseNewRun: () => void;
 }) {
+    const tUi = useUiText();
   const [runs, setRuns] = useState<PlaybookRun[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -292,7 +294,7 @@ export function PlaybookRuns({
     showDocument && selected ? (
       <section
         ref={documentPane}
-        aria-label="Reviewed document"
+        aria-label={tUi("Reviewed document")}
         className={`flex min-h-[24rem] min-w-0 flex-col overflow-hidden @[41rem]/run-layout:min-h-0 ${EDITOR_SURFACE_CLASS}`}
       >
         <div
@@ -311,8 +313,8 @@ export function PlaybookRuns({
           <TextButtonUI
             size="icon-xs"
             className="-my-0.5 h-6 shrink-0"
-            aria-label="Close document"
-            title="Close document"
+            aria-label={tUi("Close document")}
+            title={tUi("Close document")}
             onClick={() => setDocumentOpen(false)}
           >
             <X aria-hidden="true" className="h-3.5 w-3.5" />
@@ -343,7 +345,7 @@ export function PlaybookRuns({
     ) : null;
   const resultsPanel = (
     <section
-      aria-label="Run results"
+      aria-label={tUi("Run results")}
       className={`@container flex min-h-[24rem] min-w-0 flex-1 flex-col overflow-hidden @[48rem]:min-h-0 @[41rem]/run-layout:min-h-0 ${EDITOR_SURFACE_CLASS}`}
     >
       {selected ? (
@@ -354,7 +356,7 @@ export function PlaybookRuns({
             {/* The selected row, and the document pane when open, name the
                 document; the heading says what the pane holds. */}
             <h2 className={`min-w-0 flex-1 ${PLAYBOOK_PANE_TITLE_CLASS}`}>
-              Run results
+              <UiText message={"Run results"} />
             </h2>
             {selected.documentId && (
               <TextButtonUI
@@ -364,7 +366,7 @@ export function PlaybookRuns({
                 onClick={() => setDocumentOpen((open) => !open)}
               >
                 <Eye aria-hidden="true" className="h-3.5 w-3.5" />
-                View document
+                <UiText message={"View document"} />
               </TextButtonUI>
             )}
           </div>
@@ -383,11 +385,10 @@ export function PlaybookRuns({
                     className="h-5 w-5 animate-spin text-blue-600 motion-reduce:animate-none"
                   />
                   <p className="text-sm text-gray-900">
-                    Reviewing {runTitle(selected)}…
+                    <UiText message={"Reviewing"} />{" "}{runTitle(selected)}…
                   </p>
                   <p className="max-w-xs text-xs text-gray-500">
-                    The review keeps running if you leave this page. Its
-                    findings appear here when it finishes.
+                    <UiText message={"The review keeps running if you leave this page. Its findings appear here when it finishes."} />
                   </p>
                 </div>
               </div>
@@ -413,13 +414,13 @@ export function PlaybookRuns({
             className={`flex min-h-0 flex-1 items-center justify-center ${PLAYBOOK_PANE_EMPTY_CLASS}`}
           >
             <EmptyState
-              title="No runs yet"
-              description="Run this playbook on a contract to see your findings here."
+              title={tUi("No runs yet")}
+              description={tUi("Run this playbook on a contract to see your findings here.")}
               action={
                 canRun && (
                   <PillButtonUI tone="black" onClick={onNewRun}>
                     <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                    New run
+                    <UiText message={"New run"} />
                   </PillButtonUI>
                 )
               }
@@ -436,19 +437,19 @@ export function PlaybookRuns({
       resizeLabel="Resize runs panel"
       sidebar={
         <section
-          aria-label="Your runs"
+          aria-label={tUi("Your runs")}
           className={`flex min-h-0 min-w-0 flex-col ${EDITOR_SURFACE_CLASS}`}
         >
           <div
             className={`flex items-center justify-between gap-2 ${PLAYBOOK_SIDE_HEADER_CLASS}`}
           >
             {/* Runs are listed per person: another member's are not shown. */}
-            <h2 className={PLAYBOOK_SIDE_TITLE_CLASS}>Your runs</h2>
+            <h2 className={PLAYBOOK_SIDE_TITLE_CLASS}><UiText message={"Your runs"} /></h2>
             <TextButtonUI
               size="icon-xs"
               className="-my-0.5 h-6"
-              aria-label="New run"
-              title="New run"
+              aria-label={tUi("New run")}
+              title={tUi("New run")}
               disabled={!canRun}
               onClick={onNewRun}
             >
@@ -476,11 +477,11 @@ export function PlaybookRuns({
                   }}
                   className="underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
                 >
-                  Try again
+                  <UiText message={"Try again"} />
                 </button>
               </p>
             ) : all.length === 0 ? (
-              <p className="px-2 py-1.5 text-xs text-gray-500">None yet.</p>
+              <p className="px-2 py-1.5 text-xs text-gray-500"><UiText message={"None yet."} /></p>
             ) : (
               all.map((run) => {
                 // The form, while open, takes the place of any run.
@@ -512,7 +513,7 @@ export function PlaybookRuns({
                     )}
                     <span className="min-w-0 truncate">{runTitle(run)}</span>
                     {run.status === "running" && (
-                      <span className="sr-only">, running</span>
+                      <span className="sr-only"><UiText message={", running"} /></span>
                     )}
                   </button>
                 );
@@ -555,11 +556,11 @@ function RunDetails({ run }: { run: PlaybookRun }) {
       className="space-y-2 rounded-xl bg-gray-100 px-4 py-3"
     >
       <h3 id={headingId} className="text-sm font-medium text-gray-900">
-        Run details
+        <UiText message={"Run details"} />
       </h3>
       <dl className="flex flex-wrap gap-x-8 gap-y-2">
         <div className="min-w-0">
-          <dt className="text-xs text-gray-500">Document</dt>
+          <dt className="text-xs text-gray-500"><UiText message={"Document"} /></dt>
           <dd className="mt-0.5 flex min-w-0 items-center gap-1.5 text-sm text-gray-900">
             <FileTypeIcon
               fileType={run.documentName ?? ""}
@@ -571,25 +572,25 @@ function RunDetails({ run }: { run: PlaybookRun }) {
           </dd>
         </div>
         <div className="min-w-0">
-          <dt className="text-xs text-gray-500">Model</dt>
+          <dt className="text-xs text-gray-500"><UiText message={"Model"} /></dt>
           <dd className="mt-0.5 text-sm text-gray-900">
             {modelDisplayName(run.model)}
           </dd>
         </div>
         <div className="min-w-0">
-          <dt className="text-xs text-gray-500">Scope</dt>
+          <dt className="text-xs text-gray-500"><UiText message={"Scope"} /></dt>
           <dd className="mt-0.5 text-sm text-gray-900">
-            {run.reviewScope === "issues" ? "Issues only" : "Full review"}
+            {run.reviewScope === "issues" ? (<><UiText message={"Issues only"} /></>) : (<><UiText message={"Full review"} /></>)}
           </dd>
         </div>
         <div className="min-w-0">
-          <dt className="text-xs text-gray-500">Posture</dt>
+          <dt className="text-xs text-gray-500"><UiText message={"Posture"} /></dt>
           <dd className="mt-0.5 text-sm text-gray-900">
-            {run.reviewMode === "permissive" ? "Permissive" : "Strict"}
+            {run.reviewMode === "permissive" ? (<><UiText message={"Permissive"} /></>) : (<><UiText message={"Strict"} /></>)}
           </dd>
         </div>
         <div className="min-w-0">
-          <dt className="text-xs text-gray-500">Started</dt>
+          <dt className="text-xs text-gray-500"><UiText message={"Started"} /></dt>
           <dd className="mt-0.5 text-sm text-gray-900">
             <time dateTime={run.startedAt}>{formatDateTime(run.startedAt)}</time>
           </dd>
@@ -617,6 +618,7 @@ function RunResults({
   issuesOnly: boolean;
   onIssuesOnlyChange: (issuesOnly: boolean) => void;
 } & EditHandlers) {
+    const tUi = useUiText();
   const summaryId = useId();
   const findingsId = useId();
   const settings = <RunDetails run={run} />;
@@ -648,35 +650,32 @@ function RunResults({
       {run.summary && (
         <section aria-labelledby={summaryId} className="space-y-1.5">
           <h3 id={summaryId} className="text-sm font-medium text-gray-900">
-            Summary of results
+            <UiText message={"Summary of results"} />
           </h3>
           <p className="text-sm leading-relaxed text-gray-700">{run.summary}</p>
         </section>
       )}
       {run.documentName && !isWordSource && (
         <p className="text-xs text-gray-500">
-          This review used extracted text from{" "}
-          <span className="font-medium">{run.documentName}</span>. For a
-          formatting-preserving Word redline, provide the original DOCX in
-          Assistant; if it is unavailable, Mike can create a text-reconstructed
-          DOCX and will warn that formatting may differ.
+          <UiText message={"This review used extracted text from"} />{" "}
+          <span className="font-medium">{run.documentName}</span><UiText message={". For a formatting-preserving Word redline, provide the original DOCX in Assistant; if it is unavailable, Mike can create a text-reconstructed DOCX and will warn that formatting may differ."} />
         </p>
       )}
       <section aria-labelledby={findingsId} className="space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
           <h3 id={findingsId} className="text-sm font-medium text-gray-900">
-            Findings
+            <UiText message={"Findings"} />
           </h3>
           {canFilter && (
-            <div role="group" aria-label="Findings to show">
+            <div role="group" aria-label={tUi("Findings to show")}>
               <ModalSegmentedToggle
                 size="sm"
                 surface="flat"
                 value={issuesOnly ? "issues" : "all"}
                 onChange={(value) => onIssuesOnlyChange(value === "issues")}
                 options={[
-                  { value: "all", label: "All findings" },
-                  { value: "issues", label: "Issues only" },
+                  { value: "all", label: tUi("All findings") },
+                  { value: "issues", label: tUi("Issues only") },
                 ]}
               />
             </div>
@@ -685,8 +684,8 @@ function RunResults({
         {groups.length === 0 && run.status === "completed" && (
           <p className="text-sm text-gray-500">
             {filtering || run.reviewScope === "issues"
-              ? "No issues found."
-              : "No findings."}
+              ? (<><UiText message={"No issues found."} /></>)
+              : (<><UiText message={"No findings."} /></>)}
           </p>
         )}
         {groups.map((group) => (
@@ -758,7 +757,7 @@ function Redline({ before, after }: { before: string; after: string }) {
             key={index}
             className="rounded-sm bg-red-50 text-red-700 decoration-red-400"
           >
-            <span className="sr-only">Removed: </span>
+            <span className="sr-only"><UiText message={"Removed:"} />{" "}</span>
             {segment.text}
           </del>
         ) : segment.type === "added" ? (
@@ -766,7 +765,7 @@ function Redline({ before, after }: { before: string; after: string }) {
             key={index}
             className="rounded-sm bg-emerald-50 text-emerald-700 no-underline"
           >
-            <span className="sr-only">Added: </span>
+            <span className="sr-only"><UiText message={"Added:"} />{" "}</span>
             {segment.text}
           </ins>
         ) : (
@@ -783,6 +782,7 @@ function FindingCard({
   onViewEdit,
   onEditResolved,
 }: { finding: PlaybookFinding } & EditHandlers) {
+    const tUi = useUiText();
   const missing = finding.status === "missing_required";
   return (
     <article
@@ -797,14 +797,14 @@ function FindingCard({
         </span>
       </div>
       {finding.location && (
-        <FindingPart label="Where">
+        <FindingPart label={tUi("Where")}>
           <p className="text-sm text-gray-700 [overflow-wrap:anywhere]">
             {finding.location}
           </p>
         </FindingPart>
       )}
       {finding.analysis && (
-        <FindingPart label="Assessment">
+        <FindingPart label={tUi("Assessment")}>
           <p className="text-sm leading-relaxed text-gray-700">
             {finding.analysis}
           </p>
@@ -812,7 +812,7 @@ function FindingCard({
       )}
       {/* With a suggestion, the diff shows the contract language too. */}
       {finding.quote && !finding.suggestedText && (
-        <FindingPart label="Contract language">
+        <FindingPart label={tUi("Contract language")}>
           <TextSlabUI className="text-xs text-gray-600">
             <blockquote>{finding.quote}</blockquote>
           </TextSlabUI>
@@ -821,7 +821,7 @@ function FindingCard({
       {finding.edit ? (
         // The change is in the document as a tracked change: decide it here.
         <FindingPart
-          label={missing ? "Recommended clause to add" : "Recommended change"}
+          label={missing ? tUi("Recommended clause to add") : tUi("Recommended change")}
         >
           <EditCard
             annotation={finding.edit}
@@ -835,8 +835,8 @@ function FindingCard({
           <FindingPart
             label={
               missing || !finding.quote
-                ? "Recommended clause to add"
-                : "Recommended changes"
+                ? tUi("Recommended clause to add")
+                : tUi("Recommended changes")
             }
           >
             <Redline

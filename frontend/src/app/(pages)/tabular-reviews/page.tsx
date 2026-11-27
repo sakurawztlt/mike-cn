@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useDebouncedValue } from "@/app/hooks/useDebouncedValue";
 import { useLatestRef } from "@/app/hooks/useLatestRef";
@@ -59,6 +60,7 @@ export default function TabularReviewsPage() {
 }
 
 function TabularReviewsWorkspacePage({ workspace }: { workspace?: string }) {
+    const tUi = useUiText();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [projects, setProjects] = useState<Project[]>([]);
@@ -410,18 +412,18 @@ function TabularReviewsWorkspacePage({ workspace }: { workspace?: string }) {
                         type: "search",
                         value: search,
                         onChange: setSearch,
-                        placeholder: "Search reviews…",
+                        placeholder: tUi("Search reviews…"),
                     },
                     {
                         type: "new",
                         onClick: () => setNewTROpen(true),
                         loading: creating,
-                        title: "New tabular review",
+                        title: tUi("New tabular review"),
                     },
                 ]}
             >
                 <h1 className={`${PAGE_HEADER_TITLE_CLASS} text-gray-900`}>
-                    Tabular Reviews
+                    <UiText message={"Tabular Reviews"} />
                 </h1>
             </PageHeader>
 
@@ -447,7 +449,7 @@ function TabularReviewsWorkspacePage({ workspace }: { workspace?: string }) {
                 selectedReviewIds={selectedIds}
                 setSelectedReviewIds={setSelectedIds}
                 createDisabled={creating}
-                emptyDescription="Extract data from documents into tables using AI."
+                emptyDescription={tUi("Extract data from documents into tables using AI.")}
                 onCreateReview={() => setNewTROpen(true)}
                 onOpenReview={(review) =>
                     router.push(
@@ -524,9 +526,9 @@ function TabularReviewsWorkspacePage({ workspace }: { workspace?: string }) {
             />
             <ConfirmPopup
                 open={confirmDeleteAllOpen && selectedIds.length > 0}
-                title="Delete all selected reviews?"
-                message={`This will permanently delete every selected review you administer, including selected reviews not currently shown. Their review results and associated data will also be deleted. Reviews you cannot delete will be skipped. ${selectedIds.length} reviews are selected.`}
-                confirmLabel="Delete"
+                title={tUi("Delete all selected reviews?")}
+                message={tUi("This will permanently delete every selected review you administer, including selected reviews not currently shown. Their review results and associated data will also be deleted. Reviews you cannot delete will be skipped. {0} reviews are selected.", selectedIds.length)}
+                confirmLabel={tUi("Delete")}
                 confirmVariant="danger"
                 onCancel={() => setConfirmDeleteAllOpen(false)}
                 onConfirm={() => void handleDeleteSelected()}

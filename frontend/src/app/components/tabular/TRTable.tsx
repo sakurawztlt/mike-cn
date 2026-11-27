@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
     forwardRef,
     type ReactNode,
@@ -114,6 +115,7 @@ export const TRTable = forwardRef<TRTableHandle, Props>(function TRTable(
     },
     ref,
 ) {
+    const tUi = useUiText();
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const lastScrollLeftRef = useRef(0);
     const [scrollCloseSignal, setScrollCloseSignal] = useState(0);
@@ -266,8 +268,8 @@ export const TRTable = forwardRef<TRTableHandle, Props>(function TRTable(
                     <EmptyState
                         className="mx-auto w-full max-w-xs flex-1 justify-center"
                         icon={<TabularReviewSkeuoIcon />}
-                        title="Tabular Review"
-                        description="Add columns and documents to get started."
+                        title={tUi("Tabular Review")}
+                        description={tUi("Add columns and documents to get started.")}
                         action={
                             <div className="flex items-center gap-2">
                                 <PillButtonUI
@@ -276,7 +278,7 @@ export const TRTable = forwardRef<TRTableHandle, Props>(function TRTable(
                                     onClick={onAddColumn}
                                 >
                                     <Plus className="h-3.5 w-3.5" />
-                                    Add Columns
+                                    <UiText message={"Add Columns"} />
                                 </PillButtonUI>
                                 <PillButtonUI
                                     tone="white"
@@ -284,7 +286,7 @@ export const TRTable = forwardRef<TRTableHandle, Props>(function TRTable(
                                     onClick={onAddDocuments}
                                 >
                                     <Upload className="h-3.5 w-3.5" />
-                                    Add Documents
+                                    <UiText message={"Add Documents"} />
                                 </PillButtonUI>
                             </div>
                         }
@@ -315,7 +317,7 @@ export const TRTable = forwardRef<TRTableHandle, Props>(function TRTable(
                             }}
                             onChange={toggleAll}
                             className={TABLE_CHECKBOX_CLASS}
-                            aria-label={`Select all ${firstColumnLabel.toLowerCase()}`}
+                            aria-label={tUi("Select all {0}", firstColumnLabel.toLowerCase())}
                         />
                         <span>{firstColumnLabel}</span>
                     </div>
@@ -366,7 +368,7 @@ export const TRTable = forwardRef<TRTableHandle, Props>(function TRTable(
                                 type="checkbox"
                                 disabled
                                 className="mr-3 h-2.5 w-2.5 shrink-0 rounded border-gray-200 cursor-default accent-black disabled:opacity-100"
-                                aria-label={`Select ${filename}`}
+                                aria-label={tUi("Select {0}", filename)}
                             />
                             <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin shrink-0" />
                             <span className="line-clamp-1" title={filename}>

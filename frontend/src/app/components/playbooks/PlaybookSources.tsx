@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   useCallback,
   useEffect,
@@ -83,6 +84,7 @@ export function PlaybookSources({
   /** Lets the page toolbar start an upload. */
   ref?: Ref<PlaybookSourcesHandle>;
 }) {
+    const tUi = useUiText();
   const [supplementary, setSupplementary] = useState<
     PlaybookSupplementarySource[] | null
   >(null);
@@ -207,7 +209,7 @@ export function PlaybookSources({
         </button>
         {removable && original && (
           <HeaderActionsMenu
-            title={`Actions for ${entry.filename}`}
+            title={tUi("Actions for {0}", entry.filename)}
             // Hidden until hover only where a pointer can hover; touch keeps it.
             triggerClassName="h-6 w-6 shrink-0 [@media(hover:hover)]:opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100"
             items={[
@@ -228,19 +230,19 @@ export function PlaybookSources({
       resizeLabel="Resize references panel"
       sidebar={
         <section
-          aria-label="Reference documents"
+          aria-label={tUi("Reference documents")}
           className={`flex min-h-0 min-w-0 flex-col ${EDITOR_SURFACE_CLASS}`}
         >
           <div className={`flex items-center justify-between gap-2 ${PLAYBOOK_SIDE_HEADER_CLASS}`}>
-            <h2 className={PLAYBOOK_SIDE_TITLE_CLASS}>References</h2>
+            <h2 className={PLAYBOOK_SIDE_TITLE_CLASS}><UiText message={"References"} /></h2>
             {canEdit && (
               <Dropdown>
                 <DropdownTrigger asChild>
                   <TextButtonUI
                     size="icon-xs"
                     className="-my-0.5 h-6"
-                    aria-label="Add reference document"
-                    title="Add reference document"
+                    aria-label={tUi("Add reference document")}
+                    title={tUi("Add reference document")}
                   >
                     <Plus aria-hidden="true" className="h-3.5 w-3.5" />
                   </TextButtonUI>
@@ -248,11 +250,11 @@ export function PlaybookSources({
                 <DropdownContent align="end" className="w-56">
                   <DropdownItem onSelect={() => fileInput.current?.click()}>
                     <Upload aria-hidden="true" className="h-4 w-4" />
-                    Upload a file
+                    <UiText message={"Upload a file"} />
                   </DropdownItem>
                   <DropdownItem onSelect={() => setPickerOpen(true)}>
                     <Cloud aria-hidden="true" className="h-4 w-4" />
-                    Choose from documents
+                    <UiText message={"Choose from documents"} />
                   </DropdownItem>
                 </DropdownContent>
               </Dropdown>
@@ -265,7 +267,7 @@ export function PlaybookSources({
               {supplementary === null ? (
                 <div
                   role="status"
-                  aria-label="Loading reference documents"
+                  aria-label={tUi("Loading reference documents")}
                   className="space-y-1"
                 >
                   {["w-3/4", "w-1/2"].map((width) => (
@@ -293,7 +295,7 @@ export function PlaybookSources({
                 >
                   <FileTypeIcon fileType={name} muted />
                   <span className="min-w-0 flex-1 truncate">
-                    <span className="sr-only">Adding </span>
+                    <span className="sr-only"><UiText message={"Adding"} />{" "}</span>
                     {name}
                   </span>
                   <Loader2
@@ -306,7 +308,7 @@ export function PlaybookSources({
                 supplementary?.length === 0 &&
                 pending.length === 0 && (
                   <p className="px-2 py-1.5 text-xs text-gray-500">
-                    None yet.
+                    <UiText message={"None yet."} />
                   </p>
                 )}
             </div>
@@ -328,7 +330,7 @@ export function PlaybookSources({
       }
     >
       <section
-        aria-label="Reference document"
+        aria-label={tUi("Reference document")}
         className={`flex min-h-[24rem] min-w-0 flex-col overflow-hidden @[48rem]:min-h-0 ${EDITOR_SURFACE_CLASS}`}
       >
         {selected && (
@@ -369,11 +371,11 @@ export function PlaybookSources({
         ) : (
           <div className={`flex min-h-0 flex-1 items-center justify-center ${PLAYBOOK_PANE_EMPTY_CLASS}`}>
             <EmptyState
-              title="No reference documents"
+              title={tUi("No reference documents")}
               description={
                 canEdit
-                  ? "Add documents the rules can refer to, such as policies or templates."
-                  : "This playbook has no reference documents."
+                  ? tUi("Add documents the rules can refer to, such as policies or templates.")
+                  : tUi("This playbook has no reference documents.")
               }
               action={
                 canEdit && (
@@ -383,11 +385,11 @@ export function PlaybookSources({
                       onClick={() => fileInput.current?.click()}
                     >
                       <Upload aria-hidden="true" className="h-3.5 w-3.5" />
-                      Upload a file
+                      <UiText message={"Upload a file"} />
                     </PillButtonUI>
                     <PillButtonUI tone="white" onClick={() => setPickerOpen(true)}>
                       <Cloud aria-hidden="true" className="h-3.5 w-3.5" />
-                      Choose from documents
+                      <UiText message={"Choose from documents"} />
                     </PillButtonUI>
                   </div>
                 )
@@ -419,9 +421,9 @@ export function PlaybookSources({
       )}
       <ConfirmPopup
         open={!!removing}
-        title={removing ? `Remove ${removing.filename}?` : undefined}
-        message="Reviews will no longer be able to read it. The original, if it is in your documents, is not affected."
-        confirmLabel="Remove"
+        title={removing ? tUi("Remove {0}?", removing.filename) : undefined}
+        message={tUi("Reviews will no longer be able to read it. The original, if it is in your documents, is not affected.")}
+        confirmLabel={tUi("Remove")}
         confirmVariant="danger"
         confirmStatus={removeStatus}
         onConfirm={() => removing && void remove(removing)}

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ChevronDown, Loader2, MoreHorizontal, Plus, X } from "lucide-react";
@@ -40,6 +41,7 @@ export function TREditColumnMenu({
     onSave,
     onDelete,
 }: TREditColumnMenuProps) {
+    const tUi = useUiText();
     const [open, setOpen] = useState(false);
     const menuId = useId();
     const [name, setName] = useState(column.name);
@@ -248,17 +250,17 @@ export function TREditColumnMenu({
                     >
                     <div className="flex items-center justify-between mb-3">
                         <p className="font-serif text-lg font-medium text-gray-900">
-                            Edit Column
+                            <UiText message={"Edit Column"} />
                         </p>
                         <GlassIconButtonUI
                             onClick={() => setOpen(false)}
-                            aria-label="Close"
+                            aria-label={tUi("Close")}
                         >
                             <X className="h-3.5 w-3.5" />
                         </GlassIconButtonUI>
                     </div>
                     <FieldLabel htmlFor={`${menuId}-name`}>
-                        Label
+                        <UiText message={"Label"} />
                     </FieldLabel>
                     <input
                         id={`${menuId}-name`}
@@ -271,7 +273,7 @@ export function TREditColumnMenu({
                     {/* Format */}
                     <div className="mt-3">
                         <FieldLabel htmlFor={`${menuId}-format`}>
-                            Format
+                            <UiText message={"Format"} />
                         </FieldLabel>
                         <Dropdown>
                             <DropdownTrigger asChild>
@@ -356,7 +358,7 @@ export function TREditColumnMenu({
                                     onKeyDown={handleTagKeyDown}
                                     onBlur={commitTag}
                                     placeholder={
-                                        tags.length === 0 ? "Add tags…" : ""
+                                        tags.length === 0 ? tUi("Add tags…") : ""
                                     }
                                     className="min-w-[60px] flex-1 bg-transparent text-xs text-gray-700 placeholder-gray-300 focus:outline-none"
                                 />
@@ -368,7 +370,7 @@ export function TREditColumnMenu({
                     <div className="mt-3">
                         <div className="flex items-start justify-between">
                             <FieldLabel htmlFor={`${menuId}-prompt`}>
-                                Prompt
+                                <UiText message={"Prompt"} />
                             </FieldLabel>
                             <button
                                 type="button"
@@ -381,7 +383,7 @@ export function TREditColumnMenu({
                                 ) : (
                                     <Plus className="h-3 w-3" />
                                 )}
-                                Auto-generate
+                                <UiText message={"Auto-generate"} />
                             </button>
                         </div>
                         <textarea
@@ -399,7 +401,7 @@ export function TREditColumnMenu({
                             onClick={handleDelete}
                             disabled={deleting || saving}
                         >
-                            Delete
+                            <UiText message={"Delete"} />
                         </PillButtonUI>
                         <PillButtonUI
                             tone="black"
@@ -413,7 +415,7 @@ export function TREditColumnMenu({
                                 !prompt.trim()
                             }
                         >
-                            {saving ? "Saving…" : "Save"}
+                            {saving ? (<><UiText message={"Saving…"} /></>) : (<><UiText message={"Save"} /></>)}
                         </PillButtonUI>
                     </div>
                     </div>,

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -95,6 +96,7 @@ function NewTRModalForWorkspace({
     projectName,
     projectCmNumber,
 }: Props) {
+    const tUi = useUiText();
     // A document uploaded on its own belongs to the workspace it is
     // uploaded in.
     const workspace = useDocumentWorkspace();
@@ -521,15 +523,15 @@ function NewTRModalForWorkspace({
             breadcrumbs={[
                 ...breadcrumbs,
                 step === "details"
-                    ? "Details"
+                    ? tUi("Details")
                     : step === "access"
-                      ? "Access"
-                      : "Add Documents",
+                      ? tUi("Access")
+                      : tUi("Add Documents"),
             ]}
             secondaryAction={
                 step === "documents"
                     ? {
-                          label: uploading ? "Uploading..." : "Upload",
+                          label: uploading ? tUi("Uploading...") : tUi("Upload"),
                           icon: uploading ? (
                               <Loader2 className="h-3.5 w-3.5 animate-spin" />
                           ) : (
@@ -542,12 +544,12 @@ function NewTRModalForWorkspace({
                           // dropped without a word. Freeze both.
                           disabled: uploading || reviewExists,
                           title: reviewExists
-                              ? "The review has been created — add documents from the review itself."
+                              ? tUi("The review has been created — add documents from the review itself.")
                               : undefined,
                       }
                     : step === "access"
                       ? {
-                            label: "Back",
+                            label: tUi("Back"),
                             type: "button",
                             onClick: () => setStep("details"),
                             disabled: uploading,
@@ -557,16 +559,16 @@ function NewTRModalForWorkspace({
             cancelAction={
                 step === "documents"
                     ? {
-                          label: "Back",
+                          label: tUi("Back"),
                           onClick: () => setStep("access"),
                           disabled: uploading || reviewExists,
                           title: reviewExists
-                              ? "The review has been created — its details and access can be changed from the review itself."
+                              ? tUi("The review has been created — its details and access can be changed from the review itself.")
                               : undefined,
                       }
                     : step === "access"
                       ? {
-                            label: "Skip",
+                            label: tUi("Skip"),
                             type: "button",
                             onClick: () => {
                                 setDirectGrants([]);
@@ -580,7 +582,7 @@ function NewTRModalForWorkspace({
             primaryAction={
                 step === "details"
                     ? {
-                          label: "Next",
+                          label: tUi("Next"),
                           type: "button",
                           onClick: () => setStep("access"),
                           disabled:
@@ -590,7 +592,7 @@ function NewTRModalForWorkspace({
                       }
                     : step === "access"
                       ? {
-                            label: "Next",
+                            label: tUi("Next"),
                             type: "button",
                             onClick: (event) => {
                                 // The same footer node becomes the submit button
@@ -602,7 +604,7 @@ function NewTRModalForWorkspace({
                             disabled: uploading,
                         }
                       : {
-                          label: creating ? "Creating..." : "Create",
+                          label: creating ? tUi("Creating...") : tUi("Create"),
                           type: "submit",
                           form: formId,
                           name: "modalAction",
@@ -632,14 +634,14 @@ function NewTRModalForWorkspace({
                     <div className="space-y-6">
                         <div>
                             <FieldLabel htmlFor="new-tr-title">
-                                Review name
+                                <UiText message={"Review name"} />
                             </FieldLabel>
                             <FormTextInput
                                 id="new-tr-title"
                                 type="text"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                placeholder="Review name"
+                                placeholder={tUi("Review name")}
                                 variant="minimal"
                                 className="placeholder:text-gray-400"
                                 autoFocus
@@ -647,7 +649,7 @@ function NewTRModalForWorkspace({
                         </div>
 
                         <div>
-                            <FieldLabel as="p">Model</FieldLabel>
+                            <FieldLabel as="p"><UiText message={"Model"} /></FieldLabel>
                             <ModelToggle
                                 value={selectedModel}
                                 onChange={setSelectedModel}
@@ -661,7 +663,7 @@ function NewTRModalForWorkspace({
 
                         {/* Workflow template */}
                         <div>
-                            <FieldLabel as="p">Workflow template</FieldLabel>
+                            <FieldLabel as="p"><UiText message={"Workflow template"} /></FieldLabel>
                             <ModalSelect
                                 id="new-tr-workflow-template"
                                 value={selectedWorkflowId ?? ""}
@@ -676,7 +678,7 @@ function NewTRModalForWorkspace({
                         {/* Create under a project toggle */}
                         {!isProjectMode && (
                             <div className="space-y-3">
-                                <FieldLabel as="p">Project</FieldLabel>
+                                <FieldLabel as="p"><UiText message={"Project"} /></FieldLabel>
                                 <ToggleSwitchUI
                                     checked={underProject}
                                     onCheckedChange={(next) => {
@@ -684,7 +686,7 @@ function NewTRModalForWorkspace({
                                         if (!next) clearProjectSelection();
                                     }}
                                 >
-                                    Create under a project
+                                    <UiText message={"Create under a project"} />
                                 </ToggleSwitchUI>
 
                                 {underProject && (
@@ -697,7 +699,7 @@ function NewTRModalForWorkspace({
                                                 void handleSelectProject(value);
                                             }
                                         }}
-                                        placeholder="Select project..."
+                                        placeholder={tUi("Select project...")}
                                         disabled={projects.length === 0}
                                     />
                                 )}
@@ -705,13 +707,12 @@ function NewTRModalForWorkspace({
                         )}
 
                         <div>
-                            <FieldLabel as="p">Document grouping</FieldLabel>
+                            <FieldLabel as="p"><UiText message={"Document grouping"} /></FieldLabel>
                             <ToggleSwitchUI
                                 checked={groupBySubfolder}
                                 onCheckedChange={setGroupBySubfolder}
                             >
-                                Treat documents in the same folder as one review
-                                row
+                                <UiText message={"Treat documents in the same folder as one review row"} />
                             </ToggleSwitchUI>
                         </div>
                     </div>
@@ -741,9 +742,7 @@ function NewTRModalForWorkspace({
                     <div className="flex min-h-0 flex-1 flex-col">
                         {reviewExists && (
                             <p className="mb-3 text-sm text-gray-500">
-                                The review has been created, so its documents
-                                can no longer be changed here. Add documents
-                                from the review once access has been granted.
+                                <UiText message={"The review has been created, so its documents can no longer be changed here. Add documents from the review once access has been granted."} />
                             </p>
                         )}
                         {showDirectory && (
@@ -763,7 +762,7 @@ function NewTRModalForWorkspace({
                                 role="alert"
                                 className="mt-3 text-sm text-red-500"
                             >
-                                {uploadError}
+                                <UiText message={uploadError} />
                             </p>
                         )}
                     </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useId, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { ModalSelect } from "@/app/components/modals/ModalSelect";
@@ -153,6 +154,7 @@ export function PlaybookRuleForm({
   onChange: (rule: PlaybookRule) => void;
   onUndoableChange: UndoableRuleChange;
 }) {
+    const tUi = useUiText();
   const scopeId = useId();
   const requiredId = useId();
   if (tab === "positions")
@@ -180,7 +182,7 @@ export function PlaybookRuleForm({
     <div className="space-y-4">
       {rule.sourceRefs.length > 0 && (
         <p className="text-xs text-gray-500 [overflow-wrap:anywhere]">
-          Source: {describeSourceRefs(rule.sourceRefs)}
+          <UiText message={"Source:"} />{" "}{describeSourceRefs(rule.sourceRefs)}
         </p>
       )}
       <div className="grid gap-4 @[32rem]:grid-cols-2">
@@ -189,7 +191,7 @@ export function PlaybookRuleForm({
             htmlFor={scopeId}
             className={`mb-2 block ${PLAYBOOK_LABEL_CLASS}`}
           >
-            Scope
+            <UiText message={"Scope"} />
           </label>
           <ModalSelect
             variant="flat"
@@ -199,13 +201,12 @@ export function PlaybookRuleForm({
               onChange({ ...rule, scope: scope as PlaybookRule["scope"] })
             }
             options={[
-              { value: "clause", label: "Clause" },
-              { value: "agreement", label: "Whole agreement" },
+              { value: "clause", label: tUi("Clause") },
+              { value: "agreement", label: tUi("Whole agreement") },
             ]}
           />
           <p className="mt-2 text-xs text-gray-500">
-            Choose whether this rule applies to individual clauses or the
-            agreement as a whole.
+            <UiText message={"Choose whether this rule applies to individual clauses or the agreement as a whole."} />
           </p>
         </div>
         <div className="min-w-0">
@@ -213,7 +214,7 @@ export function PlaybookRuleForm({
             htmlFor={requiredId}
             className={`mb-2 block ${PLAYBOOK_LABEL_CLASS}`}
           >
-            Requirement
+            <UiText message={"Requirement"} />
           </label>
           <ModalSelect
             variant="flat"
@@ -223,20 +224,20 @@ export function PlaybookRuleForm({
               onChange({ ...rule, required: value === "required" })
             }
             options={[
-              { value: "optional", label: "Optional" },
-              { value: "required", label: "Required" },
+              { value: "optional", label: tUi("Optional") },
+              { value: "required", label: tUi("Required") },
             ]}
           />
           <p className="mt-2 text-xs text-gray-500">
             {rule.required
-              ? "If the contract doesn’t contain this term, the review flags it as missing and suggests a clause to add."
-              : "The review doesn’t flag the contract when this term is absent."}
+              ? (<><UiText message={"If the contract doesn’t contain this term, the review flags it as missing and suggests a clause to add."} /></>)
+              : (<><UiText message={"The review doesn’t flag the contract when this term is absent."} /></>)}
           </p>
         </div>
       </div>
       <Field
-        label="Concept to detect"
-        description="Describe the term so the review can find it in any contract."
+        label={tUi("Concept to detect")}
+        description={tUi("Describe the term so the review can find it in any contract.")}
         value={rule.concept}
         onChange={(concept) => onChange({ ...rule, concept })}
         multiline
@@ -246,8 +247,8 @@ export function PlaybookRuleForm({
         onChange={(conditions) => onChange({ ...rule, conditions })}
       />
       <Field
-        label="Additional guidance"
-        description="Context or priorities the review should apply to this rule."
+        label={tUi("Additional guidance")}
+        description={tUi("Context or priorities the review should apply to this rule.")}
         value={rule.guidance}
         onChange={(guidance) => onChange({ ...rule, guidance })}
         multiline
@@ -288,7 +289,7 @@ function ConditionsField({
   return (
     <div className="min-w-0">
       <label htmlFor={id} className={`mb-2 block ${PLAYBOOK_LABEL_CLASS}`}>
-        Applies only when
+        <UiText message={"Applies only when"} />
       </label>
       <textarea
         id={id}
@@ -303,7 +304,7 @@ function ConditionsField({
         className={`${PLAYBOOK_TEXTAREA_CLASS} min-h-[3.25rem]`}
       />
       <p id={helpId} className={PLAYBOOK_HELP_CLASS}>
-        One condition per line. Leave empty if the rule always applies.
+        <UiText message={"One condition per line. Leave empty if the rule always applies."} />
       </p>
     </div>
   );
@@ -335,6 +336,7 @@ function EscalationField({
   value: RuleAction[];
   onChange: (value: RuleAction[]) => void;
 }) {
+    const tUi = useUiText();
   const [rows, setRows] = useState(value);
   const [synced, setSynced] = useState(value);
   if (synced !== value) {
@@ -352,13 +354,13 @@ function EscalationField({
   if (rows.length === 0)
     return (
       <EmptyState
-        title="Escalations"
-        description="Describe a situation the review may meet and what the reviewer should do then. An escalation is saved once “Then” is filled in."
+        title={tUi("Escalations")}
+        description={tUi("Describe a situation the review may meet and what the reviewer should do then. An escalation is saved once “Then” is filled in.")}
         className="m-auto w-fit max-w-full py-12"
         action={
           <PillButtonUI tone="black" onClick={addEscalation}>
             <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-            Add escalation
+            <UiText message={"Add escalation"} />
           </PillButtonUI>
         }
       />
@@ -370,16 +372,16 @@ function EscalationField({
           key={index}
           className={`min-w-0 space-y-3 rounded-xl px-3 pb-3 pt-1.5 md:px-4 md:pb-4 md:pt-2 ${LIQUID_GLASS_FLAT_CLASS}`}
         >
-          <legend className="sr-only">Escalation {index + 1}</legend>
+          <legend className="sr-only"><UiText message={"Escalation"} />{" "}{index + 1}</legend>
           <div className="flex h-8 items-center justify-between gap-2">
             <span
               aria-hidden="true"
               className="text-sm font-medium text-gray-900"
             >
-              Escalation {index + 1}
+              <UiText message={"Escalation"} />{" "}{index + 1}
             </span>
             <HeaderActionsMenu
-              title={`Actions for escalation ${index + 1}`}
+              title={tUi("Actions for escalation {0}", index + 1)}
               triggerClassName="h-6 w-6 shrink-0"
               items={[
                 {
@@ -400,14 +402,14 @@ function EscalationField({
             />
           </div>
           <Field
-            label="When"
+            label={tUi("When")}
             value={row.scenario}
             onChange={(scenario) =>
               commit(rows.map((r, i) => (i === index ? { ...r, scenario } : r)))
             }
           />
           <Field
-            label="Then"
+            label={tUi("Then")}
             value={row.instruction}
             onChange={(instruction) =>
               commit(
@@ -420,7 +422,7 @@ function EscalationField({
       ))}
       <TextButtonUI className="-ml-2" onClick={addEscalation}>
         <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-        Add escalation
+        <UiText message={"Add escalation"} />
       </TextButtonUI>
     </div>
   );
@@ -547,7 +549,7 @@ function PositionGroup({
             }
           >
             <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-            Add
+            <UiText message={"Add"} />
           </TextButtonUI>
         )}
       </div>
@@ -593,6 +595,7 @@ function PositionCard({
   onRemove: () => void;
   onRemoveClause: (clauseIndex: number) => void;
 }) {
+    const tUi = useUiText();
   const label = positionLabel(kind, index);
   const ordered = kind !== "standard";
   return (
@@ -612,7 +615,7 @@ function PositionCard({
           </span>
         )}
         <input
-          aria-label={`${label} name`}
+          aria-label={tUi("{0} name", label)}
           value={position.name}
           placeholder={label}
           onChange={(event) =>
@@ -621,7 +624,7 @@ function PositionCard({
           className="h-8 min-w-0 flex-1 rounded-md bg-transparent px-1 text-sm font-medium text-gray-900 outline-none transition-colors placeholder:text-gray-400 hover:bg-app-surface-hover focus-visible:ring-2 focus-visible:ring-blue-500/40"
         />
         <HeaderActionsMenu
-          title={`Actions for ${label}`}
+          title={tUi("Actions for {0}", label)}
           triggerClassName="h-6 w-6 shrink-0"
           items={[
             ...(ordered && count > 1
@@ -647,14 +650,14 @@ function PositionCard({
         />
       </div>
       <Field
-        label="Criteria"
+        label={tUi("Criteria")}
         value={position.criteria}
         onChange={(criteria) => onChange({ ...position, criteria })}
         multiline
       />
       <div className="min-w-0 space-y-3">
         <div className="flex items-center justify-between gap-2">
-          <h5 className={PLAYBOOK_LABEL_CLASS}>Sample clauses</h5>
+          <h5 className={PLAYBOOK_LABEL_CLASS}><UiText message={"Sample clauses"} /></h5>
           <TextButtonUI
             onClick={() =>
               onChange({
@@ -671,7 +674,7 @@ function PositionCard({
             }
           >
             <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-            Add clause
+            <UiText message={"Add clause"} />
           </TextButtonUI>
         </div>
         {position.sampleClauses.map((clause, clauseIndex) => (
@@ -709,6 +712,7 @@ function SampleClause({
   onChange: (clause: PlaybookClause) => void;
   onRemove: () => void;
 }) {
+    const tUi = useUiText();
   const textId = useId();
   const usageId = useId();
   const conflictId = useId();
@@ -717,13 +721,13 @@ function SampleClause({
     <div className={CLAUSE_TILE_CLASS}>
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 pl-3 pr-1 pt-1">
         <label htmlFor={textId} className="text-xs font-medium text-gray-500">
-          Clause {index + 1}
+          <UiText message={"Clause"} />{" "}{index + 1}
         </label>
         <div className="ml-auto flex min-w-0 items-center gap-1">
           <ModalSelect
             variant="flat"
             id={usageId}
-            aria-label={`Clause ${index + 1} usage`}
+            aria-label={tUi("Clause {0} usage", index + 1)}
             value={clause.usage}
             onChange={(usage) =>
               onChange({ ...clause, usage: usage as PlaybookClauseUsage })
@@ -734,8 +738,8 @@ function SampleClause({
           />
           <TextButtonUI
             size="icon-xs"
-            aria-label={`Remove clause ${index + 1}`}
-            title="Remove clause"
+            aria-label={tUi("Remove clause {0}", index + 1)}
+            title={tUi("Remove clause")}
             onClick={onRemove}
           >
             <X aria-hidden="true" className="h-3.5 w-3.5" />

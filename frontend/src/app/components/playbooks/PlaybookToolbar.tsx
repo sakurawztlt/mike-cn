@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { Plus, Upload } from "lucide-react";
 import { TableToolbar } from "@/app/components/shared/TableToolbar";
 import { TabPillButtonUI } from "@mike/ui";
@@ -33,14 +34,15 @@ export function PlaybookToolbar({
   /** Opens the new-run form; shown on Runs. */
   onNewRun: () => void;
 }) {
+    const tUi = useUiText();
   return (
-    <nav aria-label="Playbook toolbar" className="shrink-0">
+    <nav aria-label={tUi("Playbook toolbar")} className="shrink-0">
       <TableToolbar
         leading={
           <div className="flex w-full flex-wrap items-center justify-between gap-1.5">
             <div
               role="group"
-              aria-label="Playbook view"
+              aria-label={tUi("Playbook view")}
               className="flex flex-wrap items-center gap-1.5"
             >
               {VIEWS.map((entry) => (
@@ -59,13 +61,13 @@ export function PlaybookToolbar({
                 onClick={onAddRule}
               >
                 <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                New rule
+                <UiText message={"New rule"} />
               </TabPillButtonUI>
             )}
             {view === "runs" && (
               <TabPillButtonUI disabled={disabled} onClick={onNewRun}>
                 <Plus aria-hidden="true" className="h-3.5 w-3.5" />
-                New run
+                <UiText message={"New run"} />
               </TabPillButtonUI>
             )}
             {view === "references" && (
@@ -74,7 +76,7 @@ export function PlaybookToolbar({
                 onClick={onUpload}
               >
                 <Upload aria-hidden="true" className="h-3.5 w-3.5" />
-                Upload
+                <UiText message={"Upload"} />
               </TabPillButtonUI>
             )}
           </div>

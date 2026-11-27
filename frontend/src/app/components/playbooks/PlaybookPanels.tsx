@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import {
   useEffect,
   useId,
@@ -28,6 +29,7 @@ export function PlaybookPanels({
   variant?: "sidebar" | "trailing";
   resizeLabel?: string;
 }) {
+    const tUi = useUiText();
   const isTrailing = variant === "trailing";
   const hasPane = sidebar != null;
   const minWidth = isTrailing ? 320 : 160;
@@ -116,7 +118,7 @@ export function PlaybookPanels({
             aria-valuenow={Math.round(width)}
             aria-valuetext={`${Math.round(width)} pixels`}
             tabIndex={0}
-            title="Drag to resize, or use the left and right arrow keys"
+            title={tUi("Drag to resize, or use the left and right arrow keys")}
             onPointerDown={(event) => {
               if (event.button !== 0) return;
               event.preventDefault();

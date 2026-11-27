@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { Modal } from "@/app/components/modals/Modal";
@@ -37,6 +38,7 @@ function PlaybookPickerModalForWorkspace({
   breadcrumbs,
   initialPlaybookId,
 }: Props) {
+    const tUi = useUiText();
   const workspace = useDocumentWorkspace();
   const [playbooks, setPlaybooks] = useState<Playbook[]>([]);
   const [loading, setLoading] = useState(false);
@@ -106,7 +108,7 @@ function PlaybookPickerModalForWorkspace({
       size={selected ? "xl" : "lg"}
       breadcrumbs={breadcrumbs}
       primaryAction={{
-        label: "Use",
+        label: tUi("Use"),
         disabled: !selected,
         onClick: () => {
           if (!selected) return;
@@ -124,7 +126,7 @@ function PlaybookPickerModalForWorkspace({
           <SearchBar
             value={search}
             onValueChange={setSearch}
-            placeholder="Search playbooks..."
+            placeholder={tUi("Search playbooks...")}
           />
           <div
             data-modal-scroll="vertical"
@@ -146,7 +148,7 @@ function PlaybookPickerModalForWorkspace({
               </div>
             ) : filtered.length === 0 ? (
               <p className="py-8 text-center text-sm text-gray-400">
-                {query ? "No matches found" : "No playbooks found"}
+                {query ? (<><UiText message={"No matches found"} /></>) : (<><UiText message={"No playbooks found"} /></>)}
               </p>
             ) : (
               <div className="space-y-px">
@@ -170,7 +172,7 @@ function PlaybookPickerModalForWorkspace({
                           isSelected ? "font-medium text-gray-900" : "text-gray-700"
                         }`}
                       >
-                        {playbook.name || "Untitled playbook"}
+                        {playbook.name || (<><UiText message={"Untitled playbook"} /></>)}
                       </span>
                       {!selected && playbook.content.documentTypes.length > 0 && (
                         <span className="shrink-0 truncate text-xs text-gray-400">
@@ -202,6 +204,7 @@ function PlaybookPreview({
   playbook: Playbook;
   onClear: () => void;
 }) {
+    const tUi = useUiText();
   const rules = ruleNames(playbook);
   const facts = [
     { label: "Represented", value: playbook.content.representedParty },
@@ -210,7 +213,7 @@ function PlaybookPreview({
   ].filter((fact) => fact.value);
   return (
     <section
-      aria-label={`${playbook.name || "Untitled playbook"} preview`}
+      aria-label={tUi("{0} preview", playbook.name || "Untitled playbook")}
       className="flex min-h-0 min-w-0 flex-1 flex-col overflow-visible"
     >
       <div
@@ -218,11 +221,11 @@ function PlaybookPreview({
       >
         <div className="flex h-9 shrink-0 items-center justify-between px-3">
           <p className="min-w-0 flex-1 truncate text-xs font-medium text-gray-700">
-            {playbook.name || "Untitled playbook"}
+            {playbook.name || (<><UiText message={"Untitled playbook"} /></>)}
           </p>
           <button
             type="button"
-            aria-label="Clear selection"
+            aria-label={tUi("Clear selection")}
             onClick={onClear}
             className={`rounded-md p-1 text-gray-400 transition-colors hover:text-gray-600 ${LIQUID_GLASS_HOVER_CLASS}`}
           >
@@ -245,7 +248,7 @@ function PlaybookPreview({
           )}
           <div>
             <p className="mb-1.5 font-medium text-gray-700">
-              {rules.length} {rules.length === 1 ? "rule" : "rules"}
+              {rules.length} {rules.length === 1 ? (<><UiText message={"rule"} /></>) : (<><UiText message={"rules"} /></>)}
             </p>
             <ul className="list-disc space-y-0.5 pl-4">
               {rules.map((name, index) => (

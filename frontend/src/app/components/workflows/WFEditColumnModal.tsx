@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown, Plus, X } from "lucide-react";
 import type { ColumnConfig, ColumnFormat } from "../shared/types";
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) {
+    const tUi = useUiText();
     const formId = "workflow-edit-column-modal-form";
     const [draft, setDraft] = useState<ColumnDraft>({
         name: column.name,
@@ -116,16 +118,16 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
         <Modal
             open
             onClose={onClose}
-            breadcrumbs={["Workflows", "Edit column"]}
+            breadcrumbs={[tUi("Workflows"), tUi("Edit column")]}
             primaryAction={{
-                label: "Save changes",
+                label: tUi("Save changes"),
                 type: "submit",
                 form: formId,
                 disabled: !draft.name.trim() || !draft.prompt.trim(),
             }}
-            cancelAction={{ label: "Cancel", onClick: onClose }}
+            cancelAction={{ label: tUi("Cancel"), onClick: onClose }}
             secondaryAction={{
-                label: "Delete",
+                label: tUi("Delete"),
                 variant: "danger",
                 onClick: onDelete,
             }}
@@ -137,7 +139,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
             >
                 <div data-modal-scroll="vertical" className="min-h-0 flex-1 overflow-y-auto pb-5 pt-2">
                         <FieldLabel htmlFor="workflow-column-name">
-                            Column title
+                            <UiText message={"Column title"} />
                         </FieldLabel>
                         {/* Name row */}
                         <div className="flex items-start gap-2">
@@ -160,14 +162,14 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                                             } : {}),
                                         });
                                     }}
-                                    placeholder="Column name"
+                                    placeholder={tUi("Column name")}
                                     className="flex-1"
                                     autoFocus
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setPresetsOpen((v) => !v)}
-                                    title="Column presets"
+                                    title={tUi("Column presets")}
                                     className="mt-1.5 rounded-lg p-1.5 text-gray-500 transition-colors hover:bg-gray-100/70 hover:text-gray-700"
                                 >
                                     <ChevronDown className={`h-4 w-4 transition-transform ${presetsOpen ? "rotate-180" : ""}`} />
@@ -179,7 +181,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                                             onClick={() => { update({ name: "", prompt: "", format: "text", tags: [], tagInput: "" }); setPresetsOpen(false); }}
                                             className="theme-dropdown-item w-full border-b border-gray-100 px-3 py-2 text-left text-sm text-gray-400 transition-all"
                                         >
-                                            No Preset
+                                            <UiText message={"No Preset"} />
                                         </button>
                                         {PROMPT_PRESETS.map((preset) => (
                                             <button
@@ -202,7 +204,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                         {/* Format */}
                         <div className="mt-4">
                             <FieldLabel htmlFor="workflow-column-format">
-                                Format
+                                <UiText message={"Format"} />
                             </FieldLabel>
                             <ModalSelect
                                 id="workflow-column-format"
@@ -227,7 +229,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                         {draft.format === "tag" && (
                             <div className="mt-3">
                                 <FieldLabel htmlFor="workflow-column-tag">
-                                    Tags
+                                    <UiText message={"Tags"} />
                                 </FieldLabel>
                                 <div className="mt-1 flex flex-wrap gap-1.5 rounded-md border border-gray-200 px-2 py-1.5 focus-within:border-gray-400">
                                     {draft.tags.map((tag, tagIdx) => (
@@ -253,18 +255,18 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                                         onChange={(e) => update({ tagInput: e.target.value })}
                                         onKeyDown={handleTagKeyDown}
                                         onBlur={commitTag}
-                                        placeholder="Add tag…"
+                                        placeholder={tUi("Add tag…")}
                                         className="min-w-[80px] flex-1 font-sans text-sm text-gray-700 placeholder:text-gray-400"
                                     />
                                 </div>
-                                <p className="mt-1 text-xs text-gray-400">Press Enter or comma to add a tag.</p>
+                                <p className="mt-1 text-xs text-gray-400"><UiText message={"Press Enter or comma to add a tag."} /></p>
                             </div>
                         )}
 
                         {/* Prompt */}
                         <div className="mt-4 flex items-center justify-between">
                             <FieldLabel htmlFor="workflow-column-prompt">
-                                Prompt
+                                <UiText message={"Prompt"} />
                             </FieldLabel>
                             <button
                                 type="button"
@@ -277,7 +279,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                                 ) : (
                                     <Plus className="h-4 w-4" />
                                 )}
-                                Auto-Generate Prompt
+                                <UiText message={"Auto-Generate Prompt"} />
                             </button>
                         </div>
                         <ModalTextarea
@@ -285,7 +287,7 @@ export function WFEditColumnModal({ column, onClose, onSave, onDelete }: Props) 
                             rows={6}
                             value={draft.prompt}
                             onChange={(e) => update({ prompt: e.target.value })}
-                            placeholder="Write the analysis prompt — describe what Mike should extract from each document for this column…"
+                            placeholder={tUi("Write the analysis prompt — describe what Mike should extract from each document for this column…")}
                             className="mt-2 min-h-36"
                         />
                 </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useRef, useState } from "react";
 import { AlertCircle, Check, Loader2 } from "lucide-react";
 import { DocumentPill } from "@/app/components/shared/DocumentPill";
@@ -71,7 +72,7 @@ export function PlaybookReviewDocuments({
         <>
           {disabled ? (
             <p className="mb-3 text-xs text-gray-500" aria-live="polite">
-              {`${documents.filter((document) => document.status === "completed").length} of ${documents.length} started`}
+              {(<><UiText message={"{0} of {1} started"} values={[String(documents.filter((document) => document.status === "completed").length), String(documents.length)]} /></>)}
             </p>
           ) : (
             <button
@@ -80,7 +81,7 @@ export function PlaybookReviewDocuments({
               className="mb-3 block rounded-md text-left text-xs text-gray-500 transition-colors hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
             >
               {dragging
-                ? "Drop documents to add them"
+                ? (<><UiText message={"Drop documents to add them"} /></>)
                 : addMorePrompt}
             </button>
           )}
@@ -149,7 +150,7 @@ export function PlaybookReviewDocuments({
           {/* The field's label sits above the area, as for other fields. */}
           <span className="block text-sm text-gray-700">
             {dragging
-              ? "Drop documents to add them"
+              ? (<><UiText message={"Drop documents to add them"} /></>)
               : emptyPrompt}
           </span>
         </button>

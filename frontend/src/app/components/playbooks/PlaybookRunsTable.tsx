@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useMemo, useState } from "react";
 import {
   ClipboardCheck,
@@ -196,6 +197,7 @@ export function PlaybookRunsTable({
   selectedIds: Set<string>;
   onSelect: (ids: Set<string>) => void;
 }) {
+    const tUi = useUiText();
   const [filters, setFilters] = useState<Filters>(NO_FILTERS);
   const loading = runs === null;
   const all = useMemo(() => runs ?? [], [runs]);
@@ -263,7 +265,7 @@ export function PlaybookRunsTable({
     <TableScrollArea>
       <div
         role="table"
-        aria-label="Playbook runs"
+        aria-label={tUi("Playbook runs")}
         aria-busy={loading}
         className="flex min-h-full min-w-0 flex-col"
       >
@@ -275,7 +277,7 @@ export function PlaybookRunsTable({
             <TableHeaderCell role="columnheader" className={DOCUMENT_COLUMN}>
               <input
                 type="checkbox"
-                aria-label="Select all runs"
+                aria-label={tUi("Select all runs")}
                 className={TABLE_CHECKBOX_CLASS}
                 disabled={loading || disabled || !displayed.length}
                 checked={allSelected}
@@ -290,16 +292,16 @@ export function PlaybookRunsTable({
                   )
                 }
               />
-              Document
+              <UiText message={"Document"} />
             </TableHeaderCell>
             <TableHeaderCell
               role="columnheader"
               className={`${PLAYBOOK_COLUMN} gap-1`}
             >
-              <span>Playbook</span>
+              <span><UiText message={"Playbook"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by playbook"
+                  label={tUi("Filter by playbook")}
                   value={playbookFilter}
                   allLabel="All Playbooks"
                   widthClassName="w-52"
@@ -312,10 +314,10 @@ export function PlaybookRunsTable({
               role="columnheader"
               className={`${OUTCOME_COLUMN} gap-1`}
             >
-              <span>Outcome</span>
+              <span><UiText message={"Outcome"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by outcome"
+                  label={tUi("Filter by outcome")}
                   value={filters.outcome}
                   allLabel="All Outcomes"
                   widthClassName="w-44"
@@ -328,10 +330,10 @@ export function PlaybookRunsTable({
               role="columnheader"
               className={`${SCOPE_COLUMN} gap-1`}
             >
-              <span>Scope</span>
+              <span><UiText message={"Scope"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by scope"
+                  label={tUi("Filter by scope")}
                   value={filters.scope}
                   allLabel="All Scopes"
                   widthClassName="w-40"
@@ -344,10 +346,10 @@ export function PlaybookRunsTable({
               role="columnheader"
               className={`${POSTURE_COLUMN} gap-1`}
             >
-              <span>Posture</span>
+              <span><UiText message={"Posture"} /></span>
               {showFilters && (
                 <TableFilters
-                  label="Filter by posture"
+                  label={tUi("Filter by posture")}
                   value={filters.posture}
                   allLabel="All Postures"
                   widthClassName="w-40"
@@ -357,10 +359,10 @@ export function PlaybookRunsTable({
               )}
             </TableHeaderCell>
             <TableHeaderCell role="columnheader" className={DATE_COLUMN}>
-              Run
+              <UiText message={"Run"} />
             </TableHeaderCell>
             <TableHeaderCell role="columnheader" className={ACTIONS_COLUMN}>
-              <span className="sr-only">Actions</span>
+              <span className="sr-only"><UiText message={"Actions"} /></span>
             </TableHeaderCell>
           </TableHeaderRow>
         </div>
@@ -402,11 +404,11 @@ export function PlaybookRunsTable({
           <TableEmptyState>
             <EmptyState
               tone="error"
-              title="Couldn’t load runs"
+              title={tUi("Couldn’t load runs")}
               description={error}
               action={
                 <PillButtonUI tone="white" onClick={onRetry}>
-                  Try again
+                  <UiText message={"Try again"} />
                 </PillButtonUI>
               }
             />
@@ -414,19 +416,19 @@ export function PlaybookRunsTable({
         ) : searched.length === 0 ? (
           <TableEmptyState>
             <EmptyState
-              title={query ? "No matching runs" : "No runs yet"}
+              title={query ? tUi("No matching runs") : tUi("No runs yet")}
               description={
                 query
-                  ? "Try another document or playbook name."
-                  : "Reviews you run with a playbook appear here."
+                  ? tUi("Try another document or playbook name.")
+                  : tUi("Reviews you run with a playbook appear here.")
               }
             />
           </TableEmptyState>
         ) : displayed.length === 0 ? (
           <TableEmptyState>
             <EmptyState
-              title="No matching runs"
-              description="Adjust the table filters to see more runs."
+              title={tUi("No matching runs")}
+              description={tUi("Adjust the table filters to see more runs.")}
               action={
                 <PillButtonUI
                   tone="white"
@@ -435,7 +437,7 @@ export function PlaybookRunsTable({
                     onSelect(new Set());
                   }}
                 >
-                  Clear filters
+                  <UiText message={"Clear filters"} />
                 </PillButtonUI>
               }
             />
@@ -460,7 +462,7 @@ export function PlaybookRunsTable({
                 <TableCell role="cell" className={DOCUMENT_COLUMN}>
                   <input
                     type="checkbox"
-                    aria-label={`Select ${runTitle(run)}`}
+                    aria-label={tUi("Select {0}", runTitle(run))}
                     className={TABLE_CHECKBOX_CLASS}
                     disabled={disabled}
                     checked={selectedIds.has(run.id)}
@@ -494,7 +496,7 @@ export function PlaybookRunsTable({
                   className={`${PLAYBOOK_COLUMN} ${DETAIL_TEXT}`}
                   title={run.playbookName}
                 >
-                  {run.playbookName || "Untitled playbook"}
+                  {run.playbookName || (<><UiText message={"Untitled playbook"} /></>)}
                 </TableCell>
                 <TableCell
                   role="cell"
@@ -506,13 +508,13 @@ export function PlaybookRunsTable({
                   role="cell"
                   className={`${SCOPE_COLUMN} ${DETAIL_TEXT}`}
                 >
-                  {run.reviewScope === "issues" ? "Issues only" : "Full review"}
+                  {run.reviewScope === "issues" ? (<><UiText message={"Issues only"} /></>) : (<><UiText message={"Full review"} /></>)}
                 </TableCell>
                 <TableCell
                   role="cell"
                   className={`${POSTURE_COLUMN} ${DETAIL_TEXT}`}
                 >
-                  {run.reviewMode === "permissive" ? "Permissive" : "Strict"}
+                  {run.reviewMode === "permissive" ? (<><UiText message={"Permissive"} /></>) : (<><UiText message={"Strict"} /></>)}
                 </TableCell>
                 <TableCell
                   role="cell"

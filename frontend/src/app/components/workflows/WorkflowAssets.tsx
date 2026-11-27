@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   forwardRef,
   useEffect,
@@ -87,6 +88,7 @@ export const WorkflowAssets = forwardRef<
     onUploadingChange?: (uploading: boolean) => void;
   }
 >(function WorkflowAssets({ workflowId, readOnly, onUploadingChange }, ref) {
+    const tUi = useUiText();
   const [files, setFiles] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -386,18 +388,18 @@ export const WorkflowAssets = forwardRef<
           role="alert"
           className="mx-4 mb-2 -mt-1 text-xs text-red-600 md:mx-8"
         >
-          {error}
+          <UiText message={error} />
         </p>
       )}
       <TableScrollArea
         header={
           <TableHeaderRow>
             <TableStickyCell header widthClassName={ASSET_NAME_COL_W}>
-              Name
+              <UiText message={"Name"} />
             </TableStickyCell>
-            <TableHeaderCell className="ml-auto w-20">Type</TableHeaderCell>
-            <TableHeaderCell className="w-24">Size</TableHeaderCell>
-            <TableHeaderCell className="w-32">Updated</TableHeaderCell>
+            <TableHeaderCell className="ml-auto w-20"><UiText message={"Type"} /></TableHeaderCell>
+            <TableHeaderCell className="w-24"><UiText message={"Size"} /></TableHeaderCell>
+            <TableHeaderCell className="w-32"><UiText message={"Updated"} /></TableHeaderCell>
             <TableHeaderCell className="w-8" />
           </TableHeaderRow>
         }
@@ -429,8 +431,8 @@ export const WorkflowAssets = forwardRef<
         ) : files.length === 0 ? (
           <TableEmptyState>
             <EmptyState
-              title="Assets"
-              description="Upload assets that this workflow can use when it runs."
+              title={tUi("Assets")}
+              description={tUi("Upload assets that this workflow can use when it runs.")}
             />
           </TableEmptyState>
         ) : (
@@ -481,7 +483,7 @@ export const WorkflowAssets = forwardRef<
                             versionUploadInputRef.current?.click();
                           }
                     }
-                    uploadNewVersionLabel="Upload new version"
+                    uploadNewVersionLabel={tUi("Upload new version")}
                     onDelete={
                       readOnly ? undefined : () => setPendingDeleteFile(file)
                     }
@@ -535,18 +537,18 @@ export const WorkflowAssets = forwardRef<
       />
       <ConfirmPopup
         open={pendingDeleteFile !== null}
-        title="Delete asset?"
+        title={tUi("Delete asset?")}
         message={
           pendingDeleteFile ? (
             <p>
               <span className="font-medium text-gray-950">
                 {pendingDeleteFile.filename}
               </span>{" "}
-              will be permanently deleted.
+              <UiText message={"will be permanently deleted."} />
             </p>
           ) : undefined
         }
-        confirmLabel="Delete"
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={deleteStatus}
         onConfirm={() => void confirmRemove()}

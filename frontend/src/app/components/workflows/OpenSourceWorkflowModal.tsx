@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { Check, EyeOff, User } from "lucide-react";
 import { openSourceWorkflow } from "@/app/lib/mikeApi";
@@ -36,6 +37,7 @@ export function OpenSourceWorkflowModal({
     pending,
     onSubmitted,
 }: OpenSourceWorkflowModalProps) {
+    const tUi = useUiText();
     const [status, setStatus] = useState<OpenSourceStatus>("idle");
     const [error, setError] = useState<string | null>(null);
     const [contributorMode, setContributorMode] =
@@ -133,12 +135,12 @@ export function OpenSourceWorkflowModal({
                 resetModalState();
             }}
             breadcrumbs={[
-                "Workflows",
+                tUi("Workflows"),
                 submitted
-                    ? "Submitted"
+                    ? tUi("Submitted")
                     : pending
-                      ? "Update open-source submission"
-                      : "Open source",
+                      ? tUi("Update open-source submission")
+                      : tUi("Open source"),
             ]}
             primaryAction={
                 submitted
@@ -146,11 +148,11 @@ export function OpenSourceWorkflowModal({
                     : {
                           label: loading
                               ? pending
-                                  ? "Updating..."
-                                  : "Submitting..."
+                                  ? tUi("Updating...")
+                                  : tUi("Submitting...")
                               : pending
-                                ? "Update submission"
-                                : "Submit for review",
+                                ? tUi("Update submission")
+                                : tUi("Submit for review"),
                           onClick: () => void handleSubmit(),
                           disabled: loading || needsConsent,
                       }
@@ -162,46 +164,41 @@ export function OpenSourceWorkflowModal({
                         <Check className="h-6 w-6" />
                     </div>
                     <h3 className="text-2xl font-serif text-gray-950">
-                        Workflow submitted
+                        <UiText message={"Workflow submitted"} />
                     </h3>
                     <p className="mt-3 max-w-sm text-xs leading-6 text-gray-600">
-                        Your workflow snapshot has been submitted for review.
-                        You&apos;ll be notified by email if it is accepted.
+                        <UiText message={"Your workflow snapshot has been submitted for review. You'll be notified by email if it is accepted."} />
                     </p>
                     <p className="mt-6 text-xs font-medium text-gray-500">
-                        Closing in {closeCountdown}
+                        <UiText message={"Closing in"} />{" "}{closeCountdown}
                     </p>
                 </div>
             ) : (
                 <div className="space-y-4 pb-2 text-sm text-gray-700">
                     <h3 className="text-2xl font-serif text-gray-950">
-                        Contribute to open source legal
+                        <UiText message={"Contribute to open source legal"} />
                     </h3>
                     <p className="leading-6 text-xs text-gray-600">
-                        Submit a snapshot of this workflow for review. If
-                        accepted, it will be shared under the Apache License 2.0
-                        in the{" "}
+                        <UiText message={"Submit a snapshot of this workflow for review. If accepted, it will be shared under the Apache License 2.0 in the"} />{" "}
                         <a
                             href={WORKFLOWS_REPO_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="font-medium text-gray-950 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-gray-600"
                         >
-                            Open-Legal-Products/mike-workflows
+                            <UiText message={"Open-Legal-Products/mike-workflows"} />
                         </a>{" "}
-                        repo. You&apos;ll be notified by email if your workflow
-                        is accepted.
+                        <UiText message={"repo. You'll be notified by email if your workflow is accepted."} />
                     </p>
                     {pending && (
                         <p className={`rounded-xl px-3 py-2 text-xs leading-5 text-gray-600 ${LIQUID_GLASS_FLAT_CLASS}`}>
-                            You already have a pending submission. This will
-                            replace that pending snapshot.
+                            <UiText message={"You already have a pending submission. This will replace that pending snapshot."} />
                         </p>
                     )}
 
                     <div className="space-y-2 pt-2">
                         <FieldLabel as="p">
-                            Contributor attribution
+                            <UiText message={"Contributor attribution"} />
                         </FieldLabel>
                         <ModalSegmentedToggle
                             value={contributorMode}
@@ -210,12 +207,12 @@ export function OpenSourceWorkflowModal({
                             options={[
                                 {
                                     value: "anonymous",
-                                    label: "Anonymous",
+                                    label: tUi("Anonymous"),
                                     icon: EyeOff,
                                 },
                                 {
                                     value: "named",
-                                    label: "Disclose details",
+                                    label: tUi("Disclose details"),
                                     icon: User,
                                 },
                             ]}
@@ -224,7 +221,7 @@ export function OpenSourceWorkflowModal({
                             <div className="grid gap-x-4 gap-y-5 pt-4 sm:grid-cols-2">
                                 <div>
                                     <FieldLabel htmlFor="open-source-contributor-name">
-                                        Full Name
+                                        <UiText message={"Full Name"} />
                                     </FieldLabel>
                                     <FormTextInput
                                         id="open-source-contributor-name"
@@ -234,13 +231,13 @@ export function OpenSourceWorkflowModal({
                                                 event.target.value,
                                             )
                                         }
-                                        placeholder="Jane Doe"
+                                        placeholder={tUi("Jane Doe")}
                                         disabled={loading}
                                     />
                                 </div>
                                 <div>
                                     <FieldLabel htmlFor="open-source-contributor-organisation">
-                                        Organisation
+                                        <UiText message={"Organisation"} />
                                     </FieldLabel>
                                     <FormTextInput
                                         id="open-source-contributor-organisation"
@@ -250,13 +247,13 @@ export function OpenSourceWorkflowModal({
                                                 event.target.value,
                                             )
                                         }
-                                        placeholder="Acme LLP"
+                                        placeholder={tUi("Acme LLP")}
                                         disabled={loading}
                                     />
                                 </div>
                                 <div>
                                     <FieldLabel htmlFor="open-source-contributor-role">
-                                        Role
+                                        <UiText message={"Role"} />
                                     </FieldLabel>
                                     <FormTextInput
                                         id="open-source-contributor-role"
@@ -266,13 +263,13 @@ export function OpenSourceWorkflowModal({
                                                 event.target.value,
                                             )
                                         }
-                                        placeholder="Senior Associate"
+                                        placeholder={tUi("Senior Associate")}
                                         disabled={loading}
                                     />
                                 </div>
                                 <div>
                                     <FieldLabel htmlFor="open-source-contributor-linkedin">
-                                        LinkedIn
+                                        <UiText message={"LinkedIn"} />
                                     </FieldLabel>
                                     <FormTextInput
                                         id="open-source-contributor-linkedin"
@@ -305,8 +302,7 @@ export function OpenSourceWorkflowModal({
                                             htmlFor="open-source-disclosure-consent"
                                             className="cursor-pointer"
                                         >
-                                            I consent to disclosing the personal
-                                            information above in the public
+                                            <UiText message={"I consent to disclosing the personal information above in the public"} />
                                         </label>{" "}
                                         <a
                                             href={WORKFLOWS_REPO_URL}
@@ -314,14 +310,13 @@ export function OpenSourceWorkflowModal({
                                             rel="noopener noreferrer"
                                             className="font-medium text-gray-900 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-gray-600"
                                         >
-                                            Open-Legal-Products/mike-workflows
+                                            <UiText message={"Open-Legal-Products/mike-workflows"} />
                                         </a>{" "}
                                         <label
                                             htmlFor="open-source-disclosure-consent"
                                             className="cursor-pointer"
                                         >
-                                            GitHub repository and on the
-                                            mikeoss.com website.
+                                            <UiText message={"GitHub repository and on the mikeoss.com website."} />
                                         </label>
                                     </p>
                                 </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useQueryParamTab } from "@/app/hooks/useQueryParamTab";
@@ -184,6 +185,7 @@ export function PlaybooksWorkspaceLayout() {
 }
 
 function PlaybooksWorkspace() {
+    const tUi = useUiText();
   const { workspaceId, activeOrganization } = useWorkspace();
   const router = useRouter();
   const params = useParams<{ playbookId?: string }>();
@@ -1037,13 +1039,13 @@ function PlaybooksWorkspace() {
         breadcrumbs={
           linkedPlaybookLoading
             ? [
-                { label: "Playbooks", onClick: () => openPlaybook(null) },
+                { label: tUi("Playbooks"), onClick: () => openPlaybook(null) },
                 { loading: true, skeletonClassName: "w-40" },
               ]
             : selected
               ? [
                   {
-                    label: "Playbooks",
+                    label: tUi("Playbooks"),
                     onClick: () => void backToList(),
                   },
                   {
@@ -1051,7 +1053,7 @@ function PlaybooksWorkspace() {
                     title: content?.name || selected.name,
                   },
                 ]
-              : [{ label: "Playbooks" }]
+              : [{ label: tUi("Playbooks") }]
         }
         actionGroups={
           linkedPlaybookLoading
@@ -1074,10 +1076,10 @@ function PlaybooksWorkspace() {
                                 />
                               )}
                               {autosave.status === "saving"
-                                ? "Saving…"
+                                ? (<><UiText message={"Saving…"} /></>)
                                 : autosave.status === "error"
-                                  ? "Couldn’t save"
-                                  : "Saved"}
+                                  ? (<><UiText message={"Couldn’t save"} /></>)
+                                  : (<><UiText message={"Saved"} /></>)}
                             </span>
                           ),
                         },
@@ -1097,7 +1099,7 @@ function PlaybooksWorkspace() {
                           <DropdownTrigger asChild>
                             <HeaderButtonUI
                               iconOnly
-                              aria-label="Playbook actions"
+                              aria-label={tUi("Playbook actions")}
                               disabled={!!busy}
                             >
                               <MoreHorizontal
@@ -1111,7 +1113,7 @@ function PlaybooksWorkspace() {
                               onSelect={() => setDetailsTargetId(selected.id)}
                             >
                               <Pencil aria-hidden="true" className="h-4 w-4" />
-                              {canEdit ? "Edit details" : "View details"}
+                              {canEdit ? (<><UiText message={"Edit details"} /></>) : (<><UiText message={"View details"} /></>)}
                             </DropdownItem>
                             {canEdit && (
                               <DropdownItem
@@ -1121,7 +1123,7 @@ function PlaybooksWorkspace() {
                                   aria-hidden="true"
                                   className="h-4 w-4"
                                 />
-                                Replace from file
+                                <UiText message={"Replace from file"} />
                               </DropdownItem>
                             )}
                             {canManageAccess && (
@@ -1133,7 +1135,7 @@ function PlaybooksWorkspace() {
                                   aria-hidden="true"
                                   className="h-4 w-4"
                                 />
-                                Delete playbook
+                                <UiText message={"Delete playbook"} />
                               </DropdownItem>
                             )}
                           </DropdownContent>
@@ -1152,7 +1154,7 @@ function PlaybooksWorkspace() {
                                 aria-hidden="true"
                                 className="h-3.5 w-3.5"
                               />
-                              Use
+                              <UiText message={"Use"} />
                             </HeaderButtonUI>
                           </DropdownTrigger>
                           <DropdownContent align="end" className="w-52">
@@ -1161,7 +1163,7 @@ function PlaybooksWorkspace() {
                                 aria-hidden="true"
                                 className="h-4 w-4"
                               />
-                              Run playbook
+                              <UiText message={"Run playbook"} />
                             </DropdownItem>
                             <DropdownItem
                               onSelect={() => void openInAssistant()}
@@ -1170,7 +1172,7 @@ function PlaybooksWorkspace() {
                                 aria-hidden="true"
                                 className="h-4 w-4"
                               />
-                              Use in assistant
+                              <UiText message={"Use in assistant"} />
                             </DropdownItem>
                           </DropdownContent>
                         </Dropdown>
@@ -1483,13 +1485,13 @@ function PlaybooksWorkspace() {
       />
       <ConfirmPopup
         open={!!runDeleteTargets}
-        title={runDeleteTargets?.length === 1 ? "Delete run?" : "Delete runs?"}
+        title={runDeleteTargets?.length === 1 ? tUi("Delete run?") : tUi("Delete runs?")}
         message={
           runDeleteTargets?.length === 1
-            ? `The run of “${runDeleteTargets[0].documentName || "Untitled document"}” and its findings will be deleted. Tracked changes it made stay on the document.`
-            : `${runDeleteTargets?.length ?? 0} selected runs and their findings will be deleted. Tracked changes they made stay on their documents.`
+            ? tUi("The run of “{0}” and its findings will be deleted. Tracked changes it made stay on the document.", runDeleteTargets[0].documentName || "Untitled document")
+            : tUi("{0} selected runs and their findings will be deleted. Tracked changes they made stay on their documents.", runDeleteTargets?.length ?? 0)
         }
-        confirmLabel="Delete"
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={busy === "delete-runs" ? "loading" : "idle"}
         onConfirm={() => void removeRuns()}
@@ -1500,14 +1502,14 @@ function PlaybooksWorkspace() {
       <ConfirmPopup
         open={deleteOpen}
         title={
-          deleteTargets.length === 1 ? "Delete playbook?" : "Delete playbooks?"
+          deleteTargets.length === 1 ? tUi("Delete playbook?") : tUi("Delete playbooks?")
         }
         message={
           deleteTargets.length === 1
-            ? `“${deleteTargets[0].name}” and its rules will be deleted.`
-            : `${deleteTargets.length} selected playbooks and their rules will be deleted.`
+            ? tUi("“{0}” and its rules will be deleted.", deleteTargets[0].name)
+            : tUi("{0} selected playbooks and their rules will be deleted.", deleteTargets.length)
         }
-        confirmLabel="Delete"
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={busy === "delete" ? "loading" : "idle"}
         onConfirm={() => void remove()}
@@ -1526,22 +1528,22 @@ function PlaybooksWorkspace() {
         size="sm"
         className="h-auto max-h-[calc(100vh-2rem)]"
         breadcrumbs={[
-          "Playbooks",
-          importTargetId ? "Replace from file" : "Import playbook",
+          tUi("Playbooks"),
+          importTargetId ? tUi("Replace from file") : tUi("Import playbook"),
         ]}
         // While compiling, the dialog shows only the progress screen, and
         // closing it leaves the import compiling.
         primaryAction={
           compiling
             ? {
-                label: "Close",
+                label: tUi("Close"),
                 variant: "primary",
                 onClick: closeImport,
                 // The upload must finish before there is an import to leave.
                 disabled: busy === "import",
               }
             : {
-                label: "Compile",
+                label: tUi("Compile"),
                 icon: <WandSparkles className="h-4 w-4" />,
                 variant: "blue",
                 disabled: !importSource || !model || !!busy,
@@ -1549,7 +1551,7 @@ function PlaybooksWorkspace() {
               }
         }
         cancelAction={
-          compiling ? false : { label: "Cancel", onClick: closeImport }
+          compiling ? false : { label: tUi("Cancel"), onClick: closeImport }
         }
       >
         {compiling ? (
@@ -1562,11 +1564,10 @@ function PlaybooksWorkspace() {
               className="h-6 w-6 animate-spin text-gray-400 motion-reduce:animate-none"
             />
             <p className="mt-4 text-sm font-medium text-gray-900">
-              Compiling your playbook
+              <UiText message={"Compiling your playbook"} />
             </p>
             <p className="mt-1 max-w-xs text-xs text-gray-500">
-              This can take a few minutes. You can close this window and
-              we’ll let you know when it’s ready.
+              <UiText message={"This can take a few minutes. You can close this window and we’ll let you know when it’s ready."} />
             </p>
           </div>
         ) : (
@@ -1586,7 +1587,7 @@ function PlaybooksWorkspace() {
             {!importTargetId && (
               <div>
                 <ModalFieldLabel htmlFor="playbook-import-name">
-                  Playbook name (optional)
+                  <UiText message={"Playbook name (optional)"} />
                 </ModalFieldLabel>
                 <ModalTextInput
                   id="playbook-import-name"
@@ -1600,7 +1601,7 @@ function PlaybooksWorkspace() {
                 id="playbook-import-document-label"
                 className="mb-2 block text-xs font-medium text-gray-700"
               >
-                Add document
+                <UiText message={"Add document"} />
               </p>
               <PlaybookReviewDocuments
                 documents={importSource ? [importSource] : []}
@@ -1609,13 +1610,13 @@ function PlaybooksWorkspace() {
                 onAddDocuments={() => setImportPickerOpen(true)}
                 onRemove={() => setImportSource(null)}
                 labelledBy="playbook-import-document-label"
-                emptyPrompt="Drag and drop a Word or PDF playbook here, or click to choose a saved file or upload one."
-                addMorePrompt="Drop another file here, or click to choose a different one."
+                emptyPrompt={tUi("Drag and drop a Word or PDF playbook here, or click to choose a saved file or upload one.")}
+                addMorePrompt={tUi("Drop another file here, or click to choose a different one.")}
               />
             </div>
             <div>
               <ModalFieldLabel htmlFor="playbook-import-model">
-                Compilation model
+                <UiText message={"Compilation model"} />
               </ModalFieldLabel>
               {models.length > 0 ? (
                 <ModalSelect
@@ -1630,18 +1631,18 @@ function PlaybooksWorkspace() {
                 />
               ) : (
                 <p className="text-sm text-amber-700">
-                  No compilation model is available.{" "}
+                  <UiText message={"No compilation model is available."} />{" "}
                   <a href="/account/api-keys" className="underline">
-                    Configure an API key
+                    <UiText message={"Configure an API key"} />
                   </a>{" "}
-                  or enable a local model.
+                  <UiText message={"or enable a local model."} />
                 </p>
               )}
             </div>
             <p className="text-xs text-gray-500">
               {importTargetId
-                ? "The compiled rules replace the current ones; completed reviews keep the rules they used. You can still edit the rules by hand afterwards."
-                : "You can edit the rules by hand once the playbook is created."}
+                ? (<><UiText message={"The compiled rules replace the current ones; completed reviews keep the rules they used. You can still edit the rules by hand afterwards."} /></>)
+                : (<><UiText message={"You can edit the rules by hand once the playbook is created."} /></>)}
             </p>
           </div>
         )}
@@ -1659,14 +1660,15 @@ function NewPlaybookMenu({
   onImport: () => void;
   onBlank: () => void;
 }) {
+    const tUi = useUiText();
   return (
     <Dropdown>
       <DropdownTrigger asChild>
         <HeaderButtonUI
           iconOnly
           disabled={disabled}
-          title="New playbook"
-          aria-label="New playbook"
+          title={tUi("New playbook")}
+          aria-label={tUi("New playbook")}
         >
           <Plus aria-hidden="true" className="h-4 w-4" />
         </HeaderButtonUI>
@@ -1674,11 +1676,11 @@ function NewPlaybookMenu({
       <DropdownContent align="end">
         <DropdownItem onSelect={onImport}>
           <Upload className="h-4 w-4" />
-          Import from file
+          <UiText message={"Import from file"} />
         </DropdownItem>
         <DropdownItem onSelect={onBlank}>
           <PenLine className="h-4 w-4" />
-          Start from scratch
+          <UiText message={"Start from scratch"} />
         </DropdownItem>
       </DropdownContent>
     </Dropdown>

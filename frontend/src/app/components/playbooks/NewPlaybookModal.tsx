@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { Modal } from "@/app/components/modals/Modal";
@@ -32,6 +33,7 @@ export function NewPlaybookModal({
     visibility: ContentVisibility,
   ) => Promise<boolean>;
 }) {
+    const tUi = useUiText();
   const [details, setDetails] = useState(EMPTY_PLAYBOOK_DETAILS);
   const [visibility, setVisibility] = useState<ContentVisibility>("private");
   const [creating, setCreating] = useState(false);
@@ -62,16 +64,16 @@ export function NewPlaybookModal({
       onClose={() => {
         if (!creating) onClose();
       }}
-      breadcrumbs={["Playbooks", "New playbook"]}
+      breadcrumbs={[tUi("Playbooks"), tUi("New playbook")]}
       primaryAction={{
-        label: creating ? "Creating…" : "Create",
+        label: creating ? tUi("Creating…") : tUi("Create"),
         icon: creating ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : undefined,
         onClick: () => void create(),
         disabled: !trimmed.name || creating,
       }}
-      cancelAction={{ label: "Cancel", onClick: onClose, disabled: creating }}
+      cancelAction={{ label: tUi("Cancel"), onClick: onClose, disabled: creating }}
     >
       <form
         data-modal-scroll="vertical"
