@@ -409,6 +409,33 @@ describe("upload processing", () => {
   });
 
   it.each([
+    ["jpeg", "image/jpeg", "ffd8ffe000104a4649460001"],
+    ["png", "image/png", "89504e470d0a1a0a0000000d"],
+    ["webp", "image/webp", "524946460400000057454250"],
+  ])("stores the sealed %s bytes as the original without making a PDF", async (extension, mime, signature) => {
+    const bytes = Buffer.from(signature, "hex");
+    const filename = "evidence." + extension;
+    mocks.createFileReadStream.mockImplementation(() => Readable.from([bytes]));
+    const db = fakeDb({ documents: [{ data: { id: baseFile.resource_id } }] });
+    const result = await processUploadFile(db as never, baseSession, {
+      ...baseFile, filename, file_type: extension, content_type: mime, expected_size_bytes: bytes.length,
+    });
+    expect(result).toMatchObject({ filename });
+    expect(mocks.copyFile).toHaveBeenCalledWith(baseFile.sealed_storage_path, expect.stringContaining("/source." + extension));
+    expect(mocks.officeFileToPdf).not.toHaveBeenCalled();
+    expect(mocks.uploadFileFromPath).not.toHaveBeenCalled();
+  });
+
+  it("rejects PDF bytes renamed to a photo before any destination write", async () => {
+    const db = fakeDb();
+    await expect(processUploadFile(db as never, baseSession, {
+      ...baseFile, filename: "evidence.png", file_type: "png", content_type: "image/png",
+    })).rejects.toThrow("invalid_image_file");
+    expect(db.from).not.toHaveBeenCalled();
+    expect(mocks.copyFile).not.toHaveBeenCalled();
+  });
+
+  it.each([
     ["nothing", pdfBytes],
     ["whitespace", Buffer.concat([Buffer.from(" \t\r\n\f"), pdfBytes])],
     ["a UTF-8 BOM", Buffer.concat([Buffer.from("\uFEFF"), pdfBytes])],

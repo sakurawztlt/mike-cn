@@ -31,6 +31,7 @@ import {
   isPresentationDocumentType,
   isSpreadsheetDocumentType,
   isWordDocumentType,
+  rasterDocumentContentType,
   requiresLibreOfficeTextExtraction,
   shouldConvertToPdf,
 } from "../../../../lib/documentTypes";
@@ -1314,6 +1315,11 @@ export async function readDocumentContent(
         ? `[${stored.textless_page_count} page(s) have no text layer and need OCR. Search coverage is incomplete.]\n\n`
         : "";
       return remember(notice + (stored.text ?? ""));
+    }
+
+    if (rasterDocumentContentType(docInfo.file_type)) {
+      emitDocRead();
+      return "This file is a photo. The text-reading tool has no transcribed text for it.";
     }
 
     if (readIdentity && cached?.key === readIdentity.key) {

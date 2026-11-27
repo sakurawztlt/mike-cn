@@ -17,6 +17,7 @@ export type SourceDocumentType =
   | "docx"
   | "pdf"
   | "spreadsheet"
+  | "image"
   | "case"
   | "legislation"
   | "legal_research";

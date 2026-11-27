@@ -6,6 +6,7 @@ import {
     isPresentationDocumentType,
     isSpreadsheetDocumentType,
     isWordDocumentType,
+    rasterDocumentContentType,
 } from "../documentTypes";
 import { extractPresentationText } from "../officeText";
 import { loadPdfjs } from "../pdfjs";
@@ -22,6 +23,7 @@ export async function extractDocumentMarkdown(
     fileType: string | null | undefined,
 ): Promise<string> {
     const normalizedType = (fileType ?? "").toLowerCase();
+    if (rasterDocumentContentType(normalizedType)) return "";
     if (normalizedType === "pdf") return extractPdfMarkdown(buf);
     if (normalizedType === "docx") return extractDocxMarkdown(buf);
     if (isSpreadsheetDocumentType(normalizedType)) {

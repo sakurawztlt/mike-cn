@@ -37,7 +37,8 @@ import {
   type PollFailureGate,
 } from "../../lib/observability/pollFailureGate";
 import { asReportableError, withResponseStatus } from "../../lib/httpError";
-import { shouldConvertToPdf } from "../../lib/documentTypes";
+import { rasterDocumentContentType, shouldConvertToPdf } from "../../lib/documentTypes";
+import { hasImageSignature, type RasterImageContentType } from "../../lib/profileImage";
 import { countPagesWithoutText } from "../../lib/pdfText";
 import { uploadJobWallClockMs } from "../../lib/runtimeConfig";
 import {
@@ -116,6 +117,7 @@ const TERMINAL_UPLOAD_ERROR_CODES = new Set([
   "size_mismatch",
   "content_type_mismatch",
   "invalid_pdf_file",
+  "invalid_image_file",
   "invalid_docx_package",
   "document_too_large",
   // The destination document no longer exists. Retrying cannot make it exist
@@ -154,6 +156,26 @@ class InvalidPdfFileError extends Error {
   constructor() {
     super("invalid_pdf_file");
     this.name = "InvalidPdfFileError";
+  }
+}
+
+class InvalidImageFileError extends Error {
+  constructor() {
+    super("invalid_image_file");
+    this.name = "InvalidImageFileError";
+  }
+}
+
+async function validateImageFile(filePath: string, contentType: RasterImageContentType) {
+  const handle = await open(filePath, "r");
+  try {
+    const prefix = Buffer.alloc(12);
+    const { bytesRead } = await handle.read(prefix);
+    if (!hasImageSignature(contentType, prefix.subarray(0, bytesRead))) {
+      throw new InvalidImageFileError();
+    }
+  } finally {
+    await handle.close();
   }
 }
 
@@ -798,6 +820,8 @@ export async function processUploadFile(
   try {
     if (file.file_type === "pdf") await validatePdfFile(artifact.filePath);
     if (file.file_type === "docx") await validateDocxFile(artifact);
+    const rasterType = rasterDocumentContentType(file.file_type);
+    if (rasterType) await validateImageFile(artifact.filePath, rasterType);
     switch (session.purpose) {
       case "document_create":
         return await processCreatedDocument(db, session, file, artifact);
@@ -1070,10 +1094,12 @@ export async function processUploadJob(
           error instanceof DeletedDocumentError ||
           error instanceof ChangedDocumentError ||
           error instanceof InvalidPdfFileError ||
+          error instanceof InvalidImageFileError ||
           (error instanceof DocxValidationError && error.code !== "processing_failed");
         if (
           !(error instanceof ChangedDocumentError) &&
           !(error instanceof InvalidPdfFileError) &&
+          !(error instanceof InvalidImageFileError) &&
           !(error instanceof DocxValidationError && error.code === "invalid_docx_package")
         ) {
           reportError(error, {
@@ -1104,6 +1130,7 @@ export async function processUploadJob(
               ? "document_changed"
               : error instanceof DeletedDocumentError ? "document_deleted"
               : error instanceof InvalidPdfFileError ? "invalid_pdf_file"
+              : error instanceof InvalidImageFileError ? "invalid_image_file"
               : error instanceof DocxValidationError ? error.code
               : "processing_failed",
             updated_at: new Date().toISOString(),

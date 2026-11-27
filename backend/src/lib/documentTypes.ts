@@ -1,3 +1,12 @@
+import type { RasterImageContentType } from "./profileImage";
+
+const RASTER_DOCUMENT_TYPES: ReadonlyMap<string, RasterImageContentType> = new Map([
+  ["jpg", "image/jpeg"],
+  ["jpeg", "image/jpeg"],
+  ["png", "image/png"],
+  ["webp", "image/webp"],
+]);
+
 export const ALLOWED_DOCUMENT_TYPES = new Set([
   "pdf",
   "docx",
@@ -7,10 +16,14 @@ export const ALLOWED_DOCUMENT_TYPES = new Set([
   "xls",
   "pptx",
   "ppt",
+  ...RASTER_DOCUMENT_TYPES.keys(),
 ]);
 
-export const ALLOWED_DOCUMENT_TYPES_LABEL =
-  "pdf, docx, doc, xlsx, xlsm, xls, pptx, ppt";
+export const ALLOWED_DOCUMENT_TYPES_LABEL = [...ALLOWED_DOCUMENT_TYPES].join(", ");
+
+export function rasterDocumentContentType(fileType: string | null | undefined) {
+  return RASTER_DOCUMENT_TYPES.get((fileType ?? "").toLowerCase());
+}
 
 // The lowercased extension of a filename, or "" when it has none. Three call
 // sites spelled this out with the same semantics; the other extension readers
@@ -80,6 +93,6 @@ export function contentTypeForDocumentType(fileType: string | null | undefined) 
     case "ppt":
       return "application/vnd.ms-powerpoint";
     default:
-      return "application/octet-stream";
+      return rasterDocumentContentType(fileType) ?? "application/octet-stream";
   }
 }

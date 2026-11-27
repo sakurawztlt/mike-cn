@@ -105,6 +105,10 @@ const UPLOAD_FILE_CONTENT_MESSAGES: Record<
         filenames.length === 1
             ? `${filenames[0]} is not a valid PDF file.`
             : `${filenames.join(", ")} are not valid PDF files.`,
+    invalid_image_file: (filenames) =>
+        filenames.length === 1
+            ? `${filenames[0]} does not match the selected image format.`
+            : `${filenames.join(", ")} do not match their selected image formats.`,
     invalid_docx_package: (filenames) =>
         filenames.length === 1
             ? `${filenames[0]} is not a valid DOCX file.`

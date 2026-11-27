@@ -2,13 +2,13 @@
 /** Maximum stored image size before base64 encoding. */
 export const MAX_PROFILE_IMAGE_BYTES = 512 * 1024;
 
-type ProfileImageContentType = "image/png" | "image/jpeg" | "image/webp";
+export type RasterImageContentType = "image/png" | "image/jpeg" | "image/webp";
 
 // What each accepted format begins with. The declared type is the client's
 // word; these are the file's. SVG is deliberately absent: it is a document
 // that can carry script, not a picture.
 /** Checks raster magic bytes against the declared MIME type without decoding image content. */
-function hasImageSignature(contentType: ProfileImageContentType, bytes: Buffer): boolean {
+export function hasImageSignature(contentType: RasterImageContentType, bytes: Buffer): boolean {
     switch (contentType) {
         case "image/png":
             return bytes.subarray(0, 8).equals(
@@ -32,7 +32,7 @@ export function parseProfileImageDataUrl(
     value: unknown,
     label = "image",
 ):
-    | { ok: true; contentType: ProfileImageContentType; base64: string }
+    | { ok: true; contentType: RasterImageContentType; base64: string }
     | { ok: false; detail: string } {
     const unsupported = `The ${label} must be a PNG, JPEG or WebP image.`;
     if (typeof value !== "string" || !value)

@@ -1455,7 +1455,7 @@ create table if not exists public.upload_session_files (
   constraint upload_session_files_filename_check
     check (length(filename) between 1 and 255),
   constraint upload_session_files_file_type_check
-    check (file_type in ('pdf', 'docx', 'doc', 'xlsx', 'xlsm', 'xls', 'pptx', 'ppt')),
+    check (file_type in ('pdf', 'docx', 'doc', 'xlsx', 'xlsm', 'xls', 'pptx', 'ppt', 'jpg', 'jpeg', 'png', 'webp')),
   constraint upload_session_files_content_type_check
     check (length(content_type) between 1 and 255),
   constraint upload_session_files_size_check
@@ -3884,7 +3884,7 @@ begin
        or file_row.resource_id is null
        or length(file_row.client_id) not between 1 and 128
        or length(file_row.filename) not between 1 and 255
-       or file_row.file_type not in ('pdf', 'docx', 'doc', 'xlsx', 'xlsm', 'xls', 'pptx', 'ppt')
+       or file_row.file_type not in ('pdf', 'docx', 'doc', 'xlsx', 'xlsm', 'xls', 'pptx', 'ppt', 'jpg', 'jpeg', 'png', 'webp')
        or length(file_row.content_type) not between 1 and 255
        or file_row.expected_size_bytes not between 1 and 104857600
        or length(file_row.staging_storage_path) < 1
@@ -12557,5 +12557,6 @@ insert into public.schema_migrations (filename) values
   ('20261101_24_wipe_memory_files_batch.sql'),
   ('20261107_01_playbook_review_publication.sql'),
   ('20261116_01_tabular_cache_revisions.sql'),
-  ('20261118_01_connector_write_approval_default.sql')
+  ('20261118_01_connector_write_approval_default.sql'),
+  ('20261127_01_support_raster_document_uploads.sql')
 on conflict (filename) do nothing;

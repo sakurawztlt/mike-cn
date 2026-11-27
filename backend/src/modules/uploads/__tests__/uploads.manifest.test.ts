@@ -26,6 +26,19 @@ function documentRequest(fileCount: number, sizeBytes = 1024) {
 }
 
 describe("parseUploadSessionRequest", () => {
+  it.each([
+    ["Evidence.JPG", "jpg", "image/jpeg"],
+    ["Evidence.jpeg", "jpeg", "image/jpeg"],
+    ["Evidence.png", "png", "image/png"],
+    ["Evidence.webp", "webp", "image/webp"],
+  ])("accepts %s as an original raster document with its MIME type", (filename, fileType, contentType) => {
+    const request = documentRequest(1);
+    request.files[0].filename = filename;
+    expect(parseUploadSessionRequest(request, USER_ID, SESSION_ID).files[0]).toMatchObject({
+      filename, file_type: fileType, content_type: contentType,
+    });
+  });
+
   it("accepts an explicit PDF-generation opt-out for replacements and rejects non-booleans", () => {
     const request = {
       purpose: "document_version_replace",
