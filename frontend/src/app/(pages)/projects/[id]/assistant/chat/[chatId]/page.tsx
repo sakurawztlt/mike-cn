@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useDocumentViewers } from "@/app/hooks/useDocumentViewers";
 import { useDocumentPermissions } from "@/app/hooks/useDocumentPermissions";
 
@@ -188,6 +189,7 @@ function Divider({ onDrag }: { onDrag: (dx: number) => void }) {
 }
 
 export default function ProjectAssistantChatPage({ params }: Props) {
+    const tUi = useUiText();
     const { id: projectId } = use(params);
     const router = useRouter();
 
@@ -1382,7 +1384,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                         {/* Explorer header */}
                         <div className="flex h-12 shrink-0 items-center justify-between px-3">
                             <span className="text-xs text-gray-700">
-                                Explorer
+                                <UiText message={"Explorer"} />
                             </span>
                             <div className="flex items-center gap-1">
                                 <input
@@ -1431,7 +1433,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                                     disabled={!canEditContent}
                                 />
                                 <HeaderActionsMenu
-                                    title="Explorer actions"
+                                    title={tUi("Explorer actions")}
                                     triggerClassName="h-6 w-6 text-gray-500 hover:text-gray-900"
                                     items={[
                                         {
@@ -1459,7 +1461,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                                 />
                                 <button
                                     onClick={() => setExplorerCollapsed(true)}
-                                    title="Collapse explorer"
+                                    title={tUi("Collapse explorer")}
                                     className="rounded p-1 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
                                 >
                                     <ChevronLeft className="h-3.5 w-3.5" />
@@ -1498,7 +1500,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                             {explorerDragOver && (
                                 <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                                     <p className="text-xs text-blue-500 font-medium">
-                                        Drop to upload
+                                        <UiText message={"Drop to upload"} />
                                     </p>
                                 </div>
                             )}
@@ -1550,7 +1552,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                     <div className="flex h-12 shrink-0 items-center justify-center px-1">
                         <button
                             onClick={() => setExplorerCollapsed(false)}
-                            title="Expand explorer"
+                            title={tUi("Expand explorer")}
                             className="p-1 rounded text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                         >
                             <ChevronRight className="h-3.5 w-3.5" />
@@ -1565,7 +1567,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
             {/* CENTER: Document Panel */}
             <div
                 role="region"
-                aria-label="Document viewer"
+                aria-label={tUi("Document viewer")}
                 style={{ minWidth: DOCUMENT_MIN }}
                 className={cn(
                     "relative flex flex-1 flex-col overflow-hidden rounded-lg",
@@ -1592,7 +1594,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                 {documentDragOver && (
                     <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center rounded-lg bg-white/50 backdrop-blur-md">
                         <p className="font-serif text-xl text-gray-900">
-                            Drop files here to open
+                            <UiText message={"Drop files here to open"} />
                         </p>
                     </div>
                 )}
@@ -1673,9 +1675,9 @@ export default function ProjectAssistantChatPage({ params }: Props) {
             {documentViewers.confirmation}
             <ConfirmPopup
                 open={!!deleteTarget}
-                title="Delete file?"
-                message={`Delete “${deleteTarget?.filename ?? "this file"}” and its versions, including any unsaved edits? This cannot be undone.`}
-                confirmLabel="Delete file"
+                title={tUi("Delete file?")}
+                message={tUi("Delete “{0}” and its versions, including any unsaved edits? This cannot be undone.", deleteTarget?.filename ?? "this file")}
+                confirmLabel={tUi("Delete file")}
                 confirmVariant="danger"
                 confirmStatus={deletingDocument ? "loading" : "idle"}
                 confirmDisabled={!canEditContent}
@@ -1741,19 +1743,19 @@ export default function ProjectAssistantChatPage({ params }: Props) {
             <WarningPopup
                 open={!!projectPicker.error}
                 onClose={projectPicker.clearError}
-                title="Projects could not be loaded"
+                title={tUi("Projects could not be loaded")}
                 message={projectPicker.error ?? ""}
             />
             <WarningPopup
                 open={!!uploadWarning}
                 onClose={() => setUploadWarning(null)}
-                title="Some files were not uploaded"
+                title={tUi("Some files were not uploaded")}
                 message={uploadWarning ?? ""}
             />
             <WarningPopup
                 open={!!documentDropError}
                 onClose={() => setDocumentDropError(null)}
-                title="Files could not be opened"
+                title={tUi("Files could not be opened")}
                 message={documentDropError ?? ""}
             />
             <ProjectPickerModal
@@ -1763,9 +1765,9 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                 loading={projectPicker.loading}
                 selectedId={projectPicker.selectedId}
                 onSelect={projectPicker.setSelectedId}
-                breadcrumbs={["IDE", "Select project"]}
+                breadcrumbs={[tUi("IDE"), tUi("Select project")]}
                 primaryAction={{
-                    label: "Select project",
+                    label: tUi("Select project"),
                     type: "button",
                     onClick: selectProject,
                     disabled: !projectPicker.selectedId,
@@ -1790,7 +1792,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
             />
             <WarningPopup
                 open={!!explorerDownload.error}
-                title="Download failed"
+                title={tUi("Download failed")}
                 message={explorerDownload.error}
                 onClose={explorerDownload.clearError}
             />
@@ -1815,24 +1817,24 @@ export default function ProjectAssistantChatPage({ params }: Props) {
             />
             <ConfirmPopup
                 open={!!pendingDeleteFolder}
-                title="Delete folder?"
+                title={tUi("Delete folder?")}
                 message={
                     pendingDeleteFolder ? (
                         <div className="space-y-2">
                             <p>
-                                This will permanently delete{" "}
+                                <UiText message={"This will permanently delete"} />{" "}
                                 <span className="font-medium text-gray-950">
                                     {pendingDeleteFolder.folderIds.length}{" "}
                                     {pendingDeleteFolder.folderIds.length === 1
-                                        ? "folder"
-                                        : "folders"}
+                                        ? (<><UiText message={"folder"} /></>)
+                                        : (<><UiText message={"folders"} /></>)}
                                 </span>
-                                , including{" "}
+                                <UiText message={", including"} />{" "}
                                 <span className="font-medium text-gray-950">
                                     {pendingDeleteFolder.folder.name}
                                 </span>
                                 {pendingDeleteFolder.folderIds.length > 1
-                                    ? " and its nested subfolders"
+                                    ? (<> {" "}<UiText message={"and its nested subfolders"} /></>)
                                     : ""}
                                 .
                             </p>
@@ -1840,19 +1842,19 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                                 <p>
                                     {pendingDeleteFolder.documentCount}{" "}
                                     {pendingDeleteFolder.documentCount === 1
-                                        ? "document"
-                                        : "documents"}{" "}
-                                    in the deleted{" "}
+                                        ? (<><UiText message={"document"} /></>)
+                                        : (<><UiText message={"documents"} /></>)}{" "}
+                                    <UiText message={"in the deleted"} />{" "}
                                     {pendingDeleteFolder.folderIds.length === 1
-                                        ? "folder"
-                                        : "folders"}{" "}
-                                    will also be permanently deleted.
+                                        ? (<><UiText message={"folder"} /></>)
+                                        : (<><UiText message={"folders"} /></>)}{" "}
+                                    <UiText message={"will also be permanently deleted."} />
                                 </p>
                             )}
                         </div>
                     ) : undefined
                 }
-                confirmLabel="Delete"
+                confirmLabel={tUi("Delete")}
                 confirmVariant="danger"
                 confirmStatus={
                     pendingDeleteFolderStatus === "deleting"
@@ -1861,7 +1863,7 @@ export default function ProjectAssistantChatPage({ params }: Props) {
                           ? "complete"
                           : "idle"
                 }
-                cancelLabel="Cancel"
+                cancelLabel={tUi("Cancel")}
                 onCancel={() => {
                     if (pendingDeleteFolderStatus === "deleting") return;
                     clearFolderDeleteDismissTimer();

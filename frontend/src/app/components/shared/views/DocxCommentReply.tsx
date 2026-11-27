@@ -2,6 +2,8 @@
 // Render reads the mutable editor facade (snapshot, review items); React
 // Compiler would cache those reads per editor instance and go stale.
 "use no memo";
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
+
 import { useEffect, useId, useRef, useState } from "react";
 import type { Editor } from "@docx-editor.dev/core/contracts/editor";
 import { useEditorSnapshot } from "@docx-editor.dev/react";
@@ -20,6 +22,7 @@ export function DocxCommentReply({
     author?: string;
     onClose: () => void;
 }) {
+    const tUi = useUiText();
     useEditorSnapshot(editor);
     const [draft, setDraft] = useState("");
     const [error, setError] = useState<string | null>(null);
@@ -73,7 +76,7 @@ export function DocxCommentReply({
             }}
         >
             <label htmlFor={id} className="block font-medium">
-                Reply to comment
+                <UiText message={"Reply to comment"} />
             </label>
             <textarea
                 id={id}
@@ -85,22 +88,22 @@ export function DocxCommentReply({
                     FORM_CONTROL_GLASS_CLASS,
                     "keyboard-focus-ring min-h-24 resize-y py-2 text-xs",
                 )}
-                placeholder="Write a reply…"
+                placeholder={tUi("Write a reply…")}
             />
             {error && (
                 <p role="alert" className="text-destructive">
-                    {error}
+                    <UiText message={error} />
                 </p>
             )}
             <div className="flex justify-end gap-2">
-                <TextButtonUI onClick={onClose}>Cancel</TextButtonUI>
+                <TextButtonUI onClick={onClose}><UiText message={"Cancel"} /></TextButtonUI>
                 <PillButtonUI
                     type="submit"
                     size="xs"
                     tone="black"
                     disabled={disabled}
                 >
-                    Reply
+                    <UiText message={"Reply"} />
                 </PillButtonUI>
             </div>
         </form>

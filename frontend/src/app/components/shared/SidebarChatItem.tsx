@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -54,6 +55,7 @@ export function SidebarChatItem({
     responseStatus,
     onOpenInSideChat,
 }: Props) {
+    const tUi = useUiText();
     const { renameChat, deleteChat } = useChatHistoryContext();
     const router = useRouter();
     const [leaveOpen, setLeaveOpen] = useState(false);
@@ -128,7 +130,7 @@ export function SidebarChatItem({
                     {responseStatus === "loading" ? (
                         <Loader2
                             role="status"
-                            aria-label={`${chatTitle} response loading`}
+                            aria-label={tUi("{0} response loading", chatTitle)}
                             className="h-3.5 w-3.5 animate-spin text-blue-600 motion-reduce:animate-none"
                         />
                     ) : (
@@ -172,7 +174,7 @@ export function SidebarChatItem({
                         {projectName && (
                             <span className="text-gray-400 font-normal">{projectName}: </span>
                         )}
-                        {chat.title ?? "Untitled chat"}
+                        {chat.title ?? (<><UiText message={"Untitled chat"} /></>)}
                     </span>
                 </button>
 
@@ -189,7 +191,7 @@ export function SidebarChatItem({
                     would be a claim we cannot make. */}
                 {chat.is_owner === false && (
                     <span className="mx-1 shrink-0 text-xs text-gray-400 font-normal">
-                        Shared
+                        <UiText message={"Shared"} />
                     </span>
                 )}
 
@@ -197,7 +199,7 @@ export function SidebarChatItem({
                     <DropdownTrigger asChild>
                         <button
                             type="button"
-                            aria-label={`Actions for ${chat.title ?? "Untitled chat"}`}
+                            aria-label={tUi("Actions for {0}", chat.title ?? "Untitled chat")}
                             className={`flex h-6 w-0 shrink-0 items-center justify-center overflow-hidden rounded-md bg-transparent text-gray-500 opacity-0 transition-opacity hover:text-gray-900 ${
                                 actionsRevealed
                                     ? "w-6 opacity-100"
@@ -215,16 +217,16 @@ export function SidebarChatItem({
                                 className="max-md:hidden"
                             >
                                 <MessageSquare aria-hidden="true" className="mr-2 h-4 w-4" />
-                                Open in side chat
+                                <UiText message={"Open in side chat"} />
                             </DropdownItem>
                         )}
                         {canShare && <DropdownItem onSelect={() => setShareOpen(true)}>
                             <Users className="mr-2 h-4 w-4" />
-                            Share
+                            <UiText message={"Share"} />
                         </DropdownItem>}
                         {canRename && <DropdownItem onSelect={() => setRenameOpen(true)}>
                             <Pencil className="mr-2 h-4 w-4" />
-                            Rename
+                            <UiText message={"Rename"} />
                         </DropdownItem>}
                         {canDelete && <DropdownItem
                             onSelect={() => {
@@ -236,11 +238,11 @@ export function SidebarChatItem({
                             className="text-red-600 focus:text-red-600"
                         >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
+                            <UiText message={"Delete"} />
                         </DropdownItem>}
                         {canLeave && <DropdownItem onSelect={() => setLeaveOpen(true)}>
                             <LogOut className="mr-2 h-4 w-4" />
-                            Leave
+                            <UiText message={"Leave"} />
                         </DropdownItem>}
                     </DropdownContent>
                 </Dropdown>}
@@ -260,8 +262,8 @@ export function SidebarChatItem({
             />}
             <RenameModal
                 open={renameOpen}
-                breadcrumbs={["Assistant", "Rename Chat"]}
-                label="Chat title"
+                breadcrumbs={[tUi("Assistant"), tUi("Rename Chat")]}
+                label={tUi("Chat title")}
                 initialValue={chat.title?.trim() || "Untitled chat"}
                 saving={renaming}
                 onClose={() => {
@@ -271,13 +273,13 @@ export function SidebarChatItem({
             />
             <WarningPopup
                 open={!!deleteError}
-                title="Chat not deleted"
+                title={tUi("Chat not deleted")}
                 message={deleteError}
                 onClose={() => setDeleteError(null)}
             />
             <WarningPopup
                 open={!!renameError}
-                title="Chat not renamed"
+                title={tUi("Chat not renamed")}
                 message={renameError}
                 onClose={() => setRenameError(null)}
             />

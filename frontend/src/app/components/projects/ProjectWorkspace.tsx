@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
     createContext,
     type ReactNode,
@@ -174,6 +175,7 @@ export function ProjectWorkspaceProvider({
     projectId: string;
     children: ReactNode;
 }) {
+    const tUi = useUiText();
     const [project, setProject] = useState<Project | null>(null);
     const [folders, setFolders] = useState<ProjectFolder[]>([]);
     const [projectLoading, setProjectLoading] = useState(true);
@@ -665,9 +667,9 @@ export function ProjectWorkspaceProvider({
 
                     <ConfirmPopup
                         open={deleteProjectConfirmOpen}
-                        title="Delete project?"
-                        message="This will permanently delete the project and its related documents, chats, and tabular reviews."
-                        confirmLabel="Delete"
+                        title={tUi("Delete project?")}
+                        message={tUi("This will permanently delete the project and its related documents, chats, and tabular reviews.")}
+                        confirmLabel={tUi("Delete")}
                         confirmVariant="danger"
                         confirmStatus={
                             deleteProjectStatus === "deleting"
@@ -676,7 +678,7 @@ export function ProjectWorkspaceProvider({
                                   ? "complete"
                                   : "idle"
                         }
-                        cancelLabel="Cancel"
+                        cancelLabel={tUi("Cancel")}
                         onCancel={() => {
                             if (deleteProjectStatus === "deleting") return;
                             setDeleteProjectConfirmOpen(false);
@@ -767,7 +769,7 @@ export function ProjectSectionToolbar({
                 backAction ? (
                     <TabPillButtonUI onClick={backAction} className="pl-2">
                         <ChevronLeft className="h-3.5 w-3.5" />
-                        Back
+                        <UiText message={"Back"} />
                     </TabPillButtonUI>
                 ) : undefined
             }

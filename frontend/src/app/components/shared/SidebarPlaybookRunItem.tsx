@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import {
@@ -30,6 +31,7 @@ export function SidebarPlaybookRunItem({
     status?: "loading" | "complete";
     onOpen: () => void;
 }) {
+    const tUi = useUiText();
     const { titleRef, titleStyle, slideHandlers } = useSidebarTitleSlide();
     const documentName = run.documentName?.trim() || "Untitled document";
     const playbookName = run.playbookName.trim() || "Untitled playbook";
@@ -53,7 +55,7 @@ export function SidebarPlaybookRunItem({
                 {status === "loading" ? (
                     <Loader2
                         role="status"
-                        aria-label={`${documentName} review running`}
+                        aria-label={tUi("{0} review running", documentName)}
                         className="h-3.5 w-3.5 animate-spin text-blue-600 motion-reduce:animate-none"
                     />
                 ) : status === "complete" ? (

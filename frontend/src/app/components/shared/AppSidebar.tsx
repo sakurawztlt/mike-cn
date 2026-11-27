@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { UserAvatar } from "@/app/components/ui/user-avatar";
 
 import {
@@ -111,6 +112,7 @@ interface AppSidebarProps {
 
 /** Renders workspace navigation, recent content, and the current account menu with its photo or monogram. */
 export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
+    const tUi = useUiText();
     const { user, signOut } = useAuth();
     const { profile } = useUserProfile();
     const {
@@ -516,7 +518,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                     <span
                                         data-slot="sidebar-heading-loading"
                                         role="status"
-                                        aria-label="Loading workspace"
+                                        aria-label={tUi("Loading workspace")}
                                         className={cn("h-5 w-28 rounded bg-gray-200", shouldAnimate ? "sidebar-heading-enter" : "animate-pulse")}
                                     />
                                 ) : (
@@ -540,13 +542,13 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                         }}
                         onPointerEnter={() => setToggleHoverSuppressed(false)}
                         onPointerLeave={() => setToggleHoverSuppressed(false)}
-                        aria-label={isOpen ? "Close sidebar" : "Open sidebar"}
+                        aria-label={isOpen ? tUi("Close sidebar") : tUi("Open sidebar")}
                         className={cn(
                             "group flex h-8 w-8 shrink-0 items-center justify-center transition-[border-radius] duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500/40",
                             isOpen ? "rounded-md" : "rounded-[16px]",
                             !toggleHoverSuppressed && LIQUID_GLASS_HOVER_CLASS,
                         )}
-                        title={isOpen ? "Close sidebar" : "Open sidebar"}
+                        title={isOpen ? tUi("Close sidebar") : tUi("Open sidebar")}
                     >
                         {isOpen ? (
                             <PanelLeft aria-hidden="true" className="h-4 w-4 shrink-0" />
@@ -581,7 +583,8 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                 <div key={href} className="px-1.5 py-0.5">
                                     <button
                                         onClick={() => router.push(href)}
-                                        title={!isOpen ? label : ""}
+                                        title={!isOpen ? tUi(label) : ""}
+                                        aria-label={tUi(label)}
                                         className={cn(
                                             "w-full h-8 flex items-center gap-2 px-2 py-2 rounded-md transition-colors text-left",
                                             isActive
@@ -605,7 +608,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                         : ""
                                                 }`}
                                             >
-                                                {label}
+                                                {tUi(label)}
                                             </span>
                                         )}
                                     </button>
@@ -624,7 +627,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                         shouldAnimate ? "sidebar-fade-in" : ""
                                     }`}
                                 >
-                                    <span>Recent Projects</span>
+                                    <span><UiText message={"Recent Projects"} /></span>
                                     <ChevronDown
                                         className={`h-3.5 w-3.5 transition-transform ${
                                             projectsCollapsed ? "-rotate-90" : ""
@@ -668,7 +671,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                         : ""
                                                 }`}
                                             >
-                                                No projects yet
+                                                <UiText message={"No projects yet"} />
                                             </div>
                                         ) : (
                                             <div
@@ -730,7 +733,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                         shouldAnimate ? "sidebar-fade-in" : ""
                                     }`}
                                 >
-                                    <span>History</span>
+                                    <span><UiText message={"History"} /></span>
                                     <ChevronDown
                                         className={`h-3.5 w-3.5 transition-transform ${
                                             historyCollapsed ? "-rotate-90" : ""
@@ -740,7 +743,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                 <div
                                     id="sidebar-history"
                                     role="region"
-                                    aria-label="History"
+                                    aria-label={tUi("History")}
                                     className={cn(
                                         "min-h-0 flex-1 overflow-y-auto",
                                         historyCollapsed && "hidden",
@@ -772,7 +775,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                     : ""
                                             }`}
                                         >
-                                            {!history.error && "No history yet"}
+                                            {!history.error && (<><UiText message={"No history yet"} /></>)}
                                         </div>
                                     ) : (
                                         <>
@@ -811,7 +814,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                                             >
                                                                 <span className="flex h-4 w-4 shrink-0 items-center justify-center">
                                                                     {status === "loading" ? (
-                                                                        <Loader2 role="status" aria-label={`${title} review running`} className="h-3.5 w-3.5 animate-spin text-blue-600 motion-reduce:animate-none" />
+                                                                        <Loader2 role="status" aria-label={tUi("{0} review running", title)} className="h-3.5 w-3.5 animate-spin text-blue-600 motion-reduce:animate-none" />
                                                                     ) : status === "complete" ? (
                                                                         <TabularReviewCompleteIcon className="h-3.5 w-3.5" />
                                                                     ) : (
@@ -898,7 +901,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                             onClick={() => void history.retry()}
                                             className="mx-3.5 my-2 rounded text-left text-xs text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
                                         >
-                                            Some history could not be loaded. Try again
+                                            <UiText message={"Some history could not be loaded. Try again"} />
                                         </button>
                                     )}
                                 </div>
@@ -917,7 +920,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                           <DropdownTrigger asChild>
                             <button
                                 type="button"
-                                aria-label="Account menu"
+                                aria-label={tUi("Account menu")}
                                 className={cn(
                                     "flex h-9 w-full shrink-0 items-center px-[7px] outline-none [transition:border-radius_300ms_cubic-bezier(0.4,0,0.2,1),background-color_150ms,color_150ms] focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2",
                                     isOpen ? "rounded-xl" : "rounded-[18px]",
@@ -964,10 +967,10 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                           and weight of the sidebar's own
                                           section headings. */}
                                       <DropdownLabel className="px-2 text-xs font-semibold normal-case tracking-normal">
-                                          Workspace
+                                          <UiText message={"Workspace"} />
                                       </DropdownLabel>
                                       <DropdownRadioGroup
-                                          aria-label="Workspace"
+                                          aria-label={tUi("Workspace")}
                                           value={
                                               workspaceId ?? PERSONAL_WORKSPACE
                                           }
@@ -1000,7 +1003,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                   className="h-8 gap-2 rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:text-gray-700 focus:text-gray-700 data-[selected=true]:text-gray-900 data-[selected=true]:hover:text-gray-900 data-[selected=true]:focus:text-gray-900"
                               >
                                   <SettingsSkeuoIcon className="h-4 w-4 text-black" />
-                                  Settings
+                                  <UiText message={"Settings"} />
                               </DropdownItem>
                               {/* The active organization's own settings.
                                   In the personal workspace there is none:
@@ -1016,7 +1019,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                       className="h-8 gap-2 rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:text-gray-700 focus:text-gray-700 data-[selected=true]:text-gray-900 data-[selected=true]:hover:text-gray-900 data-[selected=true]:focus:text-gray-900"
                                   >
                                       <OrganizationSkeuoIcon className="h-4 w-4 text-black" />
-                                      Organization
+                                      <UiText message={"Organization"} />
                                   </DropdownItem>
                               ) : null}
                               <DropdownItem
@@ -1026,7 +1029,7 @@ export function AppSidebar({ isOpen, onToggle }: AppSidebarProps) {
                                   className="h-8 gap-2 rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:text-gray-700 focus:text-gray-700 data-[selected=true]:text-gray-900 data-[selected=true]:hover:text-gray-900 data-[selected=true]:focus:text-gray-900"
                               >
                                   <SignOutSkeuoIcon className="h-4 w-4 text-black" />
-                                  Sign out
+                                  <UiText message={"Sign out"} />
                               </DropdownItem>
                           </DropdownContent>
                         </Dropdown>

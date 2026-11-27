@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -136,6 +137,7 @@ export function SidebarProjectItem({
     onExpandedChange,
     onOpenProject,
 }: Props) {
+    const tUi = useUiText();
     const projectPath = `/projects/${project.id}`;
     const isActive =
         pathname === projectPath || pathname.startsWith(`${projectPath}/`);
@@ -238,7 +240,7 @@ export function SidebarProjectItem({
                 }}
                 className="font-medium text-gray-700 hover:text-gray-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
             >
-                Retry
+                <UiText message={"Retry"} />
             </button>
         </li>
     );
@@ -289,7 +291,7 @@ export function SidebarProjectItem({
                     onClick={() => onExpandedChange(!expanded)}
                     aria-expanded={expanded}
                     aria-controls={expanded ? listId : undefined}
-                    aria-label={`${expanded ? "Hide" : "Show"} recent chats and reviews in ${project.name}`}
+                    aria-label={tUi("{0} recent chats and reviews in {1}", expanded ? "Hide" : "Show", project.name)}
                     className={cn(
                         "flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-400 transition-opacity hover:text-gray-700 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40",
                         expanded || isActive
@@ -338,7 +340,7 @@ export function SidebarProjectItem({
                         )
                     ) : items && items.length === 0 ? (
                         <li className="flex min-h-7 items-center pl-2 pr-2 text-xs text-gray-500">
-                            No chats or reviews yet
+                            <UiText message={"No chats or reviews yet"} />
                         </li>
                     ) : (
                         <>
@@ -396,7 +398,7 @@ export function SidebarProjectItem({
                                         aria-controls={listId}
                                         className="flex h-7 w-full items-center rounded-md pl-2 pr-2 text-left text-xs text-gray-500 transition-colors hover:text-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500/40 disabled:cursor-default"
                                     >
-                                        {loadingMore ? "Loading..." : "See more"}
+                                        {loadingMore ? (<><UiText message={"Loading..."} /></>) : (<><UiText message={"See more"} /></>)}
                                     </button>
                                 </li>
                             )}

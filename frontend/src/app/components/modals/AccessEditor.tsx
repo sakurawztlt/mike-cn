@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { UserAvatar } from "@/app/components/ui/user-avatar";
 
 import { useState, type ReactNode } from "react";
@@ -93,6 +94,7 @@ function AccessRolePill({
     onChange: (role: AccessAssignmentRole) => void;
     options: AccessAssignmentRole[];
 }) {
+    const tUi = useUiText();
     const tone = accessRoleTone(role);
     const className = `inline-flex h-6 items-center justify-self-start justify-center gap-1 rounded-full px-2 text-left text-[11px] font-medium ${tone}`;
 
@@ -103,7 +105,7 @@ function AccessRolePill({
             <DropdownTrigger asChild>
                 <button
                     type="button"
-                    aria-label={`Role for ${label}`}
+                    aria-label={tUi("Role for {0}", label)}
                     disabled={disabled}
                     className={`${className} transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:cursor-wait disabled:opacity-50`}
                 >
@@ -146,12 +148,13 @@ function RemoveActionDropdown({
     disabled?: boolean;
     onRemove: () => void;
 }) {
+    const tUi = useUiText();
     return (
         <Dropdown>
             <DropdownTrigger asChild>
                 <button
                     type="button"
-                    aria-label={`Actions for ${label}`}
+                    aria-label={tUi("Actions for {0}", label)}
                     disabled={disabled}
                     className="flex h-6 w-6 items-center justify-center rounded-full text-xs text-gray-500 hover:bg-gray-200/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:opacity-50"
                 >
@@ -166,7 +169,7 @@ function RemoveActionDropdown({
                     onSelect={onRemove}
                     className="text-red-500 hover:!bg-red-500/10 focus:!bg-red-500/10 data-[highlighted]:!bg-red-500/10"
                 >
-                    Remove
+                    <UiText message={"Remove"} />
                 </DropdownItem>
             </DropdownContent>
         </Dropdown>
@@ -226,6 +229,7 @@ function OrganizationMemberPicker({
     disabled: boolean;
     onSelect: (member: AccessRow) => void;
 }) {
+    const tUi = useUiText();
     const [query, setQuery] = useState("");
     const [focused, setFocused] = useState(false);
     const normalizedQuery = query.trim().toLowerCase();
@@ -281,7 +285,7 @@ function OrganizationMemberPicker({
             {showResults ? (
                 <div
                     role="listbox"
-                    aria-label={`${label} matches`}
+                    aria-label={tUi("{0} matches", label)}
                     className={`absolute left-0 right-0 top-full z-[260] mt-1 max-h-48 overflow-y-auto rounded-xl p-1 ${LIQUID_GLASS_FLOAT_CLASS}`}
                 >
                     {matches.length > 0 ? (
@@ -317,7 +321,7 @@ function OrganizationMemberPicker({
                         })
                     ) : (
                         <p className="px-3 py-2 text-xs text-gray-400">
-                            No matching organization members.
+                            <UiText message={"No matching organization members."} />
                         </p>
                     )}
                 </div>
@@ -361,6 +365,7 @@ function OrganizationAssignmentList({
      */
     ownerRoleImplied?: boolean;
 }) {
+    const tUi = useUiText();
     const WITH_ROLE = "grid-cols-[minmax(0,1fr)_5rem_1.5rem] sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_5rem_1.5rem]";
     const WITHOUT_ROLE = "grid-cols-[minmax(0,1fr)_1.5rem] sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_1.5rem]";
     return (
@@ -368,7 +373,7 @@ function OrganizationAssignmentList({
             {loading ? (
                 <div className="flex min-h-26 items-center justify-center gap-2 text-xs text-gray-400">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    Loading organization members…
+                    <UiText message={"Loading organization members…"} />
                 </div>
             ) : assignments.length === 0 ? (
                 <div className="flex min-h-26 items-center justify-center text-xs text-gray-400">
@@ -405,7 +410,7 @@ function OrganizationAssignmentList({
                                         label={
                                             assignment.email ??
                                             assignment.display_name ??
-                                            "member"
+                                            tUi("member")
                                         }
                                         // The creator is always an Owner.
                                         editable={
@@ -424,7 +429,7 @@ function OrganizationAssignmentList({
                                         label={
                                             assignment.email ??
                                             assignment.display_name ??
-                                            "member"
+                                            tUi("member")
                                         }
                                         onRemove={() =>
                                             void onRemove(assignment)
@@ -517,6 +522,7 @@ export function OrganizationAccessEditor({
         assignment: OrganizationAccessAssignment,
     ) => Promise<unknown> | unknown;
 }) {
+    const tUi = useUiText();
     const isPublic = visibility === "organization";
     // A public item everyone can already edit: what is left to give is
     // ownership. Otherwise people are added as Editors, public or not.
@@ -614,7 +620,7 @@ export function OrganizationAccessEditor({
                     <OrganizationMemberPicker
                         id="organization-owner-picker"
                         label={ownerLabel}
-                        placeholder="Search members…"
+                        placeholder={tUi("Search members…")}
                         description={ownerDescription}
                         members={availableMembers}
                         disabled={disabled || loading}
@@ -626,8 +632,8 @@ export function OrganizationAccessEditor({
                     // be seen beside the person it belongs to.
                     <OrganizationMemberPicker
                         id="organization-people-picker"
-                        label="People"
-                        placeholder="Search members…"
+                        label={tUi("People")}
+                        placeholder={tUi("Search members…")}
                         description={peopleDescription}
                         members={availableMembers}
                         disabled={disabled || loading}
@@ -636,15 +642,15 @@ export function OrganizationAccessEditor({
                 )}
                 <OrganizationAssignmentList
                     label={
-                        pickOwners ? `${ownerLabel} list` : "People with access"
+                        pickOwners ? tUi("{0} list", ownerLabel) : tUi("People with access")
                     }
                     assignments={sharedAssignments}
                     emptyMessage={
                         pickOwners
-                            ? "No additional Owners added."
+                            ? tUi("No additional Owners added.")
                             : isPublic
-                              ? "Nobody has been given more than view access."
-                              : "Not shared with anyone yet."
+                              ? tUi("Nobody has been given more than view access.")
+                              : tUi("Not shared with anyone yet.")
                     }
                     loading={loading}
                     disabled={disabled}
@@ -659,7 +665,7 @@ export function OrganizationAccessEditor({
 
             {error ? (
                 <p role="alert" className="text-xs text-red-500">
-                    {error}
+                    <UiText message={error} />
                 </p>
             ) : null}
 
@@ -676,8 +682,8 @@ export function OrganizationAccessEditor({
                             >
                                 <span>
                                     {denyCount > 0
-                                        ? `Deny list (${denyCount})`
-                                        : "Deny list"}
+                                        ? (<><UiText message={"Deny list ({0})"} values={[String(denyCount)]} /></>)
+                                        : (<><UiText message={"Deny list"} /></>)}
                                 </span>
                                 <ChevronDown
                                     aria-hidden="true"
@@ -697,17 +703,17 @@ export function OrganizationAccessEditor({
                         >
                             <OrganizationMemberPicker
                                 id="organization-deny-picker"
-                                label="Deny list"
+                                label={tUi("Deny list")}
                                 showLabel={false}
-                                placeholder="Search members…"
+                                placeholder={tUi("Search members…")}
                                 members={availableMembers}
                                 disabled={disabled || loading}
                                 onSelect={(member) => onAssign(member, "deny")}
                             />
                             <OrganizationAssignmentList
-                                label="Deny list entries"
+                                label={tUi("Deny list entries")}
                                 assignments={deniedAssignments}
-                                emptyMessage="No members denied."
+                                emptyMessage={tUi("No members denied.")}
                                 loading={loading}
                                 disabled={disabled}
                                 onRemove={onRemove}
@@ -762,6 +768,7 @@ export function AccessEditor({
     onRemove?: (row: AccessRow) => Promise<unknown> | unknown;
     error?: string | null;
 }) {
+    const tUi = useUiText();
     const roleOptions = PROJECT_ROLES;
     const normalizedCurrentEmail = currentUserEmail?.trim().toLowerCase();
     const normalizedCurrentUserId = currentUserId?.trim() || null;
@@ -773,7 +780,7 @@ export function AccessEditor({
                     <InfoLabelTooltip
                         label={
                             <h2 className="text-sm font-medium text-gray-700">
-                                Share Access
+                                <UiText message={"Share Access"} />
                             </h2>
                         }
                         tooltipId="access-role-rights"
@@ -781,7 +788,7 @@ export function AccessEditor({
                     >
                         <div>
                             <p className="mb-2 text-xs font-medium text-gray-700">
-                                Roles and rights
+                                <UiText message={"Roles and rights"} />
                             </p>
                             <dl className="space-y-2">
                                 {PROJECT_ROLES.map((role) => (
@@ -806,7 +813,7 @@ export function AccessEditor({
                         onAdd={onAdd}
                         validateEmail={validateEmail}
                         busy={busy}
-                        placeholder="Add by email..."
+                        placeholder={tUi("Add by email...")}
                         autoFocus
                         submitLabel="Add"
                         submitVariant="attached"
@@ -815,7 +822,7 @@ export function AccessEditor({
                                 <DropdownTrigger asChild>
                                     <button
                                         type="button"
-                                        aria-label={`Role for the new recipient: ${accessRoleLabel(newRole)}`}
+                                        aria-label={tUi("Role for the new recipient: {0}", accessRoleLabel(newRole))}
                                         disabled={busy}
                                         className={`${INPUT_GROUP_ROLE_TRIGGER_CLASS} bg-transparent ${accessRoleTextTone(newRole)}`}
                                     >
@@ -853,25 +860,24 @@ export function AccessEditor({
                 invisible when a re-role or a revoke failed anywhere else. */}
             {error ? (
                 <p role="alert" className="text-xs text-red-500">
-                    {error}
+                    <UiText message={error} />
                 </p>
             ) : null}
 
             <section className="flex min-h-0 flex-1 flex-col">
                 {scope === "project" ? (
                     <p className="mb-3 text-xs text-gray-500">
-                        Access is inherited from the project and must be changed
-                        from the project&apos;s Access panel.
+                        <UiText message={"Access is inherited from the project and must be changed from the project's Access panel."} />
                     </p>
                 ) : null}
 
                 <div className="mb-1 hidden sm:grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)_5rem_1.5rem] gap-3 px-2 text-xs font-medium text-gray-500">
                     <div className="flex items-center gap-2">
-                        <span>Name</span>
+                        <span><UiText message={"Name"} /></span>
                         {loading ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
                     </div>
-                    <span className="justify-self-start text-left">Email</span>
-                    <span className="justify-self-start text-left">Role</span>
+                    <span className="justify-self-start text-left"><UiText message={"Email"} /></span>
+                    <span className="justify-self-start text-left"><UiText message={"Role"} /></span>
                     <span aria-hidden="true" />
                 </div>
 
@@ -898,7 +904,7 @@ export function AccessEditor({
                     // underneath it reads as a contradiction.
                     scope === "project" ? null : (
                         <div className="flex min-h-0 flex-1 items-center justify-center text-sm text-gray-400">
-                            No one has access yet.
+                            <UiText message={"No one has access yet."} />
                         </div>
                     )
                 ) : (

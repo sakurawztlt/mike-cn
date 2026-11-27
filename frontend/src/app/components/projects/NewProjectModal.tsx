@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import {
@@ -55,6 +56,7 @@ interface Props {
 
 /** Collects project details, pending access choices, and documents before creating the project. */
 export function NewProjectModal({ open, onClose, onCreated }: Props) {
+    const tUi = useUiText();
     const [step, setStep] = useState<"details" | "access" | "documents">(
         "details",
     );
@@ -496,15 +498,15 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
             open={open}
             onClose={handleClose}
             breadcrumbs={[
-                "Projects",
-                "New project",
+                tUi("Projects"),
+                tUi("New project"),
                 step === "details"
-                    ? "Details"
+                    ? tUi("Details")
                     : step === "access"
                       ? orgId === PERSONAL_WORKSPACE
-                          ? "Access"
-                          : "People"
-                      : "Add Documents",
+                          ? tUi("Access")
+                          : tUi("People")
+                      : tUi("Add Documents"),
             ]}
             secondaryAction={
                 step === "documents"
@@ -516,7 +518,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                       }
                     : step === "access"
                       ? {
-                            label: "Back",
+                            label: tUi("Back"),
                             type: "button",
                             onClick: () => setStep("details"),
                             disabled: loading,
@@ -526,7 +528,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
             cancelAction={
                 step === "documents"
                     ? {
-                          label: "Back",
+                          label: tUi("Back"),
                           onClick: () => setStep("access"),
                           // Back stays open once the project exists: a retry
                           // persists a changed memory choice before anything
@@ -538,7 +540,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                       }
                     : step === "access"
                       ? {
-                            label: "Skip",
+                            label: tUi("Skip"),
                             type: "button",
                             onClick: () => {
                                 setSharedUsers([]);
@@ -552,24 +554,24 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
             primaryAction={
                 step === "details"
                     ? {
-                          label: "Next",
+                          label: tUi("Next"),
                           type: "button",
                           onClick: () => setStep("access"),
                           disabled: !name.trim() || loading,
                       }
                     : step === "access"
                       ? {
-                            label: "Next",
+                            label: tUi("Next"),
                             type: "button",
                             onClick: () => setStep("documents"),
                             disabled: loading,
                         }
                       : {
                             label: loading
-                                ? "Creating…"
+                                ? tUi("Creating…")
                                 : pendingProject
-                                  ? "Continue"
-                                  : "Create project",
+                                  ? tUi("Continue")
+                                  : tUi("Create project"),
                             type: "button",
                             onClick: () => void createProjectFromDocuments(),
                             disabled: !name.trim() || loading,
@@ -593,14 +595,14 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                     <div className="space-y-6">
                         <div>
                             <FieldLabel htmlFor="new-project-name">
-                                Project name
+                                <UiText message={"Project name"} />
                             </FieldLabel>
                             <FormTextInput
                                 id="new-project-name"
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
-                                placeholder="Add project name"
+                                placeholder={tUi("Add project name")}
                                 variant="minimal"
                                 // Once the project EXISTS the retry reuses
                                 // `createdProjectRef` and never reads these
@@ -615,14 +617,14 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
 
                         <div>
                             <FieldLabel htmlFor="new-project-cm-number">
-                                项目编号（选填）
+                                <UiText message={"项目编号（选填）"} />
                             </FieldLabel>
                             <FormTextInput
                                 id="new-project-cm-number"
                                 type="text"
                                 value={cmNumber}
                                 onChange={(e) => setCmNumber(e.target.value)}
-                                placeholder="例如：律所内部编号"
+                                placeholder={tUi("例如：律所内部编号")}
                                 variant="minimal"
                                 className="text-xl text-gray-600"
                                 disabled={projectExists}
@@ -631,7 +633,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
 
                         <div>
                             <FieldLabel htmlFor="new-project-practice">
-                                Practice
+                                <UiText message={"Practice"} />
                             </FieldLabel>
                             <ProjectPracticeField
                                 id="new-project-practice"
@@ -662,24 +664,21 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                         ) : null}
                         {projectExists && (
                             <p className="text-sm text-gray-500">
-                                The project has been created, so its name,
-                                project number and practice area can no longer be changed
-                                here. Edit them from the project once this
-                                finishes.
+                                <UiText message={"The project has been created, so its name, project number and practice area can no longer be changed here. Edit them from the project once this finishes."} />
                             </p>
                         )}
 
                         <div>
-                            <FieldLabel as="p">Project memory</FieldLabel>
+                            <FieldLabel as="p"><UiText message={"Project memory"} /></FieldLabel>
                             <ToggleSwitchUI
                                 checked={memoryEnabled}
                                 onCheckedChange={(enabled) => {
                                     memoryEditedRef.current = true;
                                     setMemoryEnabled(enabled);
                                 }}
-                                aria-label="Enable project memory"
+                                aria-label={tUi("Enable project memory")}
                             >
-                                {memoryEnabled ? "On" : "Off"}
+                                {memoryEnabled ? (<><UiText message={"On"} /></>) : (<><UiText message={"Off"} /></>)}
                             </ToggleSwitchUI>
                         </div>
                     </div>
@@ -715,7 +714,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                             })),
                         ]}
                     >
-                        {uploadWarning && <p role="alert" className="shrink-0 px-2 py-1 text-sm text-red-600">{uploadWarning}</p>}
+                        {uploadWarning && <p role="alert" className="shrink-0 px-2 py-1 text-sm text-red-600"><UiText message={uploadWarning} /></p>}
                         <FileDirectory
                             selectedDocuments={selectedDocuments}
                             onChange={setSelectedDocuments}
@@ -728,7 +727,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                     // role="alert" so the failure is announced, not just
                     // painted red under a form the user may not be looking at.
                     <p role="alert" className="mt-3 text-sm text-red-500">
-                        {error}
+                        <UiText message={error} />
                     </p>
                 )}
             </form>

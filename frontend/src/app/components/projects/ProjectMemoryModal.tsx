@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useState } from "react";
 import { Brain } from "lucide-react";
 import {
@@ -44,6 +45,7 @@ export function ProjectMemoryModal({
     /** Report the file's enabled flag back to the surface that opened it. */
     onMemoryEnabledChange?: (enabled: boolean) => void;
 }) {
+    const tUi = useUiText();
     const [settingsMutation, setSettingsMutation] = useState<
         "enable" | "disable" | null
     >(null);
@@ -177,9 +179,9 @@ export function ProjectMemoryModal({
             open={open}
             onClose={requestClose}
             breadcrumbs={[
-                "Projects",
-                projectName ?? "Project",
-                "Project Memory",
+                tUi("Projects"),
+                projectName ?? tUi("Project"),
+                tUi("Project Memory"),
             ]}
             headerAction={
                 memory?.enabled && memoryActivityLabel(memory) ? (
@@ -209,7 +211,7 @@ export function ProjectMemoryModal({
                 ) : null
             }
             primaryAction={{
-                label: "Done",
+                label: tUi("Done"),
                 type: "button",
                 onClick: () => void requestClose(),
                 disabled: closing || settingsMutation !== null,
@@ -223,8 +225,8 @@ export function ProjectMemoryModal({
                     <GlassCardUI>
                         <EmptyState
                             icon={<Brain />}
-                            title="Project memory could not be loaded"
-                            description="Try again to inspect this project's shared memory."
+                            title={tUi("Project memory could not be loaded")}
+                            description={tUi("Try again to inspect this project's shared memory.")}
                             tone="error"
                             className="px-5 py-8"
                             action={
@@ -233,7 +235,7 @@ export function ProjectMemoryModal({
                                     size="sm"
                                     onClick={() => void load()}
                                 >
-                                    Retry
+                                    <UiText message={"Retry"} />
                                 </PillButtonUI>
                             }
                         />
@@ -242,10 +244,9 @@ export function ProjectMemoryModal({
                     <>
                         <div className="flex items-start justify-between gap-4">
                             <div>
-                                <FieldLabel as="p">Project memory</FieldLabel>
+                                <FieldLabel as="p"><UiText message={"Project memory"} /></FieldLabel>
                                 <p className="text-sm text-gray-500">
-                                    Consists of shared project context curated
-                                    from chats in this project.
+                                    <UiText message={"Consists of shared project context curated from chats in this project."} />
                                 </p>
                             </div>
                             <ToggleSwitchUI
@@ -267,7 +268,7 @@ export function ProjectMemoryModal({
                                     disableMemoryConfirmOpen ||
                                     discardConfirmOpen
                                 }
-                                aria-label="Enable project memory"
+                                aria-label={tUi("Enable project memory")}
                                 aria-busy={settingsMutation !== null}
                             />
                         </div>
@@ -276,11 +277,11 @@ export function ProjectMemoryModal({
                             <GlassCardUI>
                                 <EmptyState
                                     icon={<Brain />}
-                                    title="Project memory is off"
+                                    title={tUi("Project memory is off")}
                                     description={
                                         canManage
-                                            ? "Turn it on to start a new shared project memory.md for future conversations."
-                                            : "A project owner can enable memory for future project conversations."
+                                            ? tUi("Turn it on to start a new shared project memory.md for future conversations.")
+                                            : tUi("A project owner can enable memory for future project conversations.")
                                     }
                                     className="px-5 py-8"
                                 />
@@ -330,9 +331,9 @@ export function ProjectMemoryModal({
 
             <ConfirmPopup
                 open={disableMemoryConfirmOpen}
-                title="Turn off project memory?"
+                title={tUi("Turn off project memory?")}
                 message={`This will delete the existing project memory.md file${dirty ? " and your unsaved draft" : ""}, cancel pending memory updates, and stop future memory updates until you turn project memory on again.`}
-                confirmLabel="Disable"
+                confirmLabel={tUi("Disable")}
                 confirmVariant="danger"
                 confirmStatus={
                     settingsMutation === "disable" ? "loading" : "idle"
@@ -345,9 +346,9 @@ export function ProjectMemoryModal({
 
             <ConfirmPopup
                 open={discardConfirmOpen}
-                title="Close without saving?"
-                message="The latest changes could not be saved to this project's memory.md. Closing now discards them."
-                confirmLabel="Close without saving"
+                title={tUi("Close without saving?")}
+                message={tUi("The latest changes could not be saved to this project's memory.md. Closing now discards them.")}
+                confirmLabel={tUi("Close without saving")}
                 confirmVariant="danger"
                 onConfirm={() => {
                     autosave.cancelPending();
@@ -365,8 +366,9 @@ export function ProjectMemoryModal({
 }
 
 function ProjectMemorySkeleton() {
+    const tUi = useUiText();
     return (
-        <div className="space-y-4" aria-label="Loading project memory">
+        <div className="space-y-4" aria-label={tUi("Loading project memory")}>
             <div className="space-y-2">
                 <div className="h-3 w-full max-w-xl animate-pulse rounded bg-gray-100" />
                 <div className="h-3 w-40 animate-pulse rounded bg-gray-100" />

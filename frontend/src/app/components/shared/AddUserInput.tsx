@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useState, type KeyboardEvent, type ReactNode } from "react";
 import { Loader2, UserPlus } from "lucide-react";
 import {
@@ -155,7 +156,7 @@ export function AddUserInput({
                         {(busy || checking) && (
                             <Loader2 className="h-3 w-3 animate-spin" />
                         )}
-                        Add
+                        <UiText message={"Add"} />
                     </button>
                 ) : showAddButton ? (
                     <PillButtonUI
@@ -169,7 +170,7 @@ export function AddUserInput({
                         title={submitLabel}
                         className="shrink-0"
                     >
-                        Add
+                        <UiText message={"Add"} />
                     </PillButtonUI>
                 ) : null}
             </div>

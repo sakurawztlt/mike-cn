@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   useEffect,
   useRef,
@@ -102,6 +103,7 @@ export function ImageCropModal({
   onSave: (dataUrl: string) => void;
   onRemove?: () => void;
 }) {
+    const tUi = useUiText();
   // Decode the upload into pixels before displaying it. The raw file never
   // becomes a DOM URL, so markup cannot be interpreted as preview content.
   const source = file ?? imageUrl ?? null;
@@ -226,11 +228,11 @@ export function ImageCropModal({
       onClose={() => {
         if (!busy) onCancel();
       }}
-      breadcrumbs={[isPhoto ? "Account" : name, isPhoto ? "Profile photo" : "Logo"]}
+      breadcrumbs={[isPhoto ? tUi("Account") : name, isPhoto ? tUi("Profile photo") : tUi("Logo")]}
       size="sm"
       className="h-auto max-h-[calc(100vh-2rem)]"
       primaryAction={{
-        label: saving ? "Saving..." : "Save",
+        label: saving ? tUi("Saving...") : tUi("Save"),
         variant: "blue",
         disabled: !frame || !changed || busy,
         onClick: () => {
@@ -244,7 +246,7 @@ export function ImageCropModal({
         },
       }}
       secondaryAction={onRemove ? {
-        label: removing ? "Removing..." : "Remove",
+        label: removing ? tUi("Removing...") : tUi("Remove"),
         variant: "danger",
         disabled: busy,
         onClick: onRemove,
@@ -254,21 +256,21 @@ export function ImageCropModal({
         data-modal-scroll="vertical"
         className="min-h-0 min-w-0 space-y-5 overflow-y-auto pb-4"
       >
-        {error ? <p role="alert" className="text-sm text-red-600">{error}</p> : null}
-        {saveError ? <p role="alert" className="text-sm text-red-600">That image could not be prepared. Choose another.</p> : null}
+        {error ? <p role="alert" className="text-sm text-red-600"><UiText message={error} /></p> : null}
+        {saveError ? <p role="alert" className="text-sm text-red-600"><UiText message={"That image could not be prepared. Choose another."} /></p> : null}
         {unreadable ? (
           <p role="alert" className="text-sm text-red-600">
-            That file could not be read as an image. Choose another.
+            <UiText message={"That file could not be read as an image. Choose another."} />
           </p>
         ) : (
           <>
             <div className="space-y-2">
-              <FieldLabel as="p">Position</FieldLabel>
+              <FieldLabel as="p"><UiText message={"Position"} /></FieldLabel>
               <div className="flex justify-center">
                 <div
                   role="group"
                   tabIndex={0}
-                  aria-label={`${isPhoto ? "Photo" : "Logo"} position. Drag, or use the arrow keys, to move the image.`}
+                  aria-label={tUi("{0} position. Drag, or use the arrow keys, to move the image.", isPhoto ? "Photo" : "Logo")}
                   onPointerDown={onPointerDown}
                   onPointerMove={onPointerMove}
                   onPointerUp={endDrag}
@@ -294,7 +296,7 @@ export function ImageCropModal({
             </div>
 
             <div className="space-y-2">
-              <FieldLabel htmlFor="organization-logo-zoom">Zoom</FieldLabel>
+              <FieldLabel htmlFor="organization-logo-zoom"><UiText message={"Zoom"} /></FieldLabel>
               <input
                 id="organization-logo-zoom"
                 type="range"
@@ -310,12 +312,12 @@ export function ImageCropModal({
                 className="block w-full accent-blue-600 disabled:opacity-40"
               />
               <p className="text-xs text-gray-500">
-                {isPhoto ? "Drag to position your photo and zoom to frame your face." : "Zoom out to keep the whole image, or in on the part that reads best small."}
+                {isPhoto ? (<><UiText message={"Drag to position your photo and zoom to frame your face."} /></>) : (<><UiText message={"Zoom out to keep the whole image, or in on the part that reads best small."} /></>)}
               </p>
             </div>
 
             <div className="space-y-2">
-              <FieldLabel as="p">{isPhoto ? "Preview" : "In the sidebar"}</FieldLabel>
+              <FieldLabel as="p">{isPhoto ? (<><UiText message={"Preview"} /></>) : (<><UiText message={"In the sidebar"} /></>)}</FieldLabel>
               {/* The sidebar's own heading: the mark at its size, then the
                   name in the sidebar's face. */}
               <div
@@ -342,7 +344,7 @@ export function ImageCropModal({
             </div>
 
             <p className="text-xs text-gray-500">
-              PNG, JPEG or WebP, up to 10 MB.
+              <UiText message={"PNG, JPEG or WebP, up to 10 MB."} />
             </p>
           </>
         )}

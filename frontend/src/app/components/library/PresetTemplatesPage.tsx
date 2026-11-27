@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useWorkspaceParam } from "@/app/contexts/WorkspaceContext";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -60,6 +61,7 @@ export function PresetTemplatesPage({
   /** The Templates folder the presets were opened from; copies land there. */
   folderId?: string | null;
 }) {
+    const tUi = useUiText();
   const router = useRouter();
   // Presets are added to the active workspace's template library.
   const workspace = useWorkspaceParam();
@@ -178,12 +180,12 @@ export function PresetTemplatesPage({
     <div className="flex h-full min-h-0 flex-col">
       <PageHeader
         breadcrumbs={[
-          { label: "Library", onClick: () => router.push("/library") },
+          { label: tUi("Library"), onClick: () => router.push("/library") },
           {
-            label: "Templates",
+            label: tUi("Templates"),
             onClick: () => router.push("/library/templates"),
           },
-          { label: "Presets" },
+          { label: tUi("Presets") },
           ...folderBreadcrumbs,
         ]}
         actions={[
@@ -191,7 +193,7 @@ export function PresetTemplatesPage({
             type: "search",
             value: search,
             onChange: setSearch,
-            placeholder: "Search presets...",
+            placeholder: tUi("Search presets..."),
           },
         ]}
       />
@@ -204,7 +206,7 @@ export function PresetTemplatesPage({
               className="pl-2"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
-              Back
+              <UiText message={"Back"} />
             </TabPillButtonUI>
           }
           actions={

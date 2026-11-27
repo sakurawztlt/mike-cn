@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useState } from "react";
 import { Users } from "lucide-react";
 import { Modal } from "@/app/components/modals/Modal";
@@ -42,6 +43,7 @@ export function ProjectDetailsModal({
     onSave,
     onShareProject,
 }: ProjectDetailsModalProps) {
+    const tUi = useUiText();
     const [nameDraft, setNameDraft] = useState("");
     const [cmDraft, setCmDraft] = useState("");
     const [practiceDraft, setPracticeDraft] = useState("");
@@ -160,11 +162,11 @@ export function ProjectDetailsModal({
         <Modal
             open={open}
             onClose={onClose}
-            breadcrumbs={["Projects", project.name, "Details"]}
+            breadcrumbs={[tUi("Projects"), project.name, tUi("Details")]}
             secondaryAction={
                 onShareProject
                     ? {
-                          label: "Share",
+                          label: tUi("Share"),
                           icon: <Users className="h-4 w-4" />,
                           onClick: onShareProject,
                       }
@@ -174,13 +176,13 @@ export function ProjectDetailsModal({
                 error ? (
                     <span className="text-sm text-red-600">{error}</span>
                 ) : saved ? (
-                    <span className="text-sm text-gray-400">Updated</span>
+                    <span className="text-sm text-gray-400"><UiText message={"Updated"} /></span>
                 ) : null
             }
             primaryAction={
                 canEdit
                     ? {
-                          label: saving ? "Updating..." : "Update",
+                          label: saving ? tUi("Updating...") : tUi("Update"),
                           onClick: () => void handleSave(),
                           disabled: saving || !hasChanges || !trimmedName,
                       }
@@ -191,7 +193,7 @@ export function ProjectDetailsModal({
             <div className="flex min-h-0 flex-1 flex-col gap-6 py-1">
                 <div>
                     <FieldLabel htmlFor="project-details-name">
-                        Project name
+                        <UiText message={"Project name"} />
                     </FieldLabel>
                     <FormTextInput
                         id="project-details-name"
@@ -202,14 +204,14 @@ export function ProjectDetailsModal({
                             setError(null);
                         }}
                         disabled={!canEdit || saving}
-                        placeholder="Add project name"
+                        placeholder={tUi("Add project name")}
                         variant="minimal"
                     />
                 </div>
 
                 <div>
                     <FieldLabel htmlFor="project-details-cm">
-                        项目编号（选填）
+                        <UiText message={"项目编号（选填）"} />
                     </FieldLabel>
                     <FormTextInput
                         id="project-details-cm"
@@ -220,7 +222,7 @@ export function ProjectDetailsModal({
                             setError(null);
                         }}
                         disabled={!canEdit || saving}
-                        placeholder="例如：律所内部编号"
+                        placeholder={tUi("例如：律所内部编号")}
                         variant="minimal"
                         className="text-xl text-gray-600"
                     />
@@ -228,7 +230,7 @@ export function ProjectDetailsModal({
 
                 <div>
                     <FieldLabel htmlFor="project-details-practice">
-                        Practice
+                        <UiText message={"Practice"} />
                     </FieldLabel>
                     <ProjectPracticeField
                         id="project-details-practice"
@@ -244,7 +246,7 @@ export function ProjectDetailsModal({
 
                 <div>
                     <FieldLabel htmlFor="project-details-org">
-                        Organisation
+                        <UiText message={"Organisation"} />
                     </FieldLabel>
                     <ModalSelect
                         id="project-details-org"

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { use, useCallback, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
@@ -40,6 +41,7 @@ interface Props {
 }
 
 export default function ProjectTabularReviewsPage({ params }: Props) {
+    const tUi = useUiText();
     use(params);
     const workspace = useProjectWorkspace();
     const router = useRouter();
@@ -242,7 +244,7 @@ export default function ProjectTabularReviewsPage({ params }: Props) {
                 reviews={visibleReviews}
                 selectedReviewIds={selectedReviewIds}
                 createDisabled={workspace.creatingReview || docs.length === 0}
-                emptyDescription="Extract data from project documents into tables using AI."
+                emptyDescription={tUi("Extract data from project documents into tables using AI.")}
                 loading={effectiveLoading}
                 loadingMore={loadingMore}
                 hasMore={hasMore}

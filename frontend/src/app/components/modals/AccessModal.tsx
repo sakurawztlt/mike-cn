@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useState } from "react";
 import type {
     AccessAssignmentRole,
@@ -84,6 +85,7 @@ export function AccessModal({
     breadcrumb,
     access,
 }: Props) {
+    const tUi = useUiText();
     const [busy, setBusy] = useState(false);
     const [pendingEmail, setPendingEmail] = useState<string | null>(null);
     const [newRole, setNewRole] = useState<ProjectRole>("editor");
@@ -405,7 +407,7 @@ export function AccessModal({
                 onClose={onClose}
                 breadcrumbs={[
                     ...breadcrumb.slice(0, -1),
-                    "People",
+                    tUi("People"),
                 ]}
             >
                 <div className="flex min-h-0 flex-1 flex-col pb-5">
@@ -442,7 +444,7 @@ export function AccessModal({
         <Modal
             open={open}
             onClose={onClose}
-            breadcrumbs={[...breadcrumb.slice(0, -1), "Access"]}
+            breadcrumbs={[...breadcrumb.slice(0, -1), tUi("Access")]}
         >
             <div className="flex min-h-0 flex-1 flex-col pb-5">
                 <AccessEditor

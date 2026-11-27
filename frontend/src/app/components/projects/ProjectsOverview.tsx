@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { SelectionActionsMenu } from "@/app/components/shared/SelectionActionsMenu";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -136,6 +137,7 @@ const ACCESS_FILTER_OPTIONS: TableFilterOption<"public" | "private">[] = [
 ];
 
 export function ProjectsOverview() {
+    const tUi = useUiText();
     const router = useRouter();
     const searchParams = useSearchParams();
     const [modalOpen, setModalOpen] = useState(false);
@@ -307,7 +309,7 @@ export function ProjectsOverview() {
         sort?.key === "created" ? sort.direction : null;
     const nameFilterButton = (
         <TableSortFilter
-            label="Sort by project name"
+            label={tUi("Sort by project name")}
             value={nameSortDirection}
             align="right"
             onChange={(direction) => handleSortChange("name", direction)}
@@ -315,7 +317,7 @@ export function ProjectsOverview() {
     );
     const accessFilterButton = !isPersonalWorkspace && (
         <TableFilters
-            label="Filter by access"
+            label={tUi("Filter by access")}
             value={
                 activeFilter === "public" || activeFilter === "private"
                     ? activeFilter
@@ -332,14 +334,14 @@ export function ProjectsOverview() {
     );
     const cmFilterButton = (
         <TableSortFilter
-            label="按项目编号排序"
+            label={tUi("按项目编号排序")}
             value={cmSortDirection}
             onChange={(direction) => handleSortChange("cm", direction)}
         />
     );
     const practiceFilterButton = (
         <TableFilters
-            label="Filter by practice"
+            label={tUi("Filter by practice")}
             value={practiceFilter}
             allLabel="All Practices"
             options={practices.map((practice) => ({
@@ -351,7 +353,7 @@ export function ProjectsOverview() {
     );
     const ownerFilterButton = (
         <PersonFilter
-            label="Filter by creator"
+            label={tUi("Filter by creator")}
             selectedTitle={(name) => `Created by ${name}`}
             value={
                 ownerPeople.find((person) => person.user_id === ownerFilter) ??
@@ -365,28 +367,28 @@ export function ProjectsOverview() {
     );
     const filesFilterButton = (
         <TableSortFilter
-            label="Sort by files"
+            label={tUi("Sort by files")}
             value={filesSortDirection}
             onChange={(direction) => handleSortChange("files", direction)}
         />
     );
     const chatsFilterButton = (
         <TableSortFilter
-            label="Sort by chats"
+            label={tUi("Sort by chats")}
             value={chatsSortDirection}
             onChange={(direction) => handleSortChange("chats", direction)}
         />
     );
     const reviewsFilterButton = (
         <TableSortFilter
-            label="Sort by tabular reviews"
+            label={tUi("Sort by tabular reviews")}
             value={reviewsSortDirection}
             onChange={(direction) => handleSortChange("reviews", direction)}
         />
     );
     const createdFilterButton = (
         <TableSortFilter
-            label="Sort by created date"
+            label={tUi("Sort by created date")}
             value={createdSortDirection}
             onChange={(direction) => handleSortChange("created", direction)}
         />
@@ -576,7 +578,7 @@ export function ProjectsOverview() {
                         ? undefined
                         : () => router.push(`/projects/${project!.id}`)
                 }
-                viewLabel="Open"
+                viewLabel={tUi("Open")}
                 onEditDetails={
                     appliesToSelection || !canManage
                         ? undefined
@@ -593,7 +595,7 @@ export function ProjectsOverview() {
                 }
                 deleteLabel={
                     appliesToSelection
-                        ? `Delete ${actionIds.length} projects`
+                        ? tUi("Delete {0} projects", actionIds.length)
                         : undefined
                 }
             />
@@ -619,17 +621,17 @@ export function ProjectsOverview() {
                         type: "search",
                         value: search,
                         onChange: setSearch,
-                        placeholder: "Search projects…",
+                        placeholder: tUi("Search projects…"),
                     },
                     {
                         type: "new",
                         onClick: () => setModalOpen(true),
-                        title: "New project",
+                        title: tUi("New project"),
                     },
                 ]}
             >
                 <h1 className={`${PAGE_HEADER_TITLE_CLASS} text-gray-900`}>
-                    Projects
+                    <UiText message={"Projects"} />
                 </h1>
             </PageHeader>
 
@@ -666,55 +668,55 @@ export function ProjectsOverview() {
                                     }}
                                     onChange={toggleAll}
                                     className={TABLE_CHECKBOX_CLASS}
-                                    aria-label="Select all projects"
+                                    aria-label={tUi("Select all projects")}
                                 />
                             )}
-                            <span className="mr-1">Name</span>
+                            <span className="mr-1"><UiText message={"Name"} /></span>
                             {!loading && nameFilterButton}
                         </TableStickyCell>
                         <TableHeaderCell className="ml-auto w-32">
-                            <span className="mr-1">Access</span>
+                            <span className="mr-1"><UiText message={"Access"} /></span>
                             {!loading && accessFilterButton}
                         </TableHeaderCell>
                         <TableHeaderCell className="w-32">
                             <div className="flex items-center gap-1">
-                                <span>项目编号</span>
+                                <span><UiText message={"项目编号"} /></span>
                                 {!loading && cmFilterButton}
                             </div>
                         </TableHeaderCell>
                         <TableHeaderCell className="w-36">
                             <div className="flex items-center gap-1">
-                                <span>Practice</span>
+                                <span><UiText message={"Practice"} /></span>
                                 {!loading && practiceFilterButton}
                             </div>
                         </TableHeaderCell>
                         <TableHeaderCell className="w-32">
                             <div className="flex items-center gap-1">
-                                <span>Creator</span>
+                                <span><UiText message={"Creator"} /></span>
                                 {!loading && ownerFilterButton}
                             </div>
                         </TableHeaderCell>
                         <TableHeaderCell className="w-24">
                             <div className="flex items-center gap-1">
-                                <span>Files</span>
+                                <span><UiText message={"Files"} /></span>
                                 {!loading && filesFilterButton}
                             </div>
                         </TableHeaderCell>
                         <TableHeaderCell className="w-24">
                             <div className="flex items-center gap-1">
-                                <span>Chats</span>
+                                <span><UiText message={"Chats"} /></span>
                                 {!loading && chatsFilterButton}
                             </div>
                         </TableHeaderCell>
                         <TableHeaderCell className="w-36">
                             <div className="flex items-center gap-1">
-                                <span>Tabular Reviews</span>
+                                <span><UiText message={"Tabular Reviews"} /></span>
                                 {!loading && reviewsFilterButton}
                             </div>
                         </TableHeaderCell>
                         <TableHeaderCell className="w-32">
                             <div className="flex items-center gap-1">
-                                <span>Created</span>
+                                <span><UiText message={"Created"} /></span>
                                 {!loading && createdFilterButton}
                             </div>
                         </TableHeaderCell>
@@ -766,7 +768,7 @@ export function ProjectsOverview() {
                     <TableEmptyState>
                         <EmptyState
                             icon={<OpenProjectSvgIcon />}
-                            title="Projects"
+                            title={tUi("Projects")}
                             description={loadError}
                             tone="error"
                             action={
@@ -775,7 +777,7 @@ export function ProjectsOverview() {
                                     size="sm"
                                     onClick={retry}
                                 >
-                                    Try again
+                                    <UiText message={"Try again"} />
                                 </PillButtonUI>
                             }
                         />
@@ -785,21 +787,21 @@ export function ProjectsOverview() {
                         {activeFilter === "public" || activeFilter === "shared" ? (
                             <p className="text-sm text-gray-400">
                                 {activeFilter === "public"
-                                    ? "No public projects"
-                                    : "No projects shared with you"}
+                                    ? (<><UiText message={"No public projects"} /></>)
+                                    : (<><UiText message={"No projects shared with you"} /></>)}
                             </p>
                         ) : (
                             <EmptyState
                                 icon={<OpenProjectSvgIcon />}
-                                title="Projects"
-                                description="Upload documents into projects and to commence chats and tabular reviews with them."
+                                title={tUi("Projects")}
+                                description={tUi("Upload documents into projects and to commence chats and tabular reviews with them.")}
                                 action={
                                     <PillButtonUI
                                         tone="black"
                                         size="sm"
                                         onClick={() => setModalOpen(true)}
                                     >
-                                        Create
+                                        <UiText message={"Create"} />
                                     </PillButtonUI>
                                 }
                             />
@@ -942,7 +944,7 @@ export function ProjectsOverview() {
                                                     `/projects/${project.id}`,
                                                 )
                                             }
-                                            viewLabel="Open"
+                                            viewLabel={tUi("Open")}
                                             onEditDetails={
                                                 canManage
                                                     ? () => {
@@ -1011,9 +1013,9 @@ export function ProjectsOverview() {
             />
             <ConfirmPopup
                 open={confirmDeleteAllOpen && selectedIds.length > 0}
-                title="Delete all selected projects?"
+                title={tUi("Delete all selected projects?")}
                 message={`This will permanently delete every selected project you administer, including selected projects not currently shown. Every file within those projects will also be deleted. Projects you cannot delete will be skipped. ${selectedIds.length} projects are selected.`}
-                confirmLabel="Delete"
+                confirmLabel={tUi("Delete")}
                 confirmVariant="danger"
                 onCancel={() => setConfirmDeleteAllOpen(false)}
                 onConfirm={() => void handleDeleteSelected()}

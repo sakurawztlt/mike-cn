@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { WarningPopup } from "@/app/components/popups/WarningPopup";
 
@@ -8,6 +9,7 @@ import { WarningPopup } from "@/app/components/popups/WarningPopup";
  * clears the error while it saves, so a later failure shows the popup again.
  */
 export function DocxSaveErrorPopup({ error }: { error: string | null }) {
+    const tUi = useUiText();
     const [dismissed, setDismissed] = useState(false);
     const [previous, setPrevious] = useState(error);
     if (error !== previous) {
@@ -17,7 +19,7 @@ export function DocxSaveErrorPopup({ error }: { error: string | null }) {
     return (
         <WarningPopup
             open={!!error && !dismissed}
-            title="Changes not saved"
+            title={tUi("Changes not saved")}
             message={error}
             onClose={() => setDismissed(true)}
         />

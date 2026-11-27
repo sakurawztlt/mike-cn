@@ -1041,10 +1041,10 @@ describe("NewProjectModal sharing", () => {
         await user.click(screen.getByRole("button", { name: "Next" }));
         await user.click(screen.getByRole("button", { name: "Next" }));
 
-        const area = screen.getByRole("region", { name: "拖放上传文件" });
+        const area = screen.getByRole("region", { name: "Drop files to upload" });
         const files = [new File(["a"], "remove.pdf"), new File(["b"], "keep.pdf")];
         fireEvent.drop(area, { dataTransfer: { types: ["Files"], files } });
-        await user.click(screen.getByRole("button", { name: "移除 remove.pdf" }));
+        await user.click(screen.getByRole("button", { name: "Remove remove.pdf" }));
         expect(screen.queryByText("remove.pdf")).not.toBeInTheDocument();
         expect(screen.getByText("keep.pdf")).toBeVisible();
 
@@ -1168,7 +1168,7 @@ describe("NewProjectModal sharing", () => {
         await user.click(screen.getByRole("button", { name: "Back" }));
 
         expect(screen.getByLabelText("Project name")).toBeDisabled();
-        expect(screen.getByLabelText("项目编号（选填）")).toBeDisabled();
+        expect(screen.getByLabelText("Project reference (optional)")).toBeDisabled();
         expect(screen.getByLabelText("Practice")).toBeDisabled();
         expect(
             screen.getByText(

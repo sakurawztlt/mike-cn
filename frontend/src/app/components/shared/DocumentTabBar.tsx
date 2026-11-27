@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import {
     useEffect,
     useRef,
@@ -62,6 +63,7 @@ export function DocumentTabBar({
     addLabel = "Add",
     onReorder,
 }: Props) {
+    const tUi = useUiText();
     const dragType = `application/mike-${idPrefix}-tab`;
     const listRef = useRef<HTMLDivElement>(null);
     const itemRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -335,7 +337,7 @@ export function DocumentTabBar({
                                                 onClose(tab.id);
                                             }}
                                             className="shrink-0 rounded-full p-0.5 text-gray-400 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-                                            aria-label={`Close ${tab.title}`}
+                                            aria-label={tUi("Close {0}", tab.title)}
                                         >
                                             <X
                                                 aria-hidden="true"
@@ -378,7 +380,7 @@ export function DocumentTabBar({
             {onClosePanel && (
                 <CloseButton
                     onClick={onClosePanel}
-                    label="Close panel"
+                    label={tUi("Close panel")}
                     className="mt-2 ml-2 mr-2 self-start"
                 />
             )}

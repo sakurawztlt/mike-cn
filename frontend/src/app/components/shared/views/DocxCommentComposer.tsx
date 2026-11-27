@@ -2,6 +2,8 @@
 // Render reads the mutable editor facade (snapshot, review items); React
 // Compiler would cache those reads per editor instance and go stale.
 "use no memo";
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
+
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -30,6 +32,7 @@ export function DocxCommentComposer({
   /** Page surface; the composer opens below the selected text painted in it. */
   surface?: HTMLElement | null;
 }) {
+    const tUi = useUiText();
   useEditorSnapshot(editor);
   const [composing, setComposing] = useState(false);
   const [draft, setDraft] = useState("");
@@ -170,8 +173,8 @@ export function DocxCommentComposer({
                 <TextButtonUI
                   ref={button}
                   size="icon-xs"
-                  aria-label="New comment"
-                  title={unavailable ?? "New comment"}
+                  aria-label={tUi("New comment")}
+                  title={unavailable ?? tUi("New comment")}
                   disabled={!composing && !!unavailable}
                   className="h-6"
                   onPointerDown={(event) => event.preventDefault()}
@@ -195,7 +198,7 @@ export function DocxCommentComposer({
                             the trigger, which would reorder the toolbar. */}
               <PopoverAnchor virtualRef={anchor} />
               <PopoverContent
-                aria-label="New comment"
+                aria-label={tUi("New comment")}
                 align={composing && anchorBox ? "start" : "end"}
                 // The selection anchor moves with page scroll and zoom.
                 updatePositionStrategy={
@@ -222,7 +225,7 @@ export function DocxCommentComposer({
                     }}
                   >
                     <label htmlFor={id} className="block font-medium">
-                      New comment
+                      <UiText message={"New comment"} />
                     </label>
                     <textarea
                       id={id}
@@ -230,7 +233,7 @@ export function DocxCommentComposer({
                       rows={3}
                       value={draft}
                       className="keyboard-focus-ring w-full min-h-24 max-h-48 resize-y rounded-xl bg-[var(--dropdown-input-background)] px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 focus-visible:ring-offset-2"
-                      placeholder="Write a comment…"
+                      placeholder={tUi("Write a comment…")}
                       onChange={(event) => setDraft(event.target.value)}
                       onKeyDown={(event) => {
                         if (
@@ -244,26 +247,25 @@ export function DocxCommentComposer({
                     />
                     {!editable && (
                       <p className="text-muted-foreground">
-                        This document is read-only. Your draft is kept until you
-                        cancel.
+                        <UiText message={"This document is read-only. Your draft is kept until you cancel."} />
                       </p>
                     )}
                     <div className="flex items-center justify-end gap-2">
-                      <TextButtonUI onClick={dismiss}>Cancel</TextButtonUI>
+                      <TextButtonUI onClick={dismiss}><UiText message={"Cancel"} /></TextButtonUI>
                       <PillButtonUI
                         type="submit"
                         tone="black"
                         size="xs"
                         disabled={!draft.trim() || !editable || !hasAuthor}
                       >
-                        Add comment
+                        <UiText message={"Add comment"} />
                       </PillButtonUI>
                     </div>
                   </form>
                 )}
                 {error && (
                   <p role="alert" className="mt-2 text-destructive">
-                    {error}
+                    <UiText message={error} />
                   </p>
                 )}
               </PopoverContent>

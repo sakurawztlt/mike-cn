@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { Download, ExternalLink, SquarePen } from "lucide-react";
 import { downloadDocumentFile } from "@/app/lib/downloadDocument";
@@ -43,6 +44,7 @@ export function DocumentTitleRow({
     toolbarVisible?: boolean;
     onToggleToolbar?: () => void;
 }) {
+    const tUi = useUiText();
     const { external, legalIcon } = documentCapabilities(document);
     // Versions and the file download belong to uploads only.
     const isFile =
@@ -108,14 +110,14 @@ export function DocumentTitleRow({
                     {onToggleToolbar && (
                         <TextButtonUI
                             size="icon-xs"
-                            aria-label="Edit"
+                            aria-label={tUi("Edit")}
                             aria-expanded={toolbarVisible}
                             aria-pressed={toolbarVisible}
                             className={toolbarVisible ? "text-foreground" : undefined}
                             title={
                                 toolbarVisible
-                                    ? "Stop editing"
-                                    : "Enable editing"
+                                    ? tUi("Stop editing")
+                                    : tUi("Enable editing")
                             }
                             onClick={onToggleToolbar}
                         >
@@ -218,14 +220,15 @@ function UrlDownloadButton({
 }: {
     href: string;
 }) {
+    const tUi = useUiText();
     return (
         <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
             download
-            aria-label="Download"
-            title="Download"
+            aria-label={tUi("Download")}
+            title={tUi("Download")}
             className={textButtonUIClassName({
                 size: "icon-xs",
             })}
@@ -237,13 +240,14 @@ function UrlDownloadButton({
 
 /** Icon-only, like the download action: the name is fixed, not per source. */
 function ExternalSourceLinkButton({ href }: { href: string }) {
+    const tUi = useUiText();
     return (
         <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open link"
-            title="Open link"
+            aria-label={tUi("Open link")}
+            title={tUi("Open link")}
             className={textButtonUIClassName({
                 size: "icon-xs",
             })}
@@ -266,6 +270,7 @@ function DownloadButton({
     isReloading?: boolean;
     onDownload?: () => Promise<void> | undefined;
 }) {
+    const tUi = useUiText();
     const [busy, setBusy] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -297,14 +302,14 @@ function DownloadButton({
         <>
             <WarningPopup
                 open={!!error}
-                title="Download failed"
+                title={tUi("Download failed")}
                 message={error}
                 onClose={() => setError(null)}
             />
             <TextButtonUI
                 size="icon-xs"
-                aria-label="Download"
-                title="Download"
+                aria-label={tUi("Download")}
+                title={tUi("Download")}
                 onClick={handleClick}
                 loading={!!spinning}
             >

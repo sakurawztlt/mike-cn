@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { Modal } from "./Modal";
 import { FieldLabel, FormTextInput } from "../ui/form-field";
@@ -30,6 +31,7 @@ function RenameModalForm({
     onClose,
     onSave,
 }: RenameModalProps) {
+    const tUi = useUiText();
     const [draft, setDraft] = useState(initialValue);
     const formId = "rename-modal-form";
     const trimmed = draft.trim();
@@ -41,9 +43,9 @@ function RenameModalForm({
             size="sm"
             className="h-auto"
             breadcrumbs={breadcrumbs}
-            cancelAction={{ label: "Cancel", onClick: onClose, disabled: saving }}
+            cancelAction={{ label: tUi("Cancel"), onClick: onClose, disabled: saving }}
             primaryAction={{
-                label: saving ? "Saving..." : "Save",
+                label: saving ? tUi("Saving...") : tUi("Save"),
                 type: "submit",
                 form: formId,
                 disabled: !trimmed || saving,

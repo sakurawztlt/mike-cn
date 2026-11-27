@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { deleteChat, renameChat } from "@/app/lib/mikeApi";
@@ -21,6 +22,7 @@ interface Props {
 }
 
 export default function ProjectAssistantPage({ params }: Props) {
+    const tUi = useUiText();
     use(params);
     const workspace = useProjectWorkspace();
     const router = useRouter();
@@ -195,11 +197,11 @@ export default function ProjectAssistantPage({ params }: Props) {
                 open={confirmDeleteSelectedOpen && selectedChatIds.length > 0}
                 title={
                     selectedChatIds.length === 1
-                        ? "Delete chat?"
-                        : `Delete ${selectedChatIds.length} chats?`
+                        ? tUi("Delete chat?")
+                        : tUi("Delete {0} chats?", selectedChatIds.length)
                 }
-                message="This cannot be undone."
-                confirmLabel="Delete"
+                message={tUi("This cannot be undone.")}
+                confirmLabel={tUi("Delete")}
                 confirmVariant="danger"
                 onCancel={() => setConfirmDeleteSelectedOpen(false)}
                 onConfirm={() => void handleDeleteSelectedChats()}

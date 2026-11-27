@@ -3,6 +3,7 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { ModalUI, type ModalUISize, PillButtonUI } from "@mike/ui";
 import { cn } from "@/app/lib/utils";
+import { useUiText } from "@/app/i18n/uiLanguage";
 
 type ModalAction = Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
@@ -50,6 +51,7 @@ export function Modal({
   cancelAction,
   keepMounted = false,
 }: ModalProps) {
+  const t = useUiText();
   const lastBreadcrumb = breadcrumbs?.at(-1);
 
   return (
@@ -61,7 +63,7 @@ export function Modal({
       size={size}
       className={cn("h-[min(600px,calc(100vh-2rem))]", className)}
       ariaLabel={
-        typeof lastBreadcrumb === "string" ? lastBreadcrumb : undefined
+        typeof lastBreadcrumb === "string" ? t(lastBreadcrumb) : undefined
       }
       footerStatus={footerStatus}
       secondaryAction={
@@ -97,12 +99,14 @@ function ModalActionButton({
   action: ModalAction;
   fallbackVariant: "primary" | "secondary" | "danger" | "cancel";
 }) {
+  const t = useUiText();
   const {
     label,
     icon,
     variant = fallbackVariant === "cancel" ? "secondary" : fallbackVariant,
     ...props
   } = action;
+  const localizedLabel = typeof label === "string" ? t(label) : label;
 
   if (fallbackVariant === "cancel") {
     return (
@@ -111,7 +115,7 @@ function ModalActionButton({
         className="px-2 py-1.5 text-sm text-gray-500 transition-colors hover:text-gray-800 disabled:cursor-not-allowed disabled:opacity-40"
         {...props}
       >
-        {label}
+        {localizedLabel}
       </button>
     );
   }
@@ -130,7 +134,7 @@ function ModalActionButton({
   return (
     <PillButtonUI tone={tone} size="normal" {...props}>
       {icon}
-      {label}
+      {localizedLabel}
     </PillButtonUI>
   );
 }

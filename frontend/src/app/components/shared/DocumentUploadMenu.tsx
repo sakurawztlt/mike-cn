@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { Cloud, FolderUp, Upload } from "lucide-react";
 import {
     Dropdown,
@@ -25,6 +26,7 @@ export function DocumentUploadMenu({
     disabled = false,
     toolbar = false,
 }: DocumentUploadMenuProps) {
+    const tUi = useUiText();
     const TriggerButton = toolbar ? TabPillButtonUI : HeaderButtonUI;
     const triggerDisabled =
         disabled || (!onSavedFiles && !onUploadFiles && !onUploadFolder);
@@ -34,12 +36,12 @@ export function DocumentUploadMenu({
             <DropdownTrigger asChild>
                 <TriggerButton
                     disabled={triggerDisabled}
-                    title="Upload"
-                    aria-label="Upload"
+                    title={tUi("Upload")}
+                    aria-label={tUi("Upload")}
                     {...(toolbar ? { className: "pl-2" } : { iconOnly: true })}
                 >
                     <Upload aria-hidden="true" className="h-3.5 w-3.5" />
-                    {toolbar && "Upload"}
+                    {toolbar && (<><UiText message={"Upload"} /></>)}
                 </TriggerButton>
             </DropdownTrigger>
             <DropdownContent
@@ -53,7 +55,7 @@ export function DocumentUploadMenu({
                         className="flex items-center px-3 py-2"
                     >
                         <Cloud className="mr-2 h-3.5 w-3.5" />
-                        Saved Documents
+                        <UiText message={"Saved Documents"} />
                     </DropdownItem>
                 )}
                 <DropdownItem
@@ -62,7 +64,7 @@ export function DocumentUploadMenu({
                     className="flex items-center px-3 py-2"
                 >
                     <Upload className="mr-2 h-3.5 w-3.5" />
-                    Upload Documents
+                    <UiText message={"Upload Documents"} />
                 </DropdownItem>
                 {onUploadFolder !== undefined && (
                     <DropdownItem
@@ -71,7 +73,7 @@ export function DocumentUploadMenu({
                         className="flex items-center px-3 py-2"
                     >
                         <FolderUp className="mr-2 h-3.5 w-3.5" />
-                        Upload folder
+                        <UiText message={"Upload folder"} />
                     </DropdownItem>
                 )}
             </DropdownContent>

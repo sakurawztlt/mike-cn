@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useMemo } from "react";
 import { PRACTICE_OPTIONS } from "../workflows/practices";
 import { ModalSelect, type ModalSelectOption } from "../modals/ModalSelect";
@@ -21,6 +22,7 @@ export function ProjectPracticeField({
     onChange,
     disabled = false,
 }: ProjectPracticeFieldProps) {
+    const tUi = useUiText();
     const selectedOption = useMemo(() => {
         if (!value.trim()) return OPTION_NONE;
         return (PRACTICE_OPTIONS as readonly string[]).includes(value)
@@ -56,7 +58,7 @@ export function ProjectPracticeField({
                 value={selectedOption}
                 options={options}
                 onChange={handleSelect}
-                placeholder="Select practice"
+                placeholder={tUi("Select practice")}
                 disabled={disabled}
             />
             {selectedOption === OPTION_OTHER && (
@@ -64,7 +66,7 @@ export function ProjectPracticeField({
                     type="text"
                     value={customValue}
                     onChange={(event) => onChange(event.target.value)}
-                    placeholder="Enter practice..."
+                    placeholder={tUi("Enter practice...")}
                     disabled={disabled}
                 />
             )}

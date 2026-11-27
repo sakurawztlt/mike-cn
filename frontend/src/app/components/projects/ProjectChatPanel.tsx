@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
     useCallback,
     useEffect,
@@ -114,7 +115,7 @@ function AssistantGreeting({ username }: { username: string }) {
                             "transform 900ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 800ms ease-in-out 300ms",
                     }}
                 >
-                    Hi, {username}
+                    <UiText message={"Hi,"} />{" "}{username}
                 </h1>
             </div>
         </div>
@@ -243,6 +244,7 @@ export function ProjectChatPanel({
     incomingExcerpt,
     onIncomingExcerptAdded,
 }: Props) {
+    const tUi = useUiText();
     const router = useRouter();
     const { user, authLoading } = useAuth();
     const { profile } = useUserProfile();
@@ -694,7 +696,7 @@ export function ProjectChatPanel({
                 {chatDragOver && (
                     <div className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-md">
                         <p className="font-serif text-xl text-gray-900">
-                            Drop files here to add to chat
+                            <UiText message={"Drop files here to add to chat"} />
                         </p>
                     </div>
                 )}
@@ -967,12 +969,10 @@ export function ProjectChatPanel({
             </div>
             <ApiKeyMissingPopup
                 open={rejectedApiKey !== null}
-                title="API key rejected"
-                message={`${
-                    rejectedKeyProvider
+                title={tUi("API key rejected")}
+                message={tUi("{0} was rejected. If it is your own key, check it in Settings; otherwise contact your administrator.", rejectedKeyProvider
                         ? `The ${providerLabel(rejectedKeyProvider)} API key`
-                        : "That API key"
-                } was rejected. If it is your own key, check it in Settings; otherwise contact your administrator.`}
+                        : "That API key")}
                 onClose={dismissInvalidApiKey}
             />
         </>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -116,6 +117,7 @@ export function DocumentSidePanel({
     onAdd,
     addLabel = "Add",
 }: DocumentSidePanelProps) {
+    const tUi = useUiText();
     const [mounted, setMounted] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [uploadError, setUploadError] = useState<string | null>(null);
@@ -549,7 +551,7 @@ export function DocumentSidePanel({
             <div
                 onMouseDown={handlePanelResizeMouseDown}
                 className="absolute inset-y-0 left-0 z-20 hidden w-1 cursor-col-resize bg-transparent transition-colors hover:bg-blue-600/60 active:bg-blue-600 md:block"
-                title="Resize document view"
+                title={tUi("Resize document view")}
             />
             <div className="flex shrink-0 justify-end px-3 py-2 md:absolute md:right-3 md:top-3 md:z-20 md:p-0">
                 <div className="flex shrink-0 items-center gap-1.5">
@@ -564,7 +566,7 @@ export function DocumentSidePanel({
                                     : "text-gray-500 hover:text-gray-800",
                             )}
                         >
-                            Document
+                            <UiText message={"Document"} />
                         </button>
                         <button
                             type="button"
@@ -576,10 +578,10 @@ export function DocumentSidePanel({
                                     : "text-gray-500 hover:text-gray-800",
                             )}
                         >
-                            Details
+                            <UiText message={"Details"} />
                         </button>
                     </div>
-                    <CloseButton onClick={onClose} label="Close panel" />
+                    <CloseButton onClick={onClose} label={tUi("Close panel")} />
                 </div>
             </div>
 
@@ -649,7 +651,7 @@ export function DocumentSidePanel({
                         "relative z-10 hidden w-1.5 -translate-x-1/2 cursor-col-resize transition-colors md:block",
                         "bg-transparent hover:bg-blue-600/60 active:bg-blue-600",
                     )}
-                    title="Resize document panel"
+                    title={tUi("Resize document panel")}
                 />
 
                 <aside
@@ -660,7 +662,7 @@ export function DocumentSidePanel({
                 >
                     <div className="mb-4 shrink-0">
                         <div className="mb-3 text-xs font-medium text-gray-900">
-                            Name
+                            <UiText message={"Name"} />
                         </div>
                         {editingName ? (
                             <div className="space-y-1.5">
@@ -689,7 +691,7 @@ export function DocumentSidePanel({
                                         onClick={() => void handleSaveName()}
                                         disabled={savingName}
                                         className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-white/65 hover:text-gray-900 disabled:cursor-not-allowed disabled:opacity-40"
-                                        title="Save name"
+                                        title={tUi("Save name")}
                                     >
                                         {savingName ? (
                                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -718,7 +720,7 @@ export function DocumentSidePanel({
                                             setNameError(null);
                                         }}
                                         className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-white/65 hover:text-gray-900"
-                                        title="Edit name"
+                                        title={tUi("Edit name")}
                                     >
                                         <Pencil className="h-3.5 w-3.5" />
                                     </button>
@@ -728,16 +730,16 @@ export function DocumentSidePanel({
                     </div>
 
                     <div className="mb-3 shrink-0 text-xs font-medium text-gray-900">
-                        Document Data
+                        <UiText message={"Document Data"} />
                     </div>
                     <div className="shrink-0 rounded-xl py-2">
                         <div className="space-y-1.5">
                             <DataRow
-                                label="Type"
+                                label={tUi("Type")}
                                 value={selectedFileType ?? "—"}
                             />
                             <DataRow
-                                label="Size"
+                                label={tUi("Size")}
                                 value={
                                     selectedSizeBytes != null
                                         ? formatBytes(selectedSizeBytes)
@@ -745,16 +747,16 @@ export function DocumentSidePanel({
                                 }
                             />
                             <DataRow
-                                label="Version"
+                                label={tUi("Version")}
                                 value={
                                     selectedVersionNumber != null
                                         ? String(selectedVersionNumber)
                                         : "—"
                                 }
                             />
-                            <DataRow label="Uploaded by" value={ownerLabel} />
+                            <DataRow label={tUi("Uploaded by")} value={ownerLabel} />
                             <DataRow
-                                label="Uploaded"
+                                label={tUi("Uploaded")}
                                 value={
                                     selectedUploadedAt
                                         ? formatDateTime(selectedUploadedAt)
@@ -762,7 +764,7 @@ export function DocumentSidePanel({
                                 }
                             />
                             <DataRow
-                                label="Pages"
+                                label={tUi("Pages")}
                                 value={
                                     selectedPageCount != null
                                         ? String(selectedPageCount)
@@ -781,7 +783,7 @@ export function DocumentSidePanel({
                     {!readOnly && (
                         <>
                             <div className="mb-2 mt-4 shrink-0 text-xs font-medium text-gray-900">
-                                Versions
+                                <UiText message={"Versions"} />
                             </div>
                     <div className="-mx-2 min-h-0 flex-1 overflow-y-auto px-2 py-2">
                             {versionsLoading && versions.length === 0 ? (
@@ -798,7 +800,7 @@ export function DocumentSidePanel({
                                 </div>
                             ) : orderedVersions.length === 0 ? (
                                 <div className="py-2 text-xs text-gray-400">
-                                    No version history.
+                                    <UiText message={"No version history."} />
                                 </div>
                             ) : (
                                     <div className="space-y-1.5">
@@ -901,7 +903,7 @@ export function DocumentSidePanel({
                                                     >
                                                         {deleted ? (
                                                             <span className="text-[11px] font-medium text-gray-800">
-                                                                Deleted
+                                                                <UiText message={"Deleted"} />
                                                             </span>
                                                         ) : (
                                                             <>
@@ -922,8 +924,8 @@ export function DocumentSidePanel({
                                                                             null
                                                                     }
                                                                     className="inline-flex h-5 w-5 items-center justify-center rounded-full text-blue-500 transition-colors hover:bg-blue-50 hover:text-blue-600 disabled:cursor-not-allowed disabled:opacity-40"
-                                                                    aria-label={`Replace ${title}`}
-                                                                    title="Replace version file"
+                                                                    aria-label={tUi("Replace {0}", title)}
+                                                                    title={tUi("Replace version file")}
                                                                 >
                                                                     {versionReplacing ? (
                                                                         <Loader2 className="h-3 w-3 animate-spin" />
@@ -944,8 +946,8 @@ export function DocumentSidePanel({
                                                                         );
                                                                     }}
                                                                     className="inline-flex h-5 w-5 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900"
-                                                                    aria-label={`Download ${title}`}
-                                                                    title="Download version"
+                                                                    aria-label={tUi("Download {0}", title)}
+                                                                    title={tUi("Download version")}
                                                                 >
                                                                     <Download className="h-3 w-3" />
                                                                 </button>
@@ -971,11 +973,11 @@ export function DocumentSidePanel({
                                                                         !canDelete &&
                                                                             "cursor-not-allowed opacity-40 hover:bg-transparent hover:text-red-500",
                                                                     )}
-                                                                    aria-label={`Delete ${title}`}
+                                                                    aria-label={tUi("Delete {0}", title)}
                                                                     title={
                                                                         canDelete
-                                                                            ? "Delete version"
-                                                                            : "Only the person who uploaded this document can delete its versions"
+                                                                            ? tUi("Delete version")
+                                                                            : tUi("Only the person who uploaded this document can delete its versions")
                                                                     }
                                                                 >
                                                                     {versionDeleting ? (
@@ -1024,7 +1026,7 @@ export function DocumentSidePanel({
                                     className={onAdd ? undefined : "ml-auto"}
                                 >
                                     <Download className="h-3.5 w-3.5 shrink-0" />
-                                    Download
+                                    <UiText message={"Download"} />
                                 </PillButtonUI>
                                 {onAdd && (
                                     <PillButtonUI
@@ -1065,12 +1067,12 @@ export function DocumentSidePanel({
                             )}
                             title={
                                 canDelete
-                                    ? "Delete document"
-                                    : "Only the person who uploaded this document can delete it"
+                                    ? tUi("Delete document")
+                                    : tUi("Only the person who uploaded this document can delete it")
                             }
                         >
                             <Trash2 className="h-3.5 w-3.5 shrink-0" />
-                            Delete
+                            <UiText message={"Delete"} />
                         </PillButtonUI>
                                 <PillButtonUI
                                     tone="blue"
@@ -1082,7 +1084,7 @@ export function DocumentSidePanel({
                                     loading={uploading}
                                 >
                                     <Upload className="h-3.5 w-3.5 shrink-0" />
-                                    Upload new version
+                                    <UiText message={"Upload new version"} />
                                 </PillButtonUI>
                             </>
                         )}
@@ -1091,11 +1093,11 @@ export function DocumentSidePanel({
             </div>
             <ConfirmPopup
                 open={replaceConfirmOpen}
-                title="Replace version?"
-                message={`This will wipe ${versionTitleFor(replaceTargetVersion)} and replace it with ${replaceFile?.name ?? "the selected file"}. Save as a new version instead if you want to keep both copies.`}
-                confirmLabel="Replace"
+                title={tUi("Replace version?")}
+                message={tUi("This will wipe {0} and replace it with {1}. Save as a new version instead if you want to keep both copies.", versionTitleFor(replaceTargetVersion), replaceFile?.name ?? "the selected file")}
+                confirmLabel={tUi("Replace")}
                 confirmStatus={replacingVersionId != null ? "loading" : "idle"}
-                cancelLabel="Cancel"
+                cancelLabel={tUi("Cancel")}
                 onCancel={() => {
                     if (replacingVersionId != null) return;
                     setReplaceConfirmOpen(false);
@@ -1106,9 +1108,9 @@ export function DocumentSidePanel({
             />
             <ConfirmPopup
                 open={confirmDeleteDocumentOpen}
-                title="Delete document?"
-                message={`${selectedFilename} has ${versions.length} versions. Deleting this document will delete all of its versions.`}
-                confirmLabel="Delete"
+                title={tUi("Delete document?")}
+                message={tUi("{0} has {1} versions. Deleting this document will delete all of its versions.", selectedFilename, versions.length)}
+                confirmLabel={tUi("Delete")}
                 confirmVariant="danger"
                 confirmStatus={
                     deleteDocumentStatus === "deleting"
@@ -1117,7 +1119,7 @@ export function DocumentSidePanel({
                           ? "complete"
                           : "idle"
                 }
-                cancelLabel="Cancel"
+                cancelLabel={tUi("Cancel")}
                 onCancel={() => {
                     if (deleteDocumentStatus === "deleting") return;
                     setConfirmDeleteDocumentOpen(false);

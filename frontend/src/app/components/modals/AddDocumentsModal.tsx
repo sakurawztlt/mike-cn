@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
 
 import { useEffect, useRef, useState } from "react";
@@ -77,6 +78,7 @@ function AddDocumentsModalForWorkspace({
     disabledDocumentIds,
     uploadStateId,
 }: Props) {
+    const tUi = useUiText();
     // A document uploaded on its own belongs to the workspace it is
     // uploaded in.
     const workspace = useDocumentWorkspace();
@@ -435,7 +437,7 @@ function AddDocumentsModalForWorkspace({
             keepMounted={keepMounted}
             breadcrumbs={breadcrumb}
             secondaryAction={{
-                label: uploading ? "Uploading…" : "Upload",
+                label: uploading ? tUi("Uploading…") : tUi("Upload"),
                 icon: uploading ? (
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 ) : (
@@ -445,7 +447,7 @@ function AddDocumentsModalForWorkspace({
                 disabled: uploading,
             }}
             primaryAction={{
-                label: uploading ? "Saving…" : "Confirm",
+                label: uploading ? tUi("Saving…") : tUi("Confirm"),
                 onClick: handleConfirm,
                 disabled: selectedDocuments.length === 0 || uploading,
             }}
@@ -465,12 +467,12 @@ function AddDocumentsModalForWorkspace({
                     className="mb-2 flex items-center gap-2 rounded-lg border border-red-100 bg-red-50 px-3 py-2 text-xs text-gray-900"
                 >
                     <AlertCircle className="h-3.5 w-3.5 shrink-0 text-red-600" />
-                    <span className="min-w-0 flex-1">{uploadWarning}</span>
+                    <span className="min-w-0 flex-1">{tUi(uploadWarning)}</span>
                     <button
                         type="button"
                         onClick={() => setUploadWarning(null)}
                         className="shrink-0 rounded p-0.5 text-black hover:bg-gray-100"
-                        aria-label="Dismiss warning"
+                        aria-label={tUi("Dismiss warning")}
                     >
                         <X className="h-3.5 w-3.5" />
                     </button>

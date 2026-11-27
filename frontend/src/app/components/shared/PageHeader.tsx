@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import {
     useEffect,
     useLayoutEffect,
@@ -294,6 +295,7 @@ function PageHeaderSearchActionControl({
     action: PageHeaderSearchAction;
     disabled: boolean;
 }) {
+    const tUi = useUiText();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
     const placeholder = action.placeholder ?? "Search…";
@@ -340,7 +342,7 @@ function PageHeaderSearchActionControl({
                                 setOpen(false);
                             }}
                             disabled={disabled}
-                            aria-label="Clear search"
+                            aria-label={tUi("Clear search")}
                             className="shrink-0 rounded-full p-0.5 text-gray-400 transition-colors hover:bg-black/5 hover:text-gray-600"
                         >
                             <X className="h-3.5 w-3.5" />
@@ -363,6 +365,7 @@ function PageHeaderSearchActionControl({
 }
 
 function PageHeaderBreadcrumbs({ items }: { items: PageHeaderBreadcrumb[] }) {
+    const tUi = useUiText();
     const containerRef = useRef<HTMLDivElement>(null);
     const measurementRefs = useRef<Array<HTMLSpanElement | null>>([]);
     const ellipsisMeasurementRef = useRef<HTMLSpanElement>(null);
@@ -437,8 +440,8 @@ function PageHeaderBreadcrumbs({ items }: { items: PageHeaderBreadcrumb[] }) {
                 <button
                     onClick={parent.onClick}
                     className="shrink-0 text-gray-400 transition-colors hover:text-gray-600 sm:hidden"
-                    title={parent.title ?? "Back"}
-                    aria-label={parent.title ?? "Back"}
+                    title={parent.title ?? tUi("Back")}
+                    aria-label={parent.title ?? tUi("Back")}
                 >
                     <ChevronLeft className="h-5 w-5" />
                 </button>
@@ -584,6 +587,7 @@ function CollapsedBreadcrumbGroup({
 }: {
     items: PageHeaderBreadcrumb[];
 }) {
+    const tUi = useUiText();
     return (
         <span className="hidden shrink-0 items-center gap-1.5 sm:flex">
             <Dropdown>
@@ -591,8 +595,8 @@ function CollapsedBreadcrumbGroup({
                     <button
                         type="button"
                         className="text-gray-500 transition-colors hover:text-gray-700"
-                        aria-label="Show collapsed breadcrumbs"
-                        title="Show path"
+                        aria-label={tUi("Show collapsed breadcrumbs")}
+                        title={tUi("Show path")}
                     >
                         …
                     </button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef } from "react";
 import { Loader2 } from "lucide-react";
 
@@ -72,10 +73,10 @@ export function TableLoadMoreRow({
             >
                 {loadingMore && <Loader2 className="h-3 w-3 animate-spin" />}
                 {loadingMore
-                    ? "Loading…"
+                    ? (<><UiText message={"Loading…"} /></>)
                     : hasError
-                      ? "Retry loading"
-                      : "Load more"}
+                      ? (<><UiText message={"Retry loading"} /></>)
+                      : (<><UiText message={"Load more"} /></>)}
             </button>
         </div>
     );

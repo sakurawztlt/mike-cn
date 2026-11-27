@@ -1,3 +1,6 @@
+"use client";
+
+import { useUiText } from "@/app/i18n/uiLanguage";
 import type { ReactNode } from "react";
 
 /** Shared panel header above the viewer toolbar. The annotation (citation
@@ -13,6 +16,7 @@ export function DocumentAnnotationLayer({
     title?: ReactNode;
     annotation?: ReactNode;
 }) {
+    const tUi = useUiText();
     return (
         <div
             data-document-annotation-host
@@ -24,7 +28,7 @@ export function DocumentAnnotationLayer({
             >
                 {title}
                 {annotation && (
-                    <div role="region" aria-label="Document annotation">
+                    <div role="region" aria-label={tUi("Document annotation")}>
                         {annotation}
                     </div>
                 )}

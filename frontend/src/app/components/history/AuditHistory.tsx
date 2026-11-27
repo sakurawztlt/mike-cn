@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   useCallback,
   useEffect,
@@ -193,6 +194,7 @@ export function AuditHistory({
   orgId?: string;
   onBack?: () => void;
 }) {
+    const tUi = useUiText();
   const title = orgId ? "Audit log" : "My Activity";
   const [events, setEvents] = useState<AuditEvent[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -393,7 +395,7 @@ export function AuditHistory({
             }}
           >
             <X className="h-3.5 w-3.5" />
-            Deselect rows
+            <UiText message={"Deselect rows"} />
           </DropdownItem>
         )}
         {single && (
@@ -405,7 +407,7 @@ export function AuditHistory({
             }}
           >
             <Eye className="h-3.5 w-3.5" />
-            View details
+            <UiText message={"View details"} />
           </DropdownItem>
         )}
         {single?.document_id && !privateAccess && (
@@ -417,7 +419,7 @@ export function AuditHistory({
             }}
           >
             <ExternalLink className="h-3.5 w-3.5" />
-            Open document
+            <UiText message={"Open document"} />
           </DropdownItem>
         )}
         {destination && (
@@ -443,17 +445,17 @@ export function AuditHistory({
           ) : (
             <Download className="h-3.5 w-3.5" />
           )}
-          {selection ? "Export selected" : "Export this entry"}
+          {selection ? (<><UiText message={"Export selected"} /></>) : (<><UiText message={"Export this entry"} /></>)}
         </DropdownItem>
       </>
     );
   };
   const createdHeader = (
     <>
-      <span className="mr-1">Date &amp; time</span>
+      <span className="mr-1"><UiText message={"Date & time"} /></span>
       {!initialLoading && (
         <TableSortFilter
-          label="Sort by date and time"
+          label={tUi("Sort by date and time")}
           value={sortValue("created_at")}
           onChange={(direction) => setSortDirection("created_at", direction)}
           widthClassName="w-52"
@@ -468,7 +470,7 @@ export function AuditHistory({
         shrink
         breadcrumbs={[
           {
-            label: orgId ? "Organization" : "Settings",
+            label: orgId ? tUi("Organization") : tUi("Settings"),
             onClick: onBack,
           },
           { label: title },
@@ -478,7 +480,7 @@ export function AuditHistory({
             type: "search",
             value: search,
             onChange: setSearch,
-            placeholder: orgId ? "Search audit log…" : "Search my activity…",
+            placeholder: orgId ? tUi("Search audit log…") : tUi("Search my activity…"),
           },
           {
             type: "custom",
@@ -487,8 +489,8 @@ export function AuditHistory({
                 <DropdownTrigger asChild>
                   <HeaderButtonUI
                     iconOnly
-                    aria-label={`${title} actions`}
-                    title={`${title} actions`}
+                    aria-label={tUi("{0} actions", title)}
+                    title={tUi("{0} actions", title)}
                   >
                     <MoreHorizontal className="h-4 w-4" />
                   </HeaderButtonUI>
@@ -501,7 +503,7 @@ export function AuditHistory({
                     }}
                   >
                     <Download className="h-4 w-4" />
-                    Export
+                    <UiText message={"Export"} />
                   </DropdownItem>
                 </DropdownContent>
               </Dropdown>
@@ -530,7 +532,7 @@ export function AuditHistory({
               <input
                 type="checkbox"
                 className={TABLE_CHECKBOX_CLASS}
-                aria-label="Select all loaded entries"
+                aria-label={tUi("Select all loaded entries")}
                 checked={allSelected}
                 disabled={!events.length}
                 ref={(input) => {
@@ -550,7 +552,7 @@ export function AuditHistory({
             </TableStickyCell>
             {orgId && (
               <TableHeaderCell className="w-64 pr-4">
-                <span className="mr-1">Performed by</span>
+                <span className="mr-1"><UiText message={"Performed by"} /></span>
                 {!initialLoading && (
                   <HistoryActorFilter
                     key={orgId}
@@ -562,10 +564,10 @@ export function AuditHistory({
               </TableHeaderCell>
             )}
             <TableHeaderCell className="w-48 pr-4">
-              <span className="mr-1">Action</span>
+              <span className="mr-1"><UiText message={"Action"} /></span>
               {!initialLoading && (
                 <TableFilters
-                  label="Filter by action"
+                  label={tUi("Filter by action")}
                   value={action}
                   allLabel="All actions"
                   options={ACTION_OPTIONS}
@@ -575,10 +577,10 @@ export function AuditHistory({
               )}
             </TableHeaderCell>
             <TableHeaderCell className="w-64 pr-6">
-              <span className="mr-1">Affected</span>
+              <span className="mr-1"><UiText message={"Affected"} /></span>
               {!initialLoading && (
                 <TableSortFilter
-                  label="Sort by affected"
+                  label={tUi("Sort by affected")}
                   value={sortValue("title")}
                   onChange={(direction) => setSortDirection("title", direction)}
                   widthClassName="w-52"
@@ -586,10 +588,10 @@ export function AuditHistory({
               )}
             </TableHeaderCell>
             <TableHeaderCell className="w-32 pr-4">
-              <span className="mr-1">Application</span>
+              <span className="mr-1"><UiText message={"Application"} /></span>
               {!initialLoading && (
                 <TableFilters
-                  label="Filter by application"
+                  label={tUi("Filter by application")}
                   value={surface}
                   allLabel="All applications"
                   options={SURFACE_OPTIONS}
@@ -598,10 +600,10 @@ export function AuditHistory({
               )}
             </TableHeaderCell>
             <TableHeaderCell className="ml-auto w-28">
-              <span className="mr-1">Status</span>
+              <span className="mr-1"><UiText message={"Status"} /></span>
               {!initialLoading && (
                 <TableFilters
-                  label="Filter by status"
+                  label={tUi("Filter by status")}
                   value={status}
                   allLabel="All statuses"
                   options={STATUS_OPTIONS}
@@ -610,7 +612,7 @@ export function AuditHistory({
               )}
             </TableHeaderCell>
             <TableHeaderCell className="w-10">
-              <span className="sr-only">Actions</span>
+              <span className="sr-only"><UiText message={"Actions"} /></span>
             </TableHeaderCell>
           </TableHeaderRow>
         }
@@ -621,17 +623,17 @@ export function AuditHistory({
           <TableBody className="flex">
             <TableEmptyState>
               <p className="font-serif text-2xl font-medium text-gray-900">
-                {title} unavailable
+                {title}{" "}<UiText message={"unavailable"} />
               </p>
               <p className="mt-1 text-xs text-gray-400">
-                {orgId ? "The audit log could not be loaded." : "Your activity could not be loaded."}
+                {orgId ? (<><UiText message={"The audit log could not be loaded."} /></>) : (<><UiText message={"Your activity could not be loaded."} /></>)}
               </p>
               <PillButtonUI
                 tone="white"
                 className="mt-4"
                 onClick={() => void load(1, false)}
               >
-                Try again
+                <UiText message={"Try again"} />
               </PillButtonUI>
             </TableEmptyState>
           </TableBody>
@@ -643,10 +645,10 @@ export function AuditHistory({
                 className="mb-4 h-14 w-14"
               />
               <p className="font-serif text-2xl font-medium text-gray-900">
-                {orgId ? "No audit events yet" : "No activity yet"}
+                {orgId ? (<><UiText message={"No audit events yet"} /></>) : (<><UiText message={"No activity yet"} /></>)}
               </p>
               <p className="mt-1 text-xs text-gray-400">
-                {orgId ? "Actions taken in this organization appear here." : "Actions appear here as you use the app."}
+                {orgId ? (<><UiText message={"Actions taken in this organization appear here."} /></>) : (<><UiText message={"Actions appear here as you use the app."} /></>)}
               </p>
             </TableEmptyState>
           </TableBody>
@@ -671,7 +673,7 @@ export function AuditHistory({
                   role="button"
                   tabIndex={0}
                   aria-haspopup="dialog"
-                  aria-label={`View details for ${subject.name === "-" ? auditAction(event) : subject.name}`}
+                  aria-label={tUi("View details for {0}", subject.name === "-" ? auditAction(event) : subject.name)}
                   className="h-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500/40"
                   onClick={(click) => {
                     click.currentTarget.focus();
@@ -787,7 +789,7 @@ export function AuditHistory({
       </TableScrollArea>
       <WarningPopup
         open={Boolean(actionError)}
-        title="Export unavailable"
+        title={tUi("Export unavailable")}
         message={actionError}
         onClose={() => setActionError(null)}
       />
@@ -837,6 +839,7 @@ function HistoryExportModal({
   onClose: () => void;
   onExport: (range: { from: string; to: string }) => void;
 }) {
+    const tUi = useUiText();
   const [range, setRange] = useState({ from, to });
   const validRange = !dateRangeError(range);
 
@@ -848,11 +851,11 @@ function HistoryExportModal({
       className="h-auto max-h-[calc(100dvh-2rem)]"
       breadcrumbs={[
         title,
-        title === "My Activity" ? "Export My Activity" : "Export audit log",
+        title === "My Activity" ? tUi("Export My Activity") : tUi("Export audit log"),
       ]}
-      cancelAction={{ label: "Cancel", onClick: onClose }}
+      cancelAction={{ label: tUi("Cancel"), onClick: onClose }}
       primaryAction={{
-        label: exporting ? "Exporting…" : "Export CSV",
+        label: exporting ? tUi("Exporting…") : tUi("Export CSV"),
         icon: exporting ? (
           <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
@@ -867,7 +870,7 @@ function HistoryExportModal({
         className="min-h-0 overflow-y-auto pb-5"
       >
         <p className="mb-4 text-sm text-gray-500">
-          Current search and filters apply. Up to 2,000 events per export.
+          <UiText message={"Current search and filters apply. Up to 2,000 events per export."} />
         </p>
         <fieldset disabled={exporting}>
           <HistoryDateRangeFields
@@ -878,8 +881,8 @@ function HistoryExportModal({
         </fieldset>
         {error && (
           <p role="alert" className="mt-3 text-sm text-red-600">
-            {organization ? "The audit log could not be exported." : "Your activity could not be exported."}{" "}
-            Please try again.
+            {organization ? (<><UiText message={"The audit log could not be exported."} /></>) : (<><UiText message={"Your activity could not be exported."} /></>)}{" "}
+            <UiText message={"Please try again."} />
           </p>
         )}
       </div>
@@ -900,6 +903,7 @@ function HistoryDateRangeFields({
   onPresetSelect?: (range: HistoryDateRange) => void;
   customAction?: ReactNode;
 }) {
+    const tUi = useUiText();
   const id = useId();
   const [preset, setPreset] = useState(() => matchingDatePreset(range));
   const error = dateRangeError(range);
@@ -908,12 +912,12 @@ function HistoryDateRangeFields({
   return (
     <div className="space-y-3 [&_label]:mb-1.5 [&_label]:text-xs">
       <div>
-        <FieldLabel htmlFor={`${id}-preset`}>Date range</FieldLabel>
+        <FieldLabel htmlFor={`${id}-preset`}><UiText message={"Date range"} /></FieldLabel>
         <ModalSelect
           variant="flat"
           className="h-8 rounded-lg px-2.5 text-xs"
           id={`${id}-preset`}
-          aria-label={`Date range: ${DATE_RANGE_PRESETS.find(({ value }) => value === preset)?.label}`}
+          aria-label={tUi("Date range: {0}", DATE_RANGE_PRESETS.find(({ value }) => value === preset)?.label)}
           value={preset}
           options={DATE_RANGE_PRESETS}
           disabled={disabled}
@@ -935,7 +939,7 @@ function HistoryDateRangeFields({
         <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,8rem),1fr))] gap-3">
           <HistoryDatePicker
             id={`${id}-from`}
-            label="From"
+            label={tUi("From")}
             disabled={disabled}
             value={range.from}
             max={range.to && range.to < today ? range.to : today}
@@ -944,7 +948,7 @@ function HistoryDateRangeFields({
           />
           <HistoryDatePicker
             id={`${id}-to`}
-            label="To"
+            label={tUi("To")}
             disabled={disabled}
             value={range.to}
             min={range.from || undefined}
@@ -956,7 +960,7 @@ function HistoryDateRangeFields({
       )}
       {error && (
         <p id={`${id}-error`} role="alert" className="text-xs text-red-600">
-          {error}
+          <UiText message={error} />
         </p>
       )}
       {preset === "custom" && customAction}
@@ -973,6 +977,7 @@ function DateRangeDropdown({
   to: string;
   onChange: (range: { from: string; to: string }) => void;
 }) {
+    const tUi = useUiText();
   const [open, setOpen] = useState(false);
   const [draftRange, setDraftRange] = useState({ from, to });
   const hasChanges = draftRange.from !== from || draftRange.to !== to;
@@ -995,7 +1000,7 @@ function DateRangeDropdown({
           active
           data-icon-position="right"
           className="pl-2.5 pr-2"
-          aria-label={`Select date range: ${formatRangeDate(from)} – ${formatRangeDate(to)}`}
+          aria-label={tUi("Select date range: {0} – {1}", formatRangeDate(from), formatRangeDate(to))}
         >
           <CalendarDays aria-hidden="true" className="h-3.5 w-3.5" />
           {formatRangeDate(from)} – {formatRangeDate(to)}
@@ -1008,7 +1013,7 @@ function DateRangeDropdown({
       <PopoverContent
         asChild
         align="start"
-        aria-label="Filter by date range"
+        aria-label={tUi("Filter by date range")}
         collisionPadding={16}
         className="w-80 max-w-[calc(100vw-2rem)] rounded-2xl"
       >
@@ -1027,7 +1032,7 @@ function DateRangeDropdown({
                   disabled={!hasChanges || Boolean(dateRangeError(draftRange))}
                   onClick={handleConfirm}
                 >
-                  Apply
+                  <UiText message={"Apply"} />
                 </PillButtonUI>
               </div>
             }

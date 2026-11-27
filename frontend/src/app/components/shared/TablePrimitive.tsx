@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import {
     useEffect,
     useState,
@@ -479,6 +480,7 @@ export function TablePrimaryCell({
     onEditCommit?: () => void;
     onEditCancel?: () => void;
 }) {
+    const tUi = useUiText();
     const content =
         label !== undefined ? (
             editing ? (
@@ -523,7 +525,7 @@ export function TablePrimaryCell({
                         aria-label={
                             checkboxTitle ??
                             (typeof label === "string"
-                                ? `Select ${label}`
+                                ? tUi("Select {0}", label)
                                 : undefined)
                         }
                     />

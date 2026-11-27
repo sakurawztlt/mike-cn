@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import {
     useEffect,
     useRef,
@@ -91,6 +92,7 @@ function RenameInput({
     onRename: (filename: string) => Promise<void>;
     onDone: () => void;
 }) {
+    const tUi = useUiText();
     const [value, setValue] = useState(filename);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -131,7 +133,7 @@ function RenameInput({
         <>
             <input
                 ref={input}
-                aria-label="File name"
+                aria-label={tUi("File name")}
                 aria-invalid={!!error}
                 className="min-w-0 flex-1 rounded-none border-0 border-b border-foreground/20 bg-transparent px-0 text-xs text-foreground outline-none focus-visible:border-foreground/40"
                 value={value}
@@ -157,7 +159,7 @@ function RenameInput({
             />
             <WarningPopup
                 open={!!error}
-                title="Rename failed"
+                title={tUi("Rename failed")}
                 message={error}
                 onClose={() => {
                     showingError.current = false;
@@ -183,6 +185,7 @@ export function DocumentTabActions({
         renameInput: ReactNode;
     }) => ReactNode;
 }) {
+    const tUi = useUiText();
     const [position, setPosition] = useState<{ x: number; y: number } | null>(
         null,
     );
@@ -298,7 +301,7 @@ export function DocumentTabActions({
             </DropdownContent>
             <WarningPopup
                 open={!!error}
-                title="File action failed"
+                title={tUi("File action failed")}
                 message={error}
                 onClose={() => setError(null)}
             />

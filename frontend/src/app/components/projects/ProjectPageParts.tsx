@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useRef, useState } from "react";
 import {
     Brain,
@@ -121,6 +122,7 @@ export function DocVersionHistory({
     /** Keeps the rows aligned with a table that shows a Creator column. */
     showCreator?: boolean;
 }) {
+    const tUi = useUiText();
     const [editingVersionId, setEditingVersionId] = useState<string | null>(
         null,
     );
@@ -202,7 +204,7 @@ export function DocVersionHistory({
                     className={`sticky left-0 z-[60] ${DOC_NAME_COL_W} bg-gray-50/80 py-2 pl-3 pr-2`}
                     style={treeNameCellStyle(depth)}
                 >
-                    <div>No version history.</div>
+                    <div><UiText message={"No version history."} /></div>
                 </div>
             </div>
         );
@@ -306,7 +308,7 @@ export function DocVersionHistory({
                                     >
                                         {isDeleted && (
                                             <span className="font-medium text-gray-500">
-                                                [Deleted]{" "}
+                                                <UiText message={"[Deleted]"} />{" "}
                                             </span>
                                         )}
                                         {displayLabel}
@@ -374,7 +376,7 @@ export function DocVersionHistory({
                                               }
                                             : undefined
                                     }
-                                    renameLabel="Rename version"
+                                    renameLabel={tUi("Rename version")}
                                     onDownload={() =>
                                         onDownloadVersion(
                                             docId,
@@ -442,6 +444,7 @@ export function ProjectPageHeader({
         onClick: () => void;
     }>;
 }) {
+    const tUi = useUiText();
     const sectionAction: PageHeaderAction | null =
         activeSection === "documents"
             ? {
@@ -459,7 +462,7 @@ export function ProjectPageHeader({
                     onClick: onNewChat,
                     disabled: !roleKnown,
                     icon: <Plus className="h-4 w-4" />,
-                    label: <span className="hidden sm:inline">Chat</span>,
+                    label: <span className="hidden sm:inline"><UiText message={"Chat"} /></span>,
                     title: "Create chat",
                 }
               : activeSection === "reviews"
@@ -471,7 +474,7 @@ export function ProjectPageHeader({
                     ) : (
                         <Plus className="h-4 w-4" />
                     ),
-                    label: <span className="hidden sm:inline">Review</span>,
+                    label: <span className="hidden sm:inline"><UiText message={"Review"} /></span>,
                     title: "Create review",
                   }
                 : null;
@@ -480,9 +483,9 @@ export function ProjectPageHeader({
         <PageHeader
             breadcrumbs={[
                 {
-                    label: "Projects",
+                    label: tUi("Projects"),
                     onClick: onBackToProjects,
-                    title: "Back to Projects",
+                    title: tUi("Back to Projects"),
                 },
                 {
                     ...(project

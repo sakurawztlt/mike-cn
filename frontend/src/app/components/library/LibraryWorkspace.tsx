@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
     createContext,
     type Dispatch,
@@ -557,6 +558,7 @@ export function LibraryCollectionPage({
     kind: LibraryKind;
     folderId?: string | null;
 }) {
+    const tUi = useUiText();
     const router = useRouter();
     const identity = useWorkspaceIdentity();
     const scoped = useScopedLibrary();
@@ -1009,7 +1011,7 @@ export function LibraryCollectionPage({
             <PageHeader
                 breadcrumbs={[
                     {
-                        label: "Library",
+                        label: tUi("Library"),
                         onClick: () => router.push("/library"),
                     },
                     {
@@ -1031,7 +1033,7 @@ export function LibraryCollectionPage({
                                 type: "custom",
                                 render: (
                                     <HeaderActionsMenu
-                                        title="More actions"
+                                        title={tUi("More actions")}
                                         items={[
                                             {
                                                 label: "Add preset templates",
@@ -1074,7 +1076,7 @@ export function LibraryCollectionPage({
                         folderBackAction ? (
                             <TabPillButtonUI onClick={folderBackAction} className="pl-2">
                                 <ChevronLeft className="h-3.5 w-3.5" />
-                                Back
+                                <UiText message={"Back"} />
                             </TabPillButtonUI>
                         ) : undefined
                     }
@@ -1088,7 +1090,7 @@ export function LibraryCollectionPage({
                                 disabled={!createFolderAction || loading}
                             >
                                 <Plus className="h-3.5 w-3.5" />
-                                <span className="hidden sm:inline">Folder</span>
+                                <span className="hidden sm:inline"><UiText message={"Folder"} /></span>
                             </TabPillButtonUI>
                         </>
                     }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { indexFolderDirectory } from "./folderDirectoryIndex";
 import {
   type ReactNode,
@@ -156,6 +157,7 @@ function WorkspaceFileDirectory({
   disabledDocumentIds,
   selectionDisabled = false,
 }: FileDirectoryProps) {
+    const tUi = useUiText();
   const autoLoadTriggeredRef = useRef(false);
     const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
         new Set(),
@@ -625,7 +627,7 @@ function WorkspaceFileDirectory({
                     checked={selected}
                     indeterminate={false}
                     disabled={disabled}
-                    label={`Select ${doc.filename}`}
+                    label={tUi("Select {0}", doc.filename)}
                     onChange={() => toggle(doc)}
                 />
                 <DocFileIcon fileType={doc.file_type} />
@@ -687,8 +689,8 @@ function WorkspaceFileDirectory({
                             }
                             label={
                                 folderSelectionReady
-                                    ? `Select all files in ${folder.name}`
-                                    : `Expand ${folder.name} and load all files before selecting it`
+                                    ? tUi("Select all files in {0}", folder.name)
+                                    : tUi("Expand {0} and load all files before selecting it", folder.name)
                             }
                             onChange={() => toggleDocuments(directory.collect(folder.id))}
                         />
@@ -725,7 +727,7 @@ function WorkspaceFileDirectory({
                         </span>
                         <span className="truncate text-right text-gray-400">
                             {summary.count}{" "}
-                            {summary.count === 1 ? "file" : "files"}
+                            {summary.count === 1 ? (<><UiText message={"file"} /></>) : (<><UiText message={"files"} /></>)}
                         </span>
                         </button>
                     </div>
@@ -816,7 +818,7 @@ function WorkspaceFileDirectory({
                       paddingLeft: indentedRowPadding(depth + 1),
                                     }}
                                 >
-                                    Empty
+                                    <UiText message={"Empty"} />
                                 </p>
                             )}
                         </div>
@@ -832,7 +834,7 @@ function WorkspaceFileDirectory({
                 <SearchBar
                     value={search}
                     onValueChange={setSearch}
-                    placeholder="Search..."
+                    placeholder={tUi("Search...")}
                     autoFocus
                     wrapperClassName={showTabs ? "mb-4" : "mb-3"}
                 />
@@ -884,7 +886,7 @@ function WorkspaceFileDirectory({
                 <SearchBar
                     value={search}
                     onValueChange={setSearch}
-                    placeholder="Search..."
+                    placeholder={tUi("Search...")}
                     autoFocus
                     wrapperClassName={showTabs ? "mb-4" : "mb-3"}
                 />
@@ -899,7 +901,7 @@ function WorkspaceFileDirectory({
                 )}
                 <div className="min-h-0 flex-1 overflow-y-auto">
                     <p className="text-center text-sm text-gray-400 py-8">
-                        No documents yet
+                        <UiText message={"No documents yet"} />
                     </p>
                 </div>
             </div>
@@ -911,7 +913,7 @@ function WorkspaceFileDirectory({
             <SearchBar
                 value={search}
                 onValueChange={setSearch}
-                placeholder="Search..."
+                placeholder={tUi("Search...")}
                 autoFocus
                 wrapperClassName={showTabs ? "mb-4" : "mb-3"}
             />
@@ -927,14 +929,14 @@ function WorkspaceFileDirectory({
             {activeTabHasNoResults ? (
                 <div className="min-h-0 flex-1 overflow-y-auto">
                     <p className="text-center text-sm text-gray-400 py-8">
-                        No matches found
+                        <UiText message={"No matches found"} />
                     </p>
                 </div>
             ) : (
                 <div className="flex min-h-0 flex-1 flex-col">
                     <FileDirectoryHeader />
                     <div
-                      aria-label="File directory"
+                      aria-label={tUi("File directory")}
                       className="min-h-0 flex-1 overflow-y-auto"
                       onScroll={handleDirectoryScroll}
                     >
@@ -1028,7 +1030,7 @@ function WorkspaceFileDirectory({
                                 directoryFileFolders.length === 0 &&
                                 visibleUploadingFilenames.length === 0 && (
                                     <p className="text-center text-sm text-gray-400 py-8">
-                                        No documents yet
+                                        <UiText message={"No documents yet"} />
                                     </p>
                                 )}
                         </>
@@ -1076,7 +1078,7 @@ function WorkspaceFileDirectory({
                                 visibleTemplateDocs.length === 0 &&
                                 directoryTemplateFolders.length === 0 && (
                                     <p className="text-center text-sm text-gray-400 py-8">
-                                        No templates yet
+                                        <UiText message={"No templates yet"} />
                                     </p>
                                 )}
                         </>
@@ -1125,8 +1127,8 @@ function WorkspaceFileDirectory({
                                             }
                                             label={
                                                 projectSelectionReady
-                                                    ? `Select all files in ${project.name}`
-                                                    : `Expand ${project.name} and load all files before selecting it`
+                                                    ? tUi("Select all files in {0}", project.name)
+                                                    : tUi("Expand {0} and load all files before selecting it", project.name)
                                             }
                                             onChange={() =>
                                                 toggleDocuments(docs)
@@ -1160,7 +1162,7 @@ function WorkspaceFileDirectory({
                         {formatDate(project.created_at) ?? "--"}
                                         </span>
                                         <span className="truncate text-right text-gray-400">
-                        {docs.length} {docs.length === 1 ? "file" : "files"}
+                        {docs.length} {docs.length === 1 ? (<><UiText message={"file"} /></>) : (<><UiText message={"files"} /></>)}
                                         </span>
                                         </button>
                                     </div>
@@ -1169,11 +1171,11 @@ function WorkspaceFileDirectory({
                         {loadingProjectLevels.has(`${project.id}:root`) ? (
                           <p className="flex items-center gap-2 pl-7 py-2 text-xs text-gray-400">
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                            Loading project files
+                            <UiText message={"Loading project files"} />
                           </p>
                         ) : docs.length === 0 && projectFolders.length === 0 ? (
                                                 <p className="pl-7 py-1 text-xs text-gray-400">
-                                                    Empty
+                                                    <UiText message={"Empty"} />
                                                 </p>
                                             ) : (
                                                 <>
@@ -1222,7 +1224,7 @@ function WorkspaceFileDirectory({
                         !q &&
                         visibleDirectoryProjects.length === 0 && (
                             <p className="text-center text-sm text-gray-400 py-8">
-                                No projects yet
+                                <UiText message={"No projects yet"} />
                             </p>
                         )}
             {activeTab === "projects" && !q && (
@@ -1257,10 +1259,10 @@ function FileDirectoryHeader() {
         <div
             className={`${DIRECTORY_GRID_CLASS} px-2 pb-1 pt-0.5 text-[11px] font-medium text-gray-400`}
         >
-            <span className="col-span-3">Name</span>
-            <span>Version</span>
-            <span>Created</span>
-            <span className="text-right">Size</span>
+            <span className="col-span-3"><UiText message={"Name"} /></span>
+            <span><UiText message={"Version"} /></span>
+            <span><UiText message={"Created"} /></span>
+            <span className="text-right"><UiText message={"Size"} /></span>
         </div>
     );
 }
@@ -1296,6 +1298,7 @@ function FileDirectoryControls({
     showTabs: boolean;
     tabs: typeof DIRECTORY_TABS;
 }) {
+    const t = useUiText();
     return (
         <div className="flex items-center justify-between gap-3 pr-2">
             {showTabs ? (
@@ -1308,7 +1311,7 @@ function FileDirectoryControls({
                                 active={active}
                                 onClick={() => onChange(tab.value)}
                             >
-                                {tab.label}
+                                {t(tab.label)}
                             </TabPillButtonUI>
                         );
                     })}
@@ -1318,7 +1321,7 @@ function FileDirectoryControls({
             )}
             {selectedCount > 0 && (
                 <span className="shrink-0 text-xs text-gray-400">
-                    {selectedCount} selected
+                    {selectedCount}{" "}<UiText message={"selected"} />
                 </span>
             )}
         </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import type { ConnectorApprovalItem } from "@mike/contracts";
 import { ChevronRight } from "lucide-react";
 
@@ -73,13 +74,14 @@ function consequenceNote(item: ConnectorApprovalItem): string | null {
  * the surface around it.
  */
 export function ConnectorActionCard({ item }: { item: ConnectorApprovalItem }) {
+    const tUi = useUiText();
   const note = consequenceNote(item);
   const args = Object.entries(item.arguments).filter(
     ([, value]) => value !== undefined && value !== null,
   );
   return (
     <article
-      aria-label={`${item.title} on ${item.connector_name}`}
+      aria-label={tUi("{0} on {1}", item.title, item.connector_name)}
       className="space-y-3 text-left"
     >
       <div>
@@ -90,7 +92,7 @@ export function ConnectorActionCard({ item }: { item: ConnectorApprovalItem }) {
         </p>
         {item.requested_by && (
           <p className="mt-0.5 text-xs text-gray-500 [overflow-wrap:anywhere]">
-            Requested by subagent: {item.requested_by}
+            <UiText message={"Requested by subagent:"} />{" "}{item.requested_by}
           </p>
         )}
       </div>
@@ -107,7 +109,7 @@ export function ConnectorActionCard({ item }: { item: ConnectorApprovalItem }) {
           ))}
         </dl>
       ) : (
-        <p className="text-sm text-gray-500">This action takes no details.</p>
+        <p className="text-sm text-gray-500"><UiText message={"This action takes no details."} /></p>
       )}
       {item.before !== undefined && (
         <details className="group/approval-details">
@@ -116,7 +118,7 @@ export function ConnectorActionCard({ item }: { item: ConnectorApprovalItem }) {
               aria-hidden="true"
               className="size-3 shrink-0 group-open/approval-details:rotate-90"
             />
-            Current item before this change
+            <UiText message={"Current item before this change"} />
           </summary>
           <pre className="mt-2 max-h-60 overflow-auto whitespace-pre-wrap font-sans text-xs text-gray-700 [overflow-wrap:anywhere]">
             {display(item.before)}

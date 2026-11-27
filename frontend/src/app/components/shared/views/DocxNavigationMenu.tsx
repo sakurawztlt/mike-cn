@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, Ellipsis, ListTree } from "lucide-react";
@@ -18,6 +19,7 @@ export function DocxNavigationMenu({ toolbar, open, onToggle }: {
     open: boolean;
     onToggle: () => void;
 }) {
+    const tUi = useUiText();
     const [menu, setMenu] = useState<{ trigger: HTMLButtonElement | null; panel: HTMLElement | null }>({ trigger: null, panel: null });
     useEffect(() => {
         // The packaged toolbar has no overflow-content slot and mounts its
@@ -45,7 +47,7 @@ export function DocxNavigationMenu({ toolbar, open, onToggle }: {
             }}
         >
             <ListTree aria-hidden="true" className="h-4 w-4" />
-            Navigation pane
+            <UiText message={"Navigation pane"} />
             {open && <Check aria-hidden="true" className="ml-auto h-4 w-4" />}
         </DropdownButton>,
         menu.panel,
@@ -55,14 +57,14 @@ export function DocxNavigationMenu({ toolbar, open, onToggle }: {
         <span data-toolbar-fixed="" className="ml-auto flex flex-none items-center">
             <Dropdown>
                 <DropdownTrigger asChild>
-                    <TextButtonUI size="icon-xs" aria-label="More" title="More" className="h-6">
+                    <TextButtonUI size="icon-xs" aria-label={tUi("More")} title={tUi("More")} className="h-6">
                         <Ellipsis aria-hidden="true" className="h-4 w-4" />
                     </TextButtonUI>
                 </DropdownTrigger>
                 <DropdownContent align="end">
                     <DropdownCheckboxItem checked={open} onCheckedChange={onToggle}>
                         <ListTree aria-hidden="true" className="h-4 w-4" />
-                        Navigation pane
+                        <UiText message={"Navigation pane"} />
                     </DropdownCheckboxItem>
                 </DropdownContent>
             </Dropdown>

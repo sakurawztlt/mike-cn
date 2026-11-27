@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -57,6 +58,7 @@ export function HistoryEventModal({
   onClose: () => void;
   onAccessChange?: (hasAccess: boolean) => void;
 }) {
+    const tUi = useUiText();
   const router = useRouter();
   const privateAccess = personal ? null : auditPrivateAccess(event);
   const documentId =
@@ -252,15 +254,15 @@ export function HistoryEventModal({
             ? "h-[min(800px,calc(100dvh-2rem))]"
             : "h-auto max-h-[calc(100dvh-2rem)]"
         }`}
-        breadcrumbs={[title, preview ? "Document" : "Event details"]}
+        breadcrumbs={[title, preview ? tUi("Document") : tUi("Event details")]}
         primaryAction={
           preview
             ? error
-              ? { label: "Try again", onClick: retryPreview }
+              ? { label: tUi("Try again"), onClick: retryPreview }
               : undefined
             : documentId
               ? {
-                  label: busy ? "Opening…" : "Open document",
+                  label: busy ? tUi("Opening…") : tUi("Open document"),
                   onClick: openPreview,
                   disabled: busy,
                 }
@@ -268,10 +270,10 @@ export function HistoryEventModal({
         }
         secondaryAction={
           preview
-            ? { label: "Back", onClick: () => setPreview(false) }
+            ? { label: tUi("Back"), onClick: () => setPreview(false) }
             : privateAccess && hasAccess
               ? {
-                  label: "End access",
+                  label: tUi("End access"),
                   onClick: () => void endAccess(),
                   disabled: busy,
                   variant: "secondary",
@@ -295,7 +297,7 @@ export function HistoryEventModal({
                   })
                 }
               >
-                {busy ? "Opening…" : (destination?.label ?? "Open workflow")}
+                {busy ? (<><UiText message={"Opening…"} /></>) : (destination?.label ?? (<><UiText message={"Open workflow"} /></>))}
               </PillButtonUI>
             ) : destination ? (
               <Link
@@ -324,7 +326,7 @@ export function HistoryEventModal({
             <div className="mt-4 rounded-xl bg-gray-100 p-4">
               <table
                 className="w-full table-fixed text-left"
-                aria-label="Event details"
+                aria-label={tUi("Event details")}
               >
                 <tbody className="divide-y divide-border">
                   {fields.map(({ label, value }) => (
@@ -349,12 +351,12 @@ export function HistoryEventModal({
                   aria-hidden="true"
                   className="h-3.5 w-3.5 transition-transform group-open:rotate-180"
                 />
-                Technical details
+                <UiText message={"Technical details"} />
               </summary>
               <div className="mt-3 rounded-xl bg-gray-100 p-4">
                 <table
                   className="w-full table-fixed text-left"
-                  aria-label="Technical details"
+                  aria-label={tUi("Technical details")}
                 >
                   <tbody className="divide-y divide-border">
                     {Object.entries({
@@ -395,7 +397,7 @@ export function HistoryEventModal({
       </Modal>
       <WarningPopup
         open={Boolean(actionError)}
-        title="Access unavailable"
+        title={tUi("Access unavailable")}
         message={actionError}
         onClose={() => setActionError(null)}
       />
@@ -404,10 +406,11 @@ export function HistoryEventModal({
 }
 
 function DocumentLoading() {
+    const tUi = useUiText();
   return (
     <div
       role="status"
-      aria-label="Loading document"
+      aria-label={tUi("Loading document")}
       className="flex-1 space-y-4 p-4"
     >
       <SkeletonLine className="w-48" />
@@ -428,7 +431,7 @@ function HistoryDocumentPreview({
     return (
       <div className="flex flex-1 items-center justify-center">
         <p role="alert" className="text-center text-sm text-gray-500">
-          {error}
+          <UiText message={error} />
         </p>
       </div>
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useRef, type ReactNode } from "react";
 import { cn } from "@/app/lib/utils";
 import { ROW_ACTION_MENU_CLASS } from "./RowActions";
@@ -45,7 +46,7 @@ export function SelectionActionsMenu({
                     data-icon-position="right"
                     className={cn("pl-3 pr-2", className)}
                 >
-                    Actions
+                    <UiText message={"Actions"} />
                     <ChevronDown className="h-3.5 w-3.5" />
                 </TabPillButtonUI>
             </DropdownTrigger>

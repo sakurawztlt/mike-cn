@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useState, type CSSProperties } from "react";
 import {
   DayButton,
@@ -10,6 +11,8 @@ import {
   type DropdownProps,
   type Matcher,
 } from "@daypicker/react";
+import { zhCN } from "@daypicker/react/locale/zh-CN";
+import { useUiLanguage } from "@/app/i18n/uiLanguage";
 import calendarStyles from "@daypicker/react/style.module.css";
 import {
   CalendarDays,
@@ -65,6 +68,8 @@ export function HistoryDatePicker({
   errorId?: string;
   onChange: (value: string) => void;
 }) {
+    const tUi = useUiText();
+    const { language } = useUiLanguage();
   const [open, setOpen] = useState(false);
   const selected = parseHistoryDate(value);
   const earliest = min ? parseHistoryDate(min) : undefined;
@@ -81,7 +86,7 @@ export function HistoryDatePicker({
             <FormTextInput
               id={id}
               type="text"
-              placeholder="YYYY-MM-DD"
+              placeholder={tUi("YYYY-MM-DD")}
               maxLength={10}
               className="h-8 min-w-0 rounded-lg pl-2.5 pr-9 text-xs"
               required
@@ -94,7 +99,7 @@ export function HistoryDatePicker({
             <PopoverTrigger asChild>
               <TextButtonUI
                 size="icon-xs"
-                aria-label={`${label} calendar`}
+                aria-label={tUi("{0} calendar", label)}
                 disabled={disabled}
                 className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2"
               >
@@ -108,12 +113,13 @@ export function HistoryDatePicker({
           align="start"
           className="rounded-2xl"
           collisionPadding={16}
-          aria-label={`${label} calendar`}
+          aria-label={tUi("{0} calendar", label)}
           onOpenAutoFocus={(event) => event.preventDefault()}
           onEscapeKeyDown={(event) => event.stopPropagation()}
         >
           <DropdownSurface>
             <DayPicker
+              locale={language === "zh-CN" ? zhCN : undefined}
               mode="single"
               required
               autoFocus
@@ -137,8 +143,8 @@ export function HistoryDatePicker({
                 YearsDropdown: CalendarYearDropdown,
               }}
               labels={{
-                labelMonthDropdown: () => "Month",
-                labelYearDropdown: () => "Year",
+                labelMonthDropdown: () => tUi("Month"),
+                labelYearDropdown: () => tUi("Year"),
               }}
               style={CALENDAR_STYLE}
               classNames={CALENDAR_CLASSES}

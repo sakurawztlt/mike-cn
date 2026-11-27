@@ -2,6 +2,8 @@
 // Render reads the mutable editor facade (snapshot, review items); React
 // Compiler would cache those reads per editor instance and go stale.
 "use no memo";
+import { UiText } from "@/app/i18n/uiLanguage";
+
 import { useEffect, useId, useRef, useState } from "react";
 import type {
     Editor,
@@ -73,7 +75,7 @@ export function DocxCommentEdit({
             }}
         >
             <label htmlFor={id} className="sr-only">
-                Edit comment
+                <UiText message={"Edit comment"} />
             </label>
             <textarea
                 id={id}
@@ -88,18 +90,18 @@ export function DocxCommentEdit({
             />
             {error && (
                 <p role="alert" className="text-destructive">
-                    {error}
+                    <UiText message={error} />
                 </p>
             )}
             <div className="flex justify-end gap-2">
-                <TextButtonUI onClick={onClose}>Cancel</TextButtonUI>
+                <TextButtonUI onClick={onClose}><UiText message={"Cancel"} /></TextButtonUI>
                 <PillButtonUI
                     type="submit"
                     size="xs"
                     tone="black"
                     disabled={disabled}
                 >
-                    Save
+                    <UiText message={"Save"} />
                 </PillButtonUI>
             </div>
         </form>

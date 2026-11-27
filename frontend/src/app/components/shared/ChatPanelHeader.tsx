@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { ChevronDown, Loader2, Plus, X } from "lucide-react";
 import type { Chat } from "@/app/components/shared/types";
@@ -124,6 +125,7 @@ export function ChatPanelHeader({
     onClose,
     titleEdit,
 }: ChatPanelHeaderProps) {
+    const tUi = useUiText();
     const [historyOpen, setHistoryOpen] = useState(false);
     const [query, setQuery] = useState("");
     const [now, setNow] = useState(Date.now);
@@ -175,7 +177,7 @@ export function ChatPanelHeader({
                         <FormTextInput
                             ref={titleInputRef}
                             variant="minimal"
-                            aria-label="Chat title"
+                            aria-label={tUi("Chat title")}
                             value={titleEdit.value}
                             onFocus={(event) => event.currentTarget.select()}
                             onChange={(event) =>
@@ -217,7 +219,7 @@ export function ChatPanelHeader({
                                     )}
                                 >
                                     <span className="min-w-0 truncate text-xs font-medium">
-                                        {currentTitle ?? "New Chat"}
+                                        {currentTitle ?? (<><UiText message={"New Chat"} /></>)}
                                     </span>
                                     <ChevronDown
                                         className={cn(
@@ -232,8 +234,8 @@ export function ChatPanelHeader({
                             loading={loading}
                             emptyLabel={
                                 chats.length === 0
-                                    ? "No chats yet."
-                                    : "No matches."
+                                    ? tUi("No chats yet.")
+                                    : tUi("No matches.")
                             }
                             items={historyItems}
                             onSelect={loadChat}
@@ -250,7 +252,7 @@ export function ChatPanelHeader({
                                 type="button"
                                 onClick={onNewChat}
                                 disabled={newChatDisabled}
-                                aria-label="New chat"
+                                aria-label={tUi("New chat")}
                                 className={cn(
                                     HEADER_PILL_BUTTON_CLASS,
                                     "disabled:cursor-not-allowed disabled:opacity-40",
@@ -267,8 +269,8 @@ export function ChatPanelHeader({
                             <button
                                 type="button"
                                 onClick={onClose}
-                                aria-label="Close chat panel"
-                                title="Close chat panel"
+                                aria-label={tUi("Close chat panel")}
+                                title={tUi("Close chat panel")}
                                 className={HEADER_PILL_BUTTON_CLASS}
                             >
                                 <X aria-hidden="true" className="h-3.5 w-3.5" />

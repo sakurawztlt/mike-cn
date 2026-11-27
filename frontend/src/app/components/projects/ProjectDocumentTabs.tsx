@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { DocumentTabBar } from "@/app/components/shared/DocumentTabBar";
 import { LegalSourceIcon } from "@/app/components/shared/LegalSourceIcon";
 import {
@@ -49,9 +50,10 @@ export function ProjectDocumentTabs({
     onClose,
     onReorder,
 }: Props) {
+    const tUi = useUiText();
     return (
         <DocumentTabBar
-            label="Project documents"
+            label={tUi("Project documents")}
             idPrefix="project-document"
             className="project-document-tabs"
             tabs={tabs.map((tab) => {

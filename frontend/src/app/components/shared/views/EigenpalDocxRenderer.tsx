@@ -1,8 +1,11 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TextButtonUI } from "@mike/ui";
 import { DocxEditor } from "@docx-editor.dev/react";
+import { zhCN } from "@docx-editor.dev/i18n/zh-CN";
+import { useUiLanguage } from "@/app/i18n/uiLanguage";
 import type { Editor, ReviewPosition, ReviewRevisionPlacement } from "@docx-editor.dev/core/contracts/editor";
 import { packagedFonts } from "@docx-editor.dev/fonts";
 import { useOptionalAuth } from "@/app/contexts/AuthContext";
@@ -18,6 +21,7 @@ import type { DocxRendererProps } from "./DocxRenderer.types";
 // Use packaged, metric-compatible fonts; document text never goes to a conversion service.
 const fonts = packagedFonts();
 const editorLabels = { formattingBar: { commentsAndChanges: "Comments" } };
+const chineseEditorLabels = { ...zhCN, formattingBar: { ...zhCN.formattingBar, commentsAndChanges: "批注" } };
 const BODY_PART = "/word/document.xml";
 const CITATION_HIGHLIGHT = "citation";
 // The PDF viewer's citation fill, so a quote looks the same in either format.
@@ -37,6 +41,7 @@ function editRanges(revision: ReviewRevisionPlacement, ins?: string | null, del?
 }
 
 export default function DocxRenderer({ bytes, mode, toolbarVisible = true, filename, author, onChange, onSave, onReady, onError }: DocxRendererProps) {
+    const { language } = useUiLanguage();
     const auth = useOptionalAuth();
     const profile = useOptionalUserProfile();
     const reviewAuthor = author?.trim() || profile?.profile?.displayName?.trim()
@@ -65,13 +70,13 @@ export default function DocxRenderer({ bytes, mode, toolbarVisible = true, filen
             }}>
             {fontWarning && (
                 <div role="status" className="flex shrink-0 items-start gap-2 px-3 py-2 text-xs text-muted-foreground">
-                    <span className="min-w-0 flex-1">Some document fonts could not be loaded. Text may look different.</span>
-                    <TextButtonUI onClick={() => setFontWarning(false)}>Dismiss</TextButtonUI>
+                    <span className="min-w-0 flex-1"><UiText message={"Some document fonts could not be loaded. Text may look different."} /></span>
+                    <TextButtonUI onClick={() => setFontWarning(false)}><UiText message={"Dismiss"} /></TextButtonUI>
                 </div>
             )}
             <DocxEditor
                 document={document}
-                i18n={editorLabels}
+                i18n={language === "zh-CN" ? chineseEditorLabels : editorLabels}
                 fonts={fonts}
                 mode={toolbarVisible ? mode : "view"}
                 modules={docxModules}

@@ -74,14 +74,14 @@ describe("AddDocumentsModal upload progress", () => {
             { clientId: "drop", status: "completed", result: uploaded },
         ]);
         const onSelect = vi.fn();
-        render(<AddDocumentsModal open onClose={vi.fn()} onSelect={onSelect} breadcrumb={["Documents"]} />);
+        render(<AddDocumentsModal open onClose={vi.fn()} onSelect={onSelect} breadcrumb={["Documents"]} uploadStateId="drop-verification" />);
         const file = new File(["contents"], "evidence.pdf", { type: "application/pdf" });
-        fireEvent.drop(screen.getByRole("region", { name: "拖放上传文件" }), {
+        fireEvent.drop(screen.getByRole("region", { name: "Drop files to upload" }), {
             dataTransfer: { types: ["Files"], files: [file] },
         });
         expect(apiMocks.uploadStandaloneDocuments.mock.calls[0][0][0].file).toBe(file);
-        fireEvent.click(await screen.findByRole("button", { name: "移除 evidence.pdf" }));
-        expect(screen.queryByRole("button", { name: "移除 evidence.pdf" })).not.toBeInTheDocument();
+        fireEvent.click(await screen.findByRole("button", { name: "Remove evidence.pdf" }));
+        expect(screen.queryByRole("button", { name: "Remove evidence.pdf" })).not.toBeInTheDocument();
         expect(screen.getByTestId("loaded-files")).toHaveTextContent("evidence.pdf");
         expect(onSelect).not.toHaveBeenCalled();
     });

@@ -665,7 +665,7 @@ describe("explorer uploads", () => {
         ]);
         await renderWorkspace();
         const pdf = new File(["b"], "Broken.pdf");
-        dropOnExplorer([pdf, new File(["png"], "Photo.png")]);
+        dropOnExplorer([pdf, new File(["svg"], "Photo.svg")]);
         const dialog = await findUploadWarning();
         expect(dialog).toHaveTextContent("Unsupported file type.");
         expect(dialog).toHaveTextContent("Broken.pdf could not be uploaded.");
@@ -678,7 +678,7 @@ describe("explorer uploads", () => {
 
     it("never opens an upload session for a drop of only unsupported files", async () => {
         await renderWorkspace();
-        dropOnExplorer([new File(["png"], "Photo.png")]);
+        dropOnExplorer([new File(["svg"], "Photo.svg")]);
         expect(
             await screen.findByText(/Unsupported file type\./),
         ).toBeVisible();

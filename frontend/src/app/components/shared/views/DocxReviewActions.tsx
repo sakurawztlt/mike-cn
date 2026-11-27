@@ -2,6 +2,8 @@
 // Render reads the mutable editor facade (snapshot, review items); React
 // Compiler would cache those reads per editor instance and go stale.
 "use no memo";
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
+
 
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -41,6 +43,7 @@ export function DocxReviewActions({
     /** Reveal a highlighted comment's bubble in the comments column. */
     onView?: (key: string) => void;
 }) {
+    const tUi = useUiText();
     useEditorSnapshot(editor);
     const pending = useRef<{
         action: "reply" | "edit" | "view";
@@ -203,7 +206,7 @@ export function DocxReviewActions({
                                 }}
                             >
                                 <MessageSquare className="h-3.5 w-3.5" />
-                                View comment
+                                <UiText message={"View comment"} />
                             </DropdownItem>
                             <DropdownItem
                                 disabled={disabled}
@@ -211,7 +214,7 @@ export function DocxReviewActions({
                                 onSelect={() => run("delete")}
                             >
                                 <Trash2 className="h-3.5 w-3.5" />
-                                Delete comment
+                                <UiText message={"Delete comment"} />
                             </DropdownItem>
                         </>
                     ) : item?.kind === "comment" ? (
@@ -227,7 +230,7 @@ export function DocxReviewActions({
                                 }}
                             >
                                 <Reply className="h-3.5 w-3.5" />
-                                Reply to comment
+                                <UiText message={"Reply to comment"} />
                             </DropdownItem>
                             {onEdit && (
                                 <DropdownItem
@@ -248,7 +251,7 @@ export function DocxReviewActions({
                                     }}
                                 >
                                     <Pencil className="h-3.5 w-3.5" />
-                                    Edit comment
+                                    <UiText message={"Edit comment"} />
                                 </DropdownItem>
                             )}
                             <DropdownItem
@@ -257,7 +260,7 @@ export function DocxReviewActions({
                                 onSelect={() => run("delete")}
                             >
                                 <Trash2 className="h-3.5 w-3.5" />
-                                Delete comment
+                                <UiText message={"Delete comment"} />
                             </DropdownItem>
                         </>
                     ) : (
@@ -267,14 +270,14 @@ export function DocxReviewActions({
                                 onSelect={() => run("accept")}
                             >
                                 <Check className="h-3.5 w-3.5" />
-                                Accept tracked change
+                                <UiText message={"Accept tracked change"} />
                             </DropdownItem>
                             <DropdownItem
                                 disabled={disabled}
                                 onSelect={() => run("reject")}
                             >
                                 <X className="h-3.5 w-3.5" />
-                                Reject tracked change
+                                <UiText message={"Reject tracked change"} />
                             </DropdownItem>
                         </>
                     )}
@@ -282,7 +285,7 @@ export function DocxReviewActions({
             </Dropdown>
             <WarningPopup
                 open={!!error}
-                title="Unable to update document"
+                title={tUi("Unable to update document")}
                 message={error}
                 onClose={() => setError(null)}
             />

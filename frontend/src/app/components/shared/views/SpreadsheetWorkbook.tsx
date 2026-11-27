@@ -9,6 +9,7 @@ import {
 } from "react";
 import type { Sheet, Hooks } from "@fortune-sheet/core";
 import type { WorkbookInstance } from "@fortune-sheet/react";
+import { useUiLanguage } from "@/app/i18n/uiLanguage";
 
 type WorkbookComponent = typeof import("@fortune-sheet/react").Workbook;
 export type SpreadsheetSession = {
@@ -36,6 +37,7 @@ export function SpreadsheetWorkbook({
     initialSession,
     onSessionSave,
 }: Props) {
+    const { language } = useUiLanguage();
     const containerRef = useRef<HTMLDivElement>(null);
     const [saved] = useState(() =>
         initialSession?.sourceSheets === sheets ? initialSession : null,
@@ -178,6 +180,7 @@ export function SpreadsheetWorkbook({
     return (
         <div ref={containerRef} className="relative min-h-0 flex-1">
             <Workbook
+                lang={language === "zh-CN" ? "zh" : "en"}
                 ref={workbookRef}
                 data={workbookSheets}
                 onChange={setWorkbookSheets}
