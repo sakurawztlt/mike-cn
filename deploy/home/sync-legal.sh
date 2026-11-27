@@ -2,7 +2,7 @@
 set -euo pipefail
 umask 077
 
-readonly state=\${MIKE_DEPLOY_STATE:-/var/lib/mike-cn}
+readonly state="${MIKE_DEPLOY_STATE:-/var/lib/mike-cn}"
 readonly data="$state/legal-data"
 exec 9>"$state/deploy.lock"
 flock -w 240 9
