@@ -47,7 +47,7 @@ describe("PersonalisationPage", () => {
     expect(
       screen.getByRole("heading", { name: "Response style" }),
     ).toBeInTheDocument();
-    for (const setting of ["Verbosity", "Headers and Lists", "Tone", "Language"]) {
+    for (const setting of ["Verbosity", "Headers and Lists", "Tone", "Reply language"]) {
       expect(
         await screen.findByRole("button", { name: setting }),
       ).toBeInTheDocument();

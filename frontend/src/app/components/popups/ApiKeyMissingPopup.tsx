@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useRouter } from "next/navigation";
 import { AlertTriangle } from "lucide-react";
 import { WarningPopup } from "../popups/WarningPopup";
@@ -19,6 +20,7 @@ export function ApiKeyMissingPopup({
     message,
     title,
 }: Props) {
+    const tUi = useUiText();
     const router = useRouter();
     if (!open) return null;
 
@@ -35,13 +37,13 @@ export function ApiKeyMissingPopup({
         <WarningPopup
             open={open}
             onClose={onClose}
-            title={title ?? "API key required"}
+            title={title ?? tUi("API key required")}
             message={body}
             icon={
                 <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-600" />
             }
             primaryAction={{
-                label: "Go to settings",
+                label: tUi("Go to settings"),
                 onClick: handleGoToSettings,
             }}
         />

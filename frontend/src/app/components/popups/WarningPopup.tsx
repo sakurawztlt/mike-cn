@@ -3,6 +3,7 @@
 import { createPortal } from "react-dom";
 import { useEffect, type ReactNode } from "react";
 import { PillButtonUI, NoticeCardUI, useNoticeStackSlot } from "@mike/ui";
+import { useUiText } from "@/app/i18n/uiLanguage";
 
 /**
  * A single warning that the calling component opens and closes itself.
@@ -56,6 +57,7 @@ export function WarningPopup({
     actions,
     className,
 }: WarningPopupProps) {
+    const tUi = useUiText();
     const stackSlot = useNoticeStackSlot();
 
     useEffect(() => {
@@ -75,8 +77,8 @@ export function WarningPopup({
             role="alert"
             aria-live="assertive"
             aria-atomic="true"
-            title={title}
-            message={message}
+            title={typeof title === "string" ? tUi(title) : title}
+            message={typeof message === "string" ? tUi(message) : message}
             icon={icon}
             onDismiss={onClose}
             dismissLabel="Dismiss warning"
@@ -92,7 +94,7 @@ export function WarningPopup({
                                 onClick={primaryAction.onClick}
                                 disabled={primaryAction.disabled}
                             >
-                                {primaryAction.label}
+                                {typeof primaryAction.label === "string" ? tUi(primaryAction.label) : primaryAction.label}
                             </PillButtonUI>
                         ) : null}
                     </>

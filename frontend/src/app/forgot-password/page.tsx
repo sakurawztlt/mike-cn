@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -89,12 +90,10 @@ export default function ForgotPasswordPage() {
                     {submitted ? (
                         <div>
                             <h1 className="text-2xl font-medium font-serif text-gray-950">
-                                Check your email
+                                <UiText message={"Check your email"} />
                             </h1>
                             <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                                If an account exists for {email.trim()}, we sent
-                                a password-reset link. The link expires and can
-                                only be used once.
+                                <UiText message={"If an account exists for"} />{" "}{email.trim()}<UiText message={", we sent a password-reset link. The link expires and can only be used once."} />
                             </p>
                             <Link
                                 href="/login"
@@ -104,17 +103,16 @@ export default function ForgotPasswordPage() {
                                     className: "mt-6",
                                 })}
                             >
-                                Return to login
+                                <UiText message={"Return to login"} />
                             </Link>
                         </div>
                     ) : (
                         <>
                             <h1 className="text-2xl font-medium font-serif text-gray-950">
-                                Reset your password
+                                <UiText message={"Reset your password"} />
                             </h1>
                             <p className="mt-2 text-sm leading-relaxed text-gray-500">
-                                Enter your account email and we will send you a
-                                secure reset link.
+                                <UiText message={"Enter your account email and we will send you a secure reset link."} />
                             </p>
                             <form
                                 onSubmit={handleSubmit}
@@ -122,7 +120,7 @@ export default function ForgotPasswordPage() {
                             >
                                 <div>
                                     <FieldLabel htmlFor="email">
-                                        Email
+                                        <UiText message={"Email"} />
                                     </FieldLabel>
                                     <InputUI
                                         id="email"
@@ -151,7 +149,7 @@ export default function ForgotPasswordPage() {
                                                 disabled={loading}
                                                 className="ml-2 underline underline-offset-2 disabled:no-underline disabled:opacity-60"
                                             >
-                                                Retry
+                                                <UiText message={"Retry"} />
                                             </button>
                                         )}
                                         {error.supportable && (
@@ -162,7 +160,7 @@ export default function ForgotPasswordPage() {
                                                 )}
                                                 className="ml-2 underline underline-offset-2"
                                             >
-                                                Contact support
+                                                <UiText message={"Contact support"} />
                                             </a>
                                         )}
                                     </div>
@@ -175,8 +173,8 @@ export default function ForgotPasswordPage() {
                                     className="w-full"
                                 >
                                     {loading
-                                        ? "Sending reset link..."
-                                        : "Send reset link"}
+                                        ? (<><UiText message={"Sending reset link..."} /></>)
+                                        : (<><UiText message={"Send reset link"} /></>)}
                                 </PillButtonUI>
                             </form>
                             <div className="mt-5 text-center">
@@ -184,7 +182,7 @@ export default function ForgotPasswordPage() {
                                     href="/login"
                                     className="text-sm font-medium text-gray-500 transition-colors hover:text-gray-950"
                                 >
-                                    Return to login
+                                    <UiText message={"Return to login"} />
                                 </Link>
                             </div>
                         </>

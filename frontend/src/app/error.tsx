@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import Link from "next/link";
 import { pillButtonUIClassName } from "@mike/ui";
 import { CrashScreen } from "@/app/components/shared/CrashScreen";
@@ -21,7 +22,7 @@ export default function Error({
                     href="/"
                     className={pillButtonUIClassName({ tone, size: "normal" })}
                 >
-                    Home
+                    <UiText message={"Home"} />
                 </Link>
             )}
         />

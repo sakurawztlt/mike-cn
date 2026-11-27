@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingShell } from "@/app/components/auth/OnboardingShell";
@@ -39,6 +40,7 @@ function PracticeDetailsForm({
 }: {
     initial: ReturnType<typeof personalisationInitialValues>;
 }) {
+    const tUi = useUiText();
     const router = useRouter();
     const { updatePersonalisation } = useUserProfile();
     const form = usePersonalisationFields(initial);
@@ -87,8 +89,8 @@ function PracticeDetailsForm({
     return (
         <OnboardingShell
             step="Step 2 of 4"
-            title="Your legal practice"
-            description="Optionally add your professional setting, primary jurisdiction, and the areas you work in."
+            title={tUi("Your legal practice")}
+            description={tUi("Optionally add your professional setting, primary jurisdiction, and the areas you work in.")}
         >
             <form onSubmit={handleSubmit}>
                 <PersonalisationFields
@@ -119,7 +121,7 @@ function PracticeDetailsForm({
                         disabled={submitting}
                         onClick={() => router.push("/onboarding/profile")}
                     >
-                        Back
+                        <UiText message={"Back"} />
                     </PillButtonUI>
                     <div className="flex items-center gap-4">
                         <button
@@ -128,7 +130,7 @@ function PracticeDetailsForm({
                             onClick={() => router.push("/onboarding/invitations")}
                             className="text-sm font-medium text-gray-500 transition-colors hover:text-gray-950 disabled:cursor-not-allowed disabled:text-gray-300"
                         >
-                            Skip
+                            <UiText message={"Skip"} />
                         </button>
                         <PillButtonUI
                             type="submit"
@@ -136,7 +138,7 @@ function PracticeDetailsForm({
                             size="normal"
                             disabled={submitting}
                         >
-                            {submitting ? "Saving..." : "Continue"}
+                            {submitting ? (<><UiText message={"Saving..."} /></>) : (<><UiText message={"Continue"} /></>)}
                         </PillButtonUI>
                     </div>
                 </div>

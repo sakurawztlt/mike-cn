@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Loader2 } from "lucide-react";
 import {
@@ -93,14 +94,13 @@ export default function ModelPreferencesPage() {
   return (
     <div className="space-y-8">
       <section className="space-y-3">
-        <SettingsHeading id="model-preferences">Model Preferences</SettingsHeading>
+        <SettingsHeading id="model-preferences"><UiText message={"Model Preferences"} /></SettingsHeading>
         <GlassCardUI>
           <SettingsRow layout="stacked">
             <div className="space-y-1">
-              <SettingsLabel>Chat title generation</SettingsLabel>
+              <SettingsLabel><UiText message={"Chat title generation"} /></SettingsLabel>
               <SettingsDescription>
-                By default, titles use a low cost model from the chat
-                provider. Choose a model here to override that.
+                <UiText message={"By default, titles use a low cost model from the chat provider. Choose a model here to override that."} />
               </SettingsDescription>
             </div>
             <ModelPreferenceDropdown
@@ -121,10 +121,9 @@ export default function ModelPreferencesPage() {
           </SettingsRow>
           <SettingsRow layout="stacked">
             <div className="space-y-1">
-              <SettingsLabel>Tabular review model</SettingsLabel>
+              <SettingsLabel><UiText message={"Tabular review model"} /></SettingsLabel>
               <SettingsDescription>
-                Preselected when creating a review. Each review stores its own
-                model and can be changed separately.
+                <UiText message={"Preselected when creating a review. Each review stores its own model and can be changed separately."} />
               </SettingsDescription>
             </div>
             <ModelPreferenceDropdown
@@ -145,11 +144,9 @@ export default function ModelPreferencesPage() {
           </SettingsRow>
           <SettingsRow layout="stacked">
             <div className="space-y-1">
-              <SettingsLabel>Memory curation model</SettingsLabel>
+              <SettingsLabel><UiText message={"Memory curation model"} /></SettingsLabel>
               <SettingsDescription>
-                Used after conversations to identify durable information worth
-                keeping. By default, memory uses the model selected for the
-                chat.
+                <UiText message={"Used after conversations to identify durable information worth keeping. By default, memory uses the model selected for the chat."} />
               </SettingsDescription>
             </div>
             <ModelPreferenceDropdown
@@ -176,19 +173,16 @@ export default function ModelPreferencesPage() {
       </section>
 
       <section className="space-y-3" aria-labelledby="subagents-heading">
-        <SettingsHeading id="subagents-heading">Subagents</SettingsHeading>
+        <SettingsHeading id="subagents-heading"><UiText message={"Subagents"} /></SettingsHeading>
         <SettingsDescription>
-          Mike can hand parts of a task to subagents that work on them
-          separately and report back. These are the defaults it follows unless
-          you ask for something else in the chat.
+          <UiText message={"Mike can hand parts of a task to subagents that work on them separately and report back. These are the defaults it follows unless you ask for something else in the chat."} />
         </SettingsDescription>
         <GlassCardUI>
           <SettingsRow layout="stacked">
             <div className="space-y-1">
-              <SettingsLabel>Model</SettingsLabel>
+              <SettingsLabel><UiText message={"Model"} /></SettingsLabel>
               <SettingsDescription>
-                The model each subagent runs on. Chosen per task lets Mike
-                match the model to the work.
+                <UiText message={"The model each subagent runs on. Chosen per task lets Mike match the model to the work."} />
               </SettingsDescription>
             </div>
             <ModelPreferenceDropdown
@@ -209,9 +203,9 @@ export default function ModelPreferencesPage() {
           </SettingsRow>
           <SettingsRow layout="stacked">
             <div className="space-y-1">
-              <SettingsLabel>Reasoning</SettingsLabel>
+              <SettingsLabel><UiText message={"Reasoning"} /></SettingsLabel>
               <SettingsDescription>
-                How much each subagent thinks before it answers.
+                <UiText message={"How much each subagent thinks before it answers."} />
               </SettingsDescription>
             </div>
             <ReasoningPreferenceDropdown
@@ -251,6 +245,7 @@ function ModelPreferenceDropdown({
   isSaved?: boolean;
   emptyOptionLabel: string;
 }) {
+    const tUi = useUiText();
   const [isOpen, setIsOpen] = useState(false);
   const availableOptions = options.filter((model) => {
     if (model.source === "Configured") return true;
@@ -274,7 +269,7 @@ function ModelPreferenceDropdown({
     <Dropdown onOpenChange={setIsOpen}>
       <PreferenceTrigger
         label={
-          !value ? emptyOptionLabel : (selected?.label ?? "Select a model")
+          !value ? emptyOptionLabel : (selected?.label ?? tUi("Select a model"))
         }
         isOpen={isOpen}
         isSaving={isSaving}

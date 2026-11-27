@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -56,6 +57,7 @@ export default function SettingsLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const tUi = useUiText();
     const router = useRouter();
     const pathname = usePathname();
     const { user, isAuthenticated, authLoading } = useAuth();
@@ -107,7 +109,7 @@ export default function SettingsLayout({
 
     return (
         <SettingsShell
-            title="Settings"
+            title={tUi("Settings")}
             navLabel="Settings"
             search={<SettingsSearch entries={searchEntries} />}
             tabs={visibleTabs.map((tab) =>
@@ -119,8 +121,8 @@ export default function SettingsLayout({
                                   {invitationCount}{" "}
                                   <span className="sr-only">
                                       {invitationCount === 1
-                                          ? "pending invitation"
-                                          : "pending invitations"}
+                                          ? (<><UiText message={"pending invitation"} /></>)
+                                          : (<><UiText message={"pending invitations"} /></>)}
                                   </span>
                               </span>
                           ),

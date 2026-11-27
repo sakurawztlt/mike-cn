@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -65,6 +66,7 @@ function describeSetupError(error: unknown): UserFacingError {
  * deployment cannot send confirmation email yet, and signed straight in.
  */
 export default function SetupPage() {
+    const tUi = useUiText();
     const router = useRouter();
     const { isAuthenticated, authLoading, refreshSession } = useAuth();
     const { options, loaded } = useSignInOptions();
@@ -126,16 +128,15 @@ export default function SetupPage() {
             <div className="w-full max-w-md">
                 <div className={cn(authGlassCardUIClassName, "mb-4")}>
                     <h1 className="text-left text-2xl font-medium font-serif text-gray-950">
-                        Set up Mike
+                        <UiText message={"Set up Mike"} />
                     </h1>
                     <p className="mt-2 mb-6 text-sm leading-relaxed text-gray-600">
-                        Your deployment is ready. Create the first account to
-                        start using it.
+                        <UiText message={"Your deployment is ready. Create the first account to start using it."} />
                     </p>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
-                            <FieldLabel htmlFor="email">Email</FieldLabel>
+                            <FieldLabel htmlFor="email"><UiText message={"Email"} /></FieldLabel>
                             <InputUI
                                 id="email"
                                 type="email"
@@ -148,14 +149,14 @@ export default function SetupPage() {
                         </div>
 
                         <div>
-                            <FieldLabel htmlFor="password">Password</FieldLabel>
+                            <FieldLabel htmlFor="password"><UiText message={"Password"} /></FieldLabel>
                             <InputUI
                                 id="password"
                                 type="password"
                                 autoComplete="new-password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder={`Min. ${MIN_PASSWORD_LENGTH} Characters`}
+                                placeholder={tUi("Min. {0} Characters", MIN_PASSWORD_LENGTH)}
                                 required
                                 className={`w-full ${authInputUIClassName}`}
                             />
@@ -163,7 +164,7 @@ export default function SetupPage() {
 
                         <div>
                             <FieldLabel htmlFor="confirmPassword">
-                                Confirm Password
+                                <UiText message={"Confirm Password"} />
                             </FieldLabel>
                             <InputUI
                                 id="confirmPassword"
@@ -178,23 +179,23 @@ export default function SetupPage() {
 
                         <div className="space-y-3 pt-2">
                             <div className="text-center text-xs text-gray-500">
-                                By creating an account, you agree to our{" "}
+                                <UiText message={"By creating an account, you agree to our"} />{" "}
                                 <Link
                                     href="https://mikeoss.com/terms"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline"
                                 >
-                                    Terms of Use
+                                    <UiText message={"Terms of Use"} />
                                 </Link>{" "}
-                                and{" "}
+                                <UiText message={"and"} />{" "}
                                 <Link
                                     href="https://mikeoss.com/privacy"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline"
                                 >
-                                    Privacy Policy
+                                    <UiText message={"Privacy Policy"} />
                                 </Link>
                             </div>
                             <PillButtonUI
@@ -204,7 +205,7 @@ export default function SetupPage() {
                                 disabled={loading || alreadySetUp}
                                 className="w-full"
                             >
-                                {loading ? "Creating account..." : "Create account"}
+                                {loading ? (<><UiText message={"Creating account..."} /></>) : (<><UiText message={"Create account"} /></>)}
                             </PillButtonUI>
                         </div>
                     </form>
@@ -215,7 +216,7 @@ export default function SetupPage() {
                             href="/login"
                             className="font-medium transition-colors hover:text-gray-950"
                         >
-                            Log in
+                            <UiText message={"Log in"} />
                         </Link>
                     </div>
                 )}
@@ -231,7 +232,7 @@ export default function SetupPage() {
                             href={supportMailtoFor(error, "Failed to set up Mike.")}
                             className={noticeActionClassName()}
                         >
-                            Contact support
+                            <UiText message={"Contact support"} />
                         </a>
                     ) : undefined
                 }

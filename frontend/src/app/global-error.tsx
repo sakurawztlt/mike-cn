@@ -1,5 +1,6 @@
 "use client";
 
+import { UiLanguageProvider, UiText } from "@/app/i18n/uiLanguage";
 // global-error replaces the root layout, so it imports the layout's CSS
 // itself; without these the design-system classes below would not apply.
 import "./fonts/fonts.css";
@@ -15,11 +16,12 @@ export default function GlobalError({
     reset?: () => void;
 }) {
     return (
-        <html lang="en">
+        <html lang="zh-CN">
             <head>
-                <title>Something went wrong – Mike</title>
+                <title>Mike</title>
             </head>
             <body className="font-sans antialiased">
+                <UiLanguageProvider>
                 <CrashScreen
                     error={error}
                     reset={reset}
@@ -34,10 +36,11 @@ export default function GlobalError({
                             size="normal"
                             onClick={() => window.history.back()}
                         >
-                            Back
+                            <UiText message={"Back"} />
                         </PillButtonUI>
                     )}
                 />
+                </UiLanguageProvider>
             </body>
         </html>
     );

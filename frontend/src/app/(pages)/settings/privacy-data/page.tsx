@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { Download, Trash2 } from "lucide-react";
 import { PillButtonUI, GlassCardUI } from "@mike/ui";
@@ -106,6 +107,7 @@ const DELETE_ACTION_LABELS: Record<DeleteDataAction, string> = {
 // drops a confirmation or verification still open for the old one rather
 // than carrying it into the new one.
 export default function PrivacyDataPage() {
+    const tUi = useUiText();
   const { workspaceId, activeOrganization } = useWorkspace();
   const multipleWorkspaces = useHasMultipleWorkspaces();
   const { canExport, canDelete } = useMemberDataActions();
@@ -113,8 +115,8 @@ export default function PrivacyDataPage() {
   if (!canExport && !canDelete) {
     return (
       <EmptyState
-        title="Managed by your organization"
-        description={`Exporting and bulk-deleting your data in ${activeOrganization?.name ?? "this organization"} is managed by its owners and is not available to members. Your other workspaces are not affected.`}
+        title={tUi("Managed by your organization")}
+        description={tUi("Exporting and bulk-deleting your data in {0} is managed by its owners and is not available to members. Your other workspaces are not affected.", activeOrganization?.name ?? "this organization")}
       />
     );
   }
@@ -146,6 +148,7 @@ function PrivacyData({
   canExport: boolean;
   canDelete: boolean;
 }) {
+    const tUi = useUiText();
   const { loadChats, setCurrentChatId } = useChatHistoryContext();
   const [pendingDeleteAction, setPendingDeleteAction] =
     useState<DeleteDataAction | null>(null);
@@ -388,19 +391,18 @@ function PrivacyData({
     <div className="space-y-8">
       {canExport && (
         <section className="space-y-3">
-          <SettingsHeading id="export-data">Export data</SettingsHeading>
+          <SettingsHeading id="export-data"><UiText message={"Export data"} /></SettingsHeading>
           {workspaceName && (
             <SettingsDescription>
-              Exports data in {workspaceName} only. To export another workspace,
-              switch to it first.
+              <UiText message={"Exports data in"} />{" "}{workspaceName}{" "}<UiText message={"only. To export another workspace, switch to it first."} />
             </SettingsDescription>
           )}
           <GlassCardUI>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Export chats</SettingsLabel>
+                <SettingsLabel><UiText message={"Export chats"} /></SettingsLabel>
                 <SettingsDescription>
-                  Download assistant and tabular review chat history as JSON.
+                  <UiText message={"Download assistant and tabular review chat history as JSON."} />
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -412,15 +414,14 @@ function PrivacyData({
                 className="shrink-0"
               >
                 <Download className="h-4 w-4 shrink-0" />
-                {isExportingChats ? "Exporting..." : "Export"}
+                {isExportingChats ? (<><UiText message={"Exporting..."} /></>) : (<><UiText message={"Export"} /></>)}
               </PillButtonUI>
             </SettingsRow>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Export tabular reviews</SettingsLabel>
+                <SettingsLabel><UiText message={"Export tabular reviews"} /></SettingsLabel>
                 <SettingsDescription>
-                  Download all owned tabular reviews, cells, and review chat
-                  records as JSON.
+                  <UiText message={"Download all owned tabular reviews, cells, and review chat records as JSON."} />
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -432,16 +433,16 @@ function PrivacyData({
                 className="shrink-0"
               >
                 <Download className="h-4 w-4 shrink-0" />
-                {isExportingTabularReviews ? "Exporting..." : "Export"}
+                {isExportingTabularReviews ? (<><UiText message={"Exporting..."} /></>) : (<><UiText message={"Export"} /></>)}
               </PillButtonUI>
             </SettingsRow>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Export account JSON</SettingsLabel>
+                <SettingsLabel><UiText message={"Export account JSON"} /></SettingsLabel>
                 <SettingsDescription>
                   {workspace === PERSONAL_WORKSPACE
-                    ? "Download account metadata, projects, document metadata, workflows, playbooks, and review data as JSON."
-                    : "Download your projects, document metadata, workflows, playbooks, and review data here as JSON."}
+                    ? (<><UiText message={"Download account metadata, projects, document metadata, workflows, playbooks, and review data as JSON."} /></>)
+                    : (<><UiText message={"Download your projects, document metadata, workflows, playbooks, and review data here as JSON."} /></>)}
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -453,28 +454,27 @@ function PrivacyData({
                 className="shrink-0"
               >
                 <Download className="h-4 w-4 shrink-0" />
-                {isExportingAccount ? "Exporting..." : "Export"}
+                {isExportingAccount ? (<><UiText message={"Exporting..."} /></>) : (<><UiText message={"Export"} /></>)}
               </PillButtonUI>
             </SettingsRow>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Export memory</SettingsLabel>
+                <SettingsLabel><UiText message={"Export memory"} /></SettingsLabel>
                 <SettingsDescription>
-                  Download your app memory and every project memory you can
-                  access as Markdown files in a ZIP archive.
+                  <UiText message={"Download your app memory and every project memory you can access as Markdown files in a ZIP archive."} />
                 </SettingsDescription>
               </div>
               <PillButtonUI
                 tone="black"
                 size="sm"
-                aria-label="Export memory"
+                aria-label={tUi("Export memory")}
                 onClick={handleExportMemoryData}
                 disabled={isExportingMemory}
                 loading={isExportingMemory}
                 className="shrink-0"
               >
                 <Download className="h-4 w-4 shrink-0" />
-                {isExportingMemory ? "Exporting..." : "Export"}
+                {isExportingMemory ? (<><UiText message={"Exporting..."} /></>) : (<><UiText message={"Export"} /></>)}
               </PillButtonUI>
             </SettingsRow>
           </GlassCardUI>
@@ -483,20 +483,18 @@ function PrivacyData({
 
       {canDelete && (
         <section className="space-y-3">
-          <SettingsHeading id="delete-data">Delete data</SettingsHeading>
+          <SettingsHeading id="delete-data"><UiText message={"Delete data"} /></SettingsHeading>
           {workspaceName && (
             <SettingsDescription>
-              Deletes data in {workspaceName} only. To delete data in another
-              workspace, switch to it first.
+              <UiText message={"Deletes data in"} />{" "}{workspaceName}{" "}<UiText message={"only. To delete data in another workspace, switch to it first."} />
             </SettingsDescription>
           )}
           <GlassCardUI>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Delete all chats</SettingsLabel>
+                <SettingsLabel><UiText message={"Delete all chats"} /></SettingsLabel>
                 <SettingsDescription>
-                  Permanently delete your assistant and tabular review chat
-                  history.
+                  <UiText message={"Permanently delete your assistant and tabular review chat history."} />
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -508,15 +506,14 @@ function PrivacyData({
                 className="w-full shrink-0 sm:w-auto"
               >
                 <Trash2 className="h-4 w-4 shrink-0" />
-                Delete
+                <UiText message={"Delete"} />
               </PillButtonUI>
             </SettingsRow>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Delete all tabular reviews</SettingsLabel>
+                <SettingsLabel><UiText message={"Delete all tabular reviews"} /></SettingsLabel>
                 <SettingsDescription>
-                  Permanently delete all tabular reviews you own, including
-                  cells and review chats.
+                  <UiText message={"Permanently delete all tabular reviews you own, including cells and review chats."} />
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -528,16 +525,16 @@ function PrivacyData({
                 className="w-full shrink-0 sm:w-auto"
               >
                 <Trash2 className="h-4 w-4 shrink-0" />
-                Delete
+                <UiText message={"Delete"} />
               </PillButtonUI>
             </SettingsRow>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Delete all projects</SettingsLabel>
+                <SettingsLabel><UiText message={"Delete all projects"} /></SettingsLabel>
                 <SettingsDescription>
                   {personal
-                    ? "Permanently delete all projects you own, including documents, chats, and tabular reviews."
-                    : "Permanently delete all projects you created here, including documents, chats, and tabular reviews."}
+                    ? (<><UiText message={"Permanently delete all projects you own, including documents, chats, and tabular reviews."} /></>)
+                    : (<><UiText message={"Permanently delete all projects you created here, including documents, chats, and tabular reviews."} /></>)}
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -549,31 +546,31 @@ function PrivacyData({
                 className="w-full shrink-0 sm:w-auto"
               >
                 <Trash2 className="h-4 w-4 shrink-0" />
-                Delete
+                <UiText message={"Delete"} />
               </PillButtonUI>
             </SettingsRow>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Delete all memory</SettingsLabel>
+                <SettingsLabel><UiText message={"Delete all memory"} /></SettingsLabel>
                 <SettingsDescription>
                   {!personal
-                    ? `Permanently delete your memory in ${workspaceName ?? "this workspace"}.`
+                    ? (<><UiText message={"Permanently delete your memory in {0}."} values={[String(workspaceName ?? "this workspace")]} /></>)
                     : workspaceName
-                      ? `Permanently delete your ${workspaceName} memory and memories for private projects you created.`
-                      : "Permanently delete your app memory and memories for private projects you created."}
+                      ? (<><UiText message={"Permanently delete your {0} memory and memories for private projects you created."} values={[String(workspaceName)]} /></>)
+                      : (<><UiText message={"Permanently delete your app memory and memories for private projects you created."} /></>)}
                 </SettingsDescription>
               </div>
               <PillButtonUI
                 tone="danger"
                 size="sm"
-                aria-label="Delete all memory"
+                aria-label={tUi("Delete all memory")}
                 onClick={() => setPendingDeleteAction("memory")}
                 disabled={!!deletingAction}
                 loading={deletingAction === "memory"}
                 className="w-full shrink-0 sm:w-auto"
               >
                 <Trash2 className="h-4 w-4 shrink-0" />
-                Delete
+                <UiText message={"Delete"} />
               </PillButtonUI>
             </SettingsRow>
           </GlassCardUI>
@@ -583,10 +580,10 @@ function PrivacyData({
         open={!!pendingDeleteAction}
         title={pendingDeleteCopy?.title}
         message={pendingDeleteCopy?.message}
-        confirmLabel="Delete"
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={deletingAction ? "loading" : "idle"}
-        cancelLabel="Cancel"
+        cancelLabel={tUi("Cancel")}
         onCancel={() => {
           if (deletingAction) return;
           setPendingDeleteAction(null);
@@ -600,8 +597,8 @@ function PrivacyData({
         open={!!pendingMfaAction}
         onCancel={() => setPendingMfaAction(null)}
         onVerified={() => void handleMfaVerified()}
-        title="Two-factor verification required"
-        message="This action is sensitive. Enter a code from your authenticator app to continue."
+        title={tUi("Two-factor verification required")}
+        message={tUi("This action is sensitive. Enter a code from your authenticator app to continue.")}
       />
     </div>
   );

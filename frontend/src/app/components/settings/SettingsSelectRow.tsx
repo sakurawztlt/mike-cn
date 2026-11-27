@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { ChevronDown } from "lucide-react";
 import {
   authInputUIClassName,
@@ -41,13 +42,14 @@ export function SettingsSelectRow({
   error?: string | null;
   onChange: (value: string) => void;
 }) {
+  const t = useUiText();
   const selected = options.find((option) => option.value === value);
   return (
     <SettingsRow>
       <div className="min-w-0 space-y-1">
-        <SettingsLabel>{label}</SettingsLabel>
+        <SettingsLabel>{t(label)}</SettingsLabel>
         {selected ? (
-          <SettingsDescription>{selected.description}</SettingsDescription>
+          <SettingsDescription>{t(selected.description)}</SettingsDescription>
         ) : (
           <div
             className="h-5 w-56 max-w-full animate-pulse rounded bg-app-surface"
@@ -56,7 +58,7 @@ export function SettingsSelectRow({
         )}
         {error && (
           <p role="alert" className="text-xs text-red-600">
-            {error}
+            {t(error)}
           </p>
         )}
       </div>
@@ -65,7 +67,7 @@ export function SettingsSelectRow({
           <button
             id={id}
             type="button"
-            aria-label={label}
+            aria-label={t(label)}
             disabled={!selected}
             aria-busy={!selected}
             className={cn(
@@ -73,7 +75,7 @@ export function SettingsSelectRow({
               authInputUIClassName,
             )}
           >
-            <span className="truncate">{selected?.label ?? "Loading..."}</span>
+            <span className="truncate">{t(selected?.label ?? "Loading...")}</span>
             <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
           </button>
         </DropdownTrigger>
@@ -86,7 +88,7 @@ export function SettingsSelectRow({
           <DropdownRadioGroup value={value ?? ""} onValueChange={onChange}>
             {options.map((option) => (
               <DropdownRadioItem key={option.value} value={option.value}>
-                {option.label}
+                {t(option.label)}
               </DropdownRadioItem>
             ))}
           </DropdownRadioGroup>

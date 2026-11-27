@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   useEffect,
   useRef,
@@ -97,6 +98,7 @@ function VerificationCodeInput({
   onChange: (value: string) => void;
   disabled?: boolean;
 }) {
+    const tUi = useUiText();
   const inputsRef = useRef<Array<HTMLInputElement | null>>([]);
   const digits = Array.from({ length: 6 }, (_, index) => value[index] ?? "");
 
@@ -142,7 +144,7 @@ function VerificationCodeInput({
     <div
       className="flex justify-center gap-2"
       role="group"
-      aria-label="Six digit verification code"
+      aria-label={tUi("Six digit verification code")}
     >
       {digits.map((digit, index) => (
         <input
@@ -159,7 +161,7 @@ function VerificationCodeInput({
           onPaste={handlePaste}
           onKeyDown={(event) => handleKeyDown(event, index)}
           className="h-11 w-10 rounded-lg border border-transparent bg-gray-100 text-center text-lg font-medium text-gray-950 shadow-none outline-none transition-colors focus:border-gray-200 focus:ring-2 focus:ring-gray-300/45 disabled:cursor-not-allowed disabled:opacity-45"
-          aria-label={`Verification code digit ${index + 1}`}
+          aria-label={tUi("Verification code digit {0}", index + 1)}
           maxLength={1}
         />
       ))}
@@ -185,6 +187,7 @@ function MfaSettingsSkeleton() {
 }
 
 export default function SecurityPage() {
+    const tUi = useUiText();
   const { profile, updateMfaOnLogin } = useUserProfile();
   const [loading, setLoading] = useState(true);
   const [factors, setFactors] = useState<MfaFactor[]>([]);
@@ -478,7 +481,7 @@ export default function SecurityPage() {
   return (
     <div className="space-y-8">
       <section className="space-y-3">
-        <SettingsHeading id="multi-factor-authentication">Multi-Factor Authentication</SettingsHeading>
+        <SettingsHeading id="multi-factor-authentication"><UiText message={"Multi-Factor Authentication"} /></SettingsHeading>
         <GlassCardUI>
           {loading ? (
             <MfaSettingsSkeleton />
@@ -486,18 +489,18 @@ export default function SecurityPage() {
             <>
               <SettingsRow>
                 <div className="min-w-0 space-y-1">
-                  <SettingsLabel>Verification method</SettingsLabel>
+                  <SettingsLabel><UiText message={"Verification method"} /></SettingsLabel>
                   <SettingsDescription>
                     {hasVerifiedFactor
                       ? sessionVerified
-                        ? "Authenticator app is saved on your account. Sensitive actions are unlocked for this session."
-                        : "Authenticator app is saved on your account. Sensitive actions require a verification code."
-                      : "Add an authenticator app to protect sensitive actions such as exporting data, deleting data, deleting your account, and changing API keys."}
+                        ? (<><UiText message={"Authenticator app is saved on your account. Sensitive actions are unlocked for this session."} /></>)
+                        : (<><UiText message={"Authenticator app is saved on your account. Sensitive actions require a verification code."} /></>)
+                      : (<><UiText message={"Add an authenticator app to protect sensitive actions such as exporting data, deleting data, deleting your account, and changing API keys."} /></>)}
                   </SettingsDescription>
                 </div>
                 {hasVerifiedFactor ? (
                   <span className="shrink-0 text-xs font-medium text-green-700">
-                    Enabled
+                    <UiText message={"Enabled"} />
                   </span>
                 ) : !enrollment ? (
                   <PillButtonUI
@@ -508,7 +511,7 @@ export default function SecurityPage() {
                     loading={busy}
                     className="shrink-0"
                   >
-                    {busy ? "Starting..." : "Set up"}
+                    {busy ? (<><UiText message={"Starting..."} /></>) : (<><UiText message={"Set up"} /></>)}
                   </PillButtonUI>
                 ) : null}
               </SettingsRow>
@@ -517,17 +520,16 @@ export default function SecurityPage() {
                 <>
                   <SettingsRow>
                     <div className="space-y-1">
-                      <SettingsLabel>Login verification</SettingsLabel>
+                      <SettingsLabel><UiText message={"Login verification"} /></SettingsLabel>
                       <SettingsDescription>
-                        Ask for an authenticator code after each new login,
-                        instead of only before sensitive actions.
+                        <UiText message={"Ask for an authenticator code after each new login, instead of only before sensitive actions."} />
                       </SettingsDescription>
                     </div>
                     <ToggleSwitchUI
                       checked={loginMfaEnabled}
                       disabled={savingLoginPreference}
                       aria-busy={savingLoginPreference}
-                      aria-label="Login verification"
+                      aria-label={tUi("Login verification")}
                       onCheckedChange={() => void handleLoginPreferenceToggle()}
                     />
                   </SettingsRow>
@@ -538,7 +540,7 @@ export default function SecurityPage() {
                       disabled={busy || !factors[0]?.id}
                       className="text-xs font-medium text-red-600 transition-colors hover:text-red-700 disabled:cursor-not-allowed disabled:text-red-300"
                     >
-                      Remove authenticator app
+                      <UiText message={"Remove authenticator app"} />
                     </button>
                   </div>
                 </>
@@ -557,7 +559,7 @@ export default function SecurityPage() {
                   )}
                   className="ml-2 underline underline-offset-2"
                 >
-                  Contact support
+                  <UiText message={"Contact support"} />
                 </a>
               )}
             </p>
@@ -568,9 +570,9 @@ export default function SecurityPage() {
       <Modal
         open={setupModalOpen}
         onClose={() => void closeSetupModal()}
-        breadcrumbs={["Security", "Set up authenticator app"]}
+        breadcrumbs={[tUi("Security"), tUi("Set up authenticator app")]}
         cancelAction={{
-          label: enrollment ? "Back" : "Cancel",
+          label: enrollment ? tUi("Back") : tUi("Cancel"),
           onClick: enrollment
             ? () => void returnToSetupInstructions()
             : () => void closeSetupModal(),
@@ -579,12 +581,12 @@ export default function SecurityPage() {
         primaryAction={
           enrollment
             ? {
-                label: busy ? "Verifying..." : "Verify",
+                label: busy ? tUi("Verifying...") : tUi("Verify"),
                 onClick: () => void verifyEnrollment(),
                 disabled: busy || verificationCode.trim().length !== 6,
               }
             : {
-                label: busy ? "Starting..." : "Continue",
+                label: busy ? tUi("Starting...") : tUi("Continue"),
                 onClick: () => void startEnrollment(),
                 disabled: busy,
               }
@@ -600,48 +602,44 @@ export default function SecurityPage() {
           {!enrollment ? (
             <>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-                Step 1
+                <UiText message={"Step 1"} />
               </p>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-700">
-                  Before you start
+                  <UiText message={"Before you start"} />
                 </p>
                 <p className="text-sm text-gray-500">
-                  Download an authenticator app such as Google Authenticator,
-                  Microsoft Authenticator, Authy, 1Password, or iCloud
-                  Passwords.
+                  <UiText message={"Download an authenticator app such as Google Authenticator, Microsoft Authenticator, Authy, 1Password, or iCloud Passwords."} />
                 </p>
               </div>
               <ol className="list-decimal space-y-1 pl-4 text-sm text-gray-500">
-                <li>Download and open your authenticator app.</li>
-                <li>Choose the option to add a new account.</li>
+                <li><UiText message={"Download and open your authenticator app."} /></li>
+                <li><UiText message={"Choose the option to add a new account."} /></li>
               </ol>
             </>
           ) : (
             <>
               <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
-                Step 2
+                <UiText message={"Step 2"} />
               </p>
               <div className="space-y-1">
                 <p className="text-sm font-medium text-gray-700">
-                  Scan this code
+                  <UiText message={"Scan this code"} />
                 </p>
                 <p className="text-sm text-gray-500">
-                  In your authenticator app, add a new account and scan the QR
-                  code. If you cannot scan it, enter the setup key below
-                  manually.
+                  <UiText message={"In your authenticator app, add a new account and scan the QR code. If you cannot scan it, enter the setup key below manually."} />
                 </p>
               </div>
               <div className="min-w-0">
                 <div className="mb-1 flex items-center justify-between gap-3">
-                  <p className="text-xs font-medium text-gray-500">Setup key</p>
+                  <p className="text-xs font-medium text-gray-500"><UiText message={"Setup key"} /></p>
                   <button
                     type="button"
                     onClick={() => void copySetupKey()}
                     className="inline-flex items-center gap-1 text-xs font-medium text-gray-500 transition-colors hover:text-gray-950"
                   >
                     <Copy className="h-3 w-3" />
-                    {setupKeyCopied ? "Copied" : "Copy"}
+                    {setupKeyCopied ? (<><UiText message={"Copied"} /></>) : (<><UiText message={"Copy"} /></>)}
                   </button>
                 </div>
                 <p className="break-all text-xs text-gray-700">
@@ -652,7 +650,7 @@ export default function SecurityPage() {
                 <div className="flex h-48 w-48 items-center justify-center rounded-xl bg-white p-2">
                   <img
                     src={enrollment.qrCode}
-                    alt="MFA QR code"
+                    alt={tUi("MFA QR code")}
                     className="h-full w-full"
                   />
                 </div>
@@ -685,8 +683,8 @@ export default function SecurityPage() {
           setPendingLoginPreference(null);
           if (enabled !== null) void saveLoginPreference(enabled);
         }}
-        title="Authenticator required"
-        message="Enter a code from your authenticator app to change login verification."
+        title={tUi("Authenticator required")}
+        message={tUi("Enter a code from your authenticator app to change login verification.")}
       />
     </div>
   );

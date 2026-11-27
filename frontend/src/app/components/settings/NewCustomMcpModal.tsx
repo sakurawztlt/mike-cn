@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { Check, Loader2 } from "lucide-react";
 import { Modal } from "@/app/components/modals/Modal";
 import {
@@ -39,6 +40,7 @@ export function NewCustomMcpModal({
     onSubmit,
     onOpenConnector,
 }: NewCustomMcpModalProps) {
+    const tUi = useUiText();
     const canSubmit =
         draft.name.trim().length > 0 &&
         draft.serverUrl.trim().length > 0 &&
@@ -49,21 +51,21 @@ export function NewCustomMcpModal({
         <Modal
             open={open}
             onClose={onClose}
-            breadcrumbs={["Connectors", "New Custom Connector"]}
+            breadcrumbs={[tUi("Connectors"), tUi("New Custom Connector")]}
             size="lg"
             primaryAction={
                 step === "success" && result
                     ? {
-                          label: "View connector",
+                          label: tUi("View connector"),
                           onClick: () => onOpenConnector(result.id),
                       }
                     : {
                           label:
                               step === "working"
-                                  ? "Connecting..."
+                                  ? tUi("Connecting...")
                                   : step === "auth"
-                                    ? "Authorizing..."
-                                    : "Connect",
+                                    ? tUi("Authorizing...")
+                                    : tUi("Connect"),
                           icon:
                               step === "working" || step === "auth" ? (
                                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -81,7 +83,7 @@ export function NewCustomMcpModal({
                 step === "working"
                     ? false
                     : {
-                          label: step === "success" ? "Done" : "Cancel",
+                          label: step === "success" ? tUi("Done") : tUi("Cancel"),
                           onClick: onClose,
                       }
             }
@@ -92,7 +94,7 @@ export function NewCustomMcpModal({
                 <NewCustomMcpAuth
                     message={
                         authMessage ??
-                        "Complete authorization in the popup to finish connecting this MCP server."
+                        tUi("Complete authorization in the popup to finish connecting this MCP server.")
                     }
                 />
             ) : (
@@ -123,9 +125,9 @@ function NewCustomMcpSuccess({
             <div className="flex items-start gap-3 rounded-xl border border-green-100/80 bg-green-50/80 px-3 py-3 text-green-800 shadow-[0_3px_9px_rgba(15,23,42,0.03),inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-4px_9px_rgba(255,255,255,0.05)]">
                 <Check className="mt-0.5 h-4 w-4 shrink-0 text-green-600" />
                 <p className="min-w-0 truncate text-sm font-medium">
-                    {connector.name} is connected.{" "}
+                    {connector.name}{" "}<UiText message={"is connected."} />{" "}
                     <span className="font-normal text-green-700">
-                        {connector.tools.length} tools discovered.
+                        {connector.tools.length}{" "}<UiText message={"tools discovered."} />
                     </span>
                 </p>
             </div>
@@ -147,7 +149,7 @@ function NewCustomMcpSuccess({
                                 )}
                             </div>
                             <span className="text-xs text-gray-400">
-                                {tool.enabled ? "Enabled" : "Disabled"}
+                                {tool.enabled ? (<><UiText message={"Enabled"} /></>) : (<><UiText message={"Disabled"} /></>)}
                             </span>
                         </div>
                     ))}
@@ -165,7 +167,7 @@ function NewCustomMcpAuth({ message }: { message: string }) {
             </div>
             <div className="max-w-sm space-y-1">
                 <h3 className="text-sm font-medium text-gray-700">
-                    Authentication required
+                    <UiText message={"Authentication required"} />
                 </h3>
                 <p className="text-sm text-gray-500">{message}</p>
             </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { GoogleIconUI, PillButtonUI } from "@mike/ui";
 import { startGoogleOAuth } from "@/app/lib/authApi";
@@ -65,7 +66,7 @@ export function GoogleAuthButton({
             onClick={() => void handleGoogleAuth()}
         >
             <GoogleIconUI className="h-4 w-4" />
-            {loading ? "Continuing…" : "Continue with Google"}
+            {loading ? (<><UiText message={"Continuing…"} /></>) : (<><UiText message={"Continue with Google"} /></>)}
         </PillButtonUI>
     );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingInvitations } from "@/app/components/auth/OnboardingInvitations";
@@ -26,13 +27,14 @@ export default function OnboardingInvitationsPage() {
 }
 
 function InvitationStep({ userId }: { userId: string }) {
+    const tUi = useUiText();
     const router = useRouter();
     const [invitationsBusy, setInvitationsBusy] = useState(true);
 
     return (
         <OnboardingShell
             step="Step 3 of 4"
-            title="Organization invitations"
+            title={tUi("Organization invitations")}
         >
             <OnboardingInvitations
                 userId={userId}
@@ -47,7 +49,7 @@ function InvitationStep({ userId }: { userId: string }) {
                     disabled={invitationsBusy}
                     onClick={() => router.push("/onboarding/practice")}
                 >
-                    Back
+                    <UiText message={"Back"} />
                 </PillButtonUI>
                 <PillButtonUI
                     type="button"
@@ -56,7 +58,7 @@ function InvitationStep({ userId }: { userId: string }) {
                     disabled={invitationsBusy}
                     onClick={() => router.push("/onboarding/models")}
                 >
-                    Continue
+                    <UiText message={"Continue"} />
                 </PillButtonUI>
             </div>
         </OnboardingShell>

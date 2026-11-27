@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { authInputUIClassName, InputUI, PillButtonUI, GlassCardUI } from "@mike/ui";
 import {
@@ -37,6 +38,7 @@ const PASSWORD_ERROR_MESSAGES = authMessages({
 });
 
 export function PasswordSettingsSection() {
+    const tUi = useUiText();
   const { user, setPassword } = useAuth();
   const { profile, syncPasswordSet } = useUserProfile();
   const [setPasswordOpen, setSetPasswordOpen] = useState(false);
@@ -142,17 +144,17 @@ export function PasswordSettingsSection() {
 
   return (
     <section className="space-y-3">
-      <SettingsHeading id="password">Password</SettingsHeading>
+      <SettingsHeading id="password"><UiText message={"Password"} /></SettingsHeading>
       <GlassCardUI>
         <SettingsRow>
           <div className="min-w-0 space-y-1">
             <SettingsLabel>
-              {needsInitialPassword ? "Set password" : "Reset password"}
+              {needsInitialPassword ? (<><UiText message={"Set password"} /></>) : (<><UiText message={"Reset password"} /></>)}
             </SettingsLabel>
             <SettingsDescription>
               {needsInitialPassword
-                ? "Add a password to sign in with your email and change your account email."
-                : `Send a secure password-reset link to ${user?.email}.`}
+                ? (<><UiText message={"Add a password to sign in with your email and change your account email."} /></>)
+                : (<><UiText message={"Send a secure password-reset link to {0}."} values={[String(user?.email)]} /></>)}
             </SettingsDescription>
             {passwordStatus && (
               <p className="text-xs text-gray-500">{passwordStatus}</p>
@@ -170,10 +172,10 @@ export function PasswordSettingsSection() {
             className="shrink-0"
           >
             {needsInitialPassword
-              ? "Set password"
+              ? (<><UiText message={"Set password"} /></>)
               : passwordResetSending
-                ? "Sending..."
-                : "Send reset email"}
+                ? (<><UiText message={"Sending..."} /></>)
+                : (<><UiText message={"Send reset email"} /></>)}
           </PillButtonUI>
         </SettingsRow>
       </GlassCardUI>
@@ -181,26 +183,26 @@ export function PasswordSettingsSection() {
       <Modal
         open={setPasswordOpen}
         onClose={closeSetPassword}
-        breadcrumbs={["Security", "Set password"]}
+        breadcrumbs={[tUi("Security"), tUi("Set password")]}
         size="sm"
         className="h-auto"
         cancelAction={{
-          label: "Cancel",
+          label: tUi("Cancel"),
           onClick: closeSetPassword,
           disabled: passwordSaving,
         }}
         primaryAction={{
-          label: passwordSaving ? "Setting..." : "Set password",
+          label: passwordSaving ? tUi("Setting...") : tUi("Set password"),
           onClick: () => void addPassword(),
           disabled: passwordSaving || !password || !confirmPassword,
         }}
       >
         <div className="space-y-4 pb-5">
           <p className="text-sm text-gray-500">
-            Use at least {MIN_PASSWORD_LENGTH} characters.
+            <UiText message={"Use at least"} />{" "}{MIN_PASSWORD_LENGTH}{" "}<UiText message={"characters."} />
           </p>
           <div>
-            <FieldLabel htmlFor="new-account-password">Password</FieldLabel>
+            <FieldLabel htmlFor="new-account-password"><UiText message={"Password"} /></FieldLabel>
             <InputUI
               id="new-account-password"
               type="password"
@@ -212,7 +214,7 @@ export function PasswordSettingsSection() {
           </div>
           <div>
             <FieldLabel htmlFor="confirm-account-password">
-              Confirm password
+              <UiText message={"Confirm password"} />
             </FieldLabel>
             <InputUI
               id="confirm-account-password"
@@ -234,7 +236,7 @@ export function PasswordSettingsSection() {
                   )}
                   className="ml-2 underline underline-offset-2"
                 >
-                  Contact support
+                  <UiText message={"Contact support"} />
                 </a>
               )}
             </p>

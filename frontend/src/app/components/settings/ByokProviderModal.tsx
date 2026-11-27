@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import type { ReactNode } from "react";
 import { Modal } from "@/app/components/modals/Modal";
 import { ApiKeyField, type ApiKeyFieldSetting } from "./ApiKeyField";
@@ -137,6 +138,7 @@ export function ByokProviderModal({ provider, enabledToggle, store, onClose }: {
   store?: ProviderKeyStore;
   onClose: () => void;
 }) {
+    const tUi = useUiText();
   const { profile, updateApiKey } = useUserProfile();
   const hasSavedKey = store
     ? store.hasSavedKey
@@ -182,18 +184,18 @@ export function ByokProviderModal({ provider, enabledToggle, store, onClose }: {
         <Modal
           open
           onClose={onClose}
-          breadcrumbs={[store?.breadcrumb ?? "Model Providers", provider.name]}
+          breadcrumbs={[store?.breadcrumb ?? tUi("Model Providers"), provider.name]}
           // Sized for the model list from the start, so the dialog does not
           // grow the moment a key is saved.
           size={routerSlug && (!store || store.routerModels) ? "md" : "sm"}
           className="h-auto max-h-[calc(100vh-2rem)]"
           primaryAction={{ ...saveAction, variant: "blue" }}
-          secondaryAction={removeAction ? { ...removeAction, label: "Clear", variant: "danger" } : undefined}
+          secondaryAction={removeAction ? { ...removeAction, label: tUi("Clear"), variant: "danger" } : undefined}
         >
           <div data-modal-scroll="vertical" className="min-h-0 min-w-0 space-y-6 overflow-y-auto pb-4">
             {enabledToggle && (
               <div className="flex items-center justify-between gap-3">
-                <p className="min-w-0 text-sm font-medium text-gray-700">Enabled</p>
+                <p className="min-w-0 text-sm font-medium text-gray-700"><UiText message={"Enabled"} /></p>
                 <div className="shrink-0">{enabledToggle}</div>
               </div>
             )}

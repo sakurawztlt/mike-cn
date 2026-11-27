@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { ApiKeyField } from "@/app/components/settings/ApiKeyField";
 import { GlassCardUI, PillButtonUI, ToggleSwitchUI } from "@mike/ui";
@@ -95,6 +96,7 @@ function saveAction(field: Field, next: WebSearchSettings[Field]): string {
 }
 
 export function WebSearchSection() {
+    const tUi = useUiText();
   const { profile, updateApiKey } = useUserProfile();
   const [settings, setSettings] = useState<WebSearchSettings | null>(null);
   const [loadError, setLoadError] = useState(false);
@@ -186,12 +188,12 @@ export function WebSearchSection() {
 
   return (
     <section className="space-y-3" aria-labelledby="web-search-heading">
-      <SettingsHeading id="web-search-heading">Web Search</SettingsHeading>
+      <SettingsHeading id="web-search-heading"><UiText message={"Web Search"} /></SettingsHeading>
       <GlassCardUI>
         {loadError ? (
           <SettingsRow>
             <p className="text-sm text-red-600" role="alert">
-              Could not load your web search settings.
+              <UiText message={"Could not load your web search settings."} />
             </p>
             <PillButtonUI
               tone="white"
@@ -201,17 +203,16 @@ export function WebSearchSection() {
                 setLoadVersion((current) => current + 1);
               }}
             >
-              Retry
+              <UiText message={"Retry"} />
             </PillButtonUI>
           </SettingsRow>
         ) : (
           <>
             <SettingsRow>
               <div className="min-w-0 space-y-1">
-                <SettingsLabel>Enable web search</SettingsLabel>
+                <SettingsLabel><UiText message={"Enable web search"} /></SettingsLabel>
                 <SettingsDescription>
-                  Let Mike search the web and read pages when an answer needs
-                  current or public information.
+                  <UiText message={"Let Mike search the web and read pages when an answer needs current or public information."} />
                 </SettingsDescription>
               </div>
               {settings ? (
@@ -219,7 +220,7 @@ export function WebSearchSection() {
                   checked={settings.enabled}
                   disabled={saving}
                   aria-busy={saving}
-                  aria-label="Enable web search"
+                  aria-label={tUi("Enable web search")}
                   onCheckedChange={(enabled) => void toggleWebSearch(enabled)}
                 />
               ) : (

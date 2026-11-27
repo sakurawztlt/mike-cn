@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ const SSO_ERROR_MESSAGES = authMessages({
 });
 
 export default function SsoLoginPage() {
+    const tUi = useUiText();
     const router = useRouter();
     const { isAuthenticated, authLoading } = useAuth();
     const [email, setEmail] = useState("");
@@ -80,14 +82,14 @@ export default function SsoLoginPage() {
                 <div className={authGlassCardUIClassName}>
                     <div className="mb-6">
                         <h1 className="font-serif text-2xl font-medium text-gray-950">
-                            SSO Login
+                            <UiText message={"SSO Login"} />
                         </h1>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <FieldLabel htmlFor="sso-email">
-                                Email
+                                <UiText message={"Email"} />
                             </FieldLabel>
                             <InputUI
                                 id="sso-email"
@@ -95,7 +97,7 @@ export default function SsoLoginPage() {
                                 autoComplete="email"
                                 autoCapitalize="none"
                                 spellCheck={false}
-                                placeholder="you@company.com"
+                                placeholder={tUi("you@company.com")}
                                 value={email}
                                 onChange={(event) =>
                                     setEmail(event.target.value)
@@ -119,7 +121,7 @@ export default function SsoLoginPage() {
                                         disabled={loading}
                                         className="ml-2 underline underline-offset-2 disabled:no-underline disabled:opacity-60"
                                     >
-                                        Retry
+                                        <UiText message={"Retry"} />
                                     </button>
                                 )}
                                 {error.supportable && (
@@ -130,7 +132,7 @@ export default function SsoLoginPage() {
                                         )}
                                         className="ml-2 underline underline-offset-2"
                                     >
-                                        Contact support
+                                        <UiText message={"Contact support"} />
                                     </a>
                                 )}
                             </div>
@@ -151,7 +153,7 @@ export default function SsoLoginPage() {
                                         className="h-4 w-4 animate-spin"
                                     />
                                 )}
-                                {loading ? "Continuing…" : "Continue"}
+                                {loading ? (<><UiText message={"Continuing…"} /></>) : (<><UiText message={"Continue"} /></>)}
                             </PillButtonUI>
                         </div>
                     </form>
@@ -162,7 +164,7 @@ export default function SsoLoginPage() {
                         href="/login"
                         className="font-medium transition-colors hover:text-gray-950"
                     >
-                        Back to login
+                        <UiText message={"Back to login"} />
                     </Link>
                 </div>
             </div>

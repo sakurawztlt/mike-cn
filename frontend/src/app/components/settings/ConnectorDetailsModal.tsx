@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState, type ReactNode } from "react";
 import { ChevronDown, Loader2, RefreshCw } from "lucide-react";
 import { FieldLabel } from "@/app/components/ui/form-field";
@@ -66,6 +67,7 @@ export function ConnectorDetailsModal({
     onReadOnly: (enabled: boolean) => void;
     onRequireWriteApproval?: (enabled: boolean) => void;
 }) {
+    const tUi = useUiText();
     // The picked section is stored against the connector it was picked for, so
     // opening a different connector falls back to "details" without an effect
     // resetting state after the first render.
@@ -94,12 +96,12 @@ export function ConnectorDetailsModal({
         <Modal
             open={!!connector}
             onClose={onClose}
-            breadcrumbs={["Connectors", connector?.name ?? "Connector"]}
+            breadcrumbs={[tUi("Connectors"), connector?.name ?? tUi("Connector")]}
             size="lg"
             secondaryAction={
                 connector
                     ? {
-                          label: "Delete",
+                          label: tUi("Delete"),
                           variant: "danger",
                           onClick: onDelete,
                           disabled: busyKey !== null,
@@ -119,7 +121,7 @@ export function ConnectorDetailsModal({
                                     active={section === tab}
                                     onClick={() => setSection(tab)}
                                 >
-                                    {tab === "details" ? "Details" : "Tools"}
+                                    {tab === "details" ? (<><UiText message={"Details"} /></>) : (<><UiText message={"Tools"} /></>)}
                                 </TabPillButtonUI>
                             ))}
                         </div>
@@ -131,7 +133,7 @@ export function ConnectorDetailsModal({
                             {connector.accountEmail && (
                                 <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5">
                                     <p className="text-sm font-medium text-gray-700">
-                                        Account
+                                        <UiText message={"Account"} />
                                     </p>
                                     <p className="min-w-0 text-sm text-gray-500 [overflow-wrap:anywhere]">
                                         {connector.accountEmail}
@@ -142,10 +144,10 @@ export function ConnectorDetailsModal({
                             <div className="flex items-start justify-between gap-3">
                                 <div className="min-w-0">
                                     <p id={`read-only-${connector.id}`} className="text-sm font-medium text-gray-700">
-                                        Read-only
+                                        <UiText message={"Read-only"} />
                                     </p>
                                     <p id={`read-only-description-${connector.id}`} className="mt-0.5 text-xs text-gray-500">
-                                        Disable all write tools. Turn off to restore your individual tool settings.
+                                        <UiText message={"Disable all write tools. Turn off to restore your individual tool settings."} />
                                     </p>
                                 </div>
                                 <ToggleSwitchUI
@@ -167,13 +169,12 @@ export function ConnectorDetailsModal({
                                                 id={`write-approval-${connector.id}`}
                                                 className="text-sm font-medium text-gray-700"
                                             >
-                                                Ask for permission for write
-                                                actions
+                                                <UiText message={"Ask for permission for write actions"} />
                                             </p>
                                             <p className="mt-0.5 text-xs text-gray-500">
                                                 {hasWriteTools || toolsLoading
-                                                    ? "Mike asks you in the chat before running an action that changes data."
-                                                    : "This connector has no write actions right now."}
+                                                    ? (<><UiText message={"Mike asks you in the chat before running an action that changes data."} /></>)
+                                                    : (<><UiText message={"This connector has no write actions right now."} /></>)}
                                             </p>
                                         </div>
                                         <ToggleSwitchUI
@@ -197,7 +198,7 @@ export function ConnectorDetailsModal({
                                 <div className="flex items-baseline justify-between gap-2">
                                     <FieldLabel as="p">
                                         {toolCount}{" "}
-                                        {toolCount === 1 ? "Tool" : "Tools"}
+                                        {toolCount === 1 ? (<><UiText message={"Tool"} /></>) : (<><UiText message={"Tools"} /></>)}
                                     </FieldLabel>
                                     <div className="mb-2 flex items-center gap-3">
                                         {reconnecting && onCancelReconnect && (
@@ -206,7 +207,7 @@ export function ConnectorDetailsModal({
                                                 onClick={onCancelReconnect}
                                                 className="rounded text-xs font-medium text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
                                             >
-                                                Cancel
+                                                <UiText message={"Cancel"} />
                                             </button>
                                         )}
                                         <button
@@ -221,7 +222,7 @@ export function ConnectorDetailsModal({
                                             ) : (
                                                 <RefreshCw className="h-3.5 w-3.5" />
                                             )}
-                                            Refresh
+                                            <UiText message={"Refresh"} />
                                         </button>
                                     </div>
                                 </div>
@@ -276,6 +277,7 @@ function ToolList({
     busyKey: string | null;
     onToolEnabled: (toolId: string, enabled: boolean) => void;
 }) {
+    const tUi = useUiText();
     const [expandedToolId, setExpandedToolId] = useState<string | null>(null);
 
     if (tools.length === 0) {
@@ -283,7 +285,7 @@ function ToolList({
             <div
                 className={`min-h-0 flex-1 rounded-lg px-3 py-3 text-sm text-gray-500 ${LIQUID_GLASS_FLAT_CLASS}`}
             >
-                No tools discovered yet.
+                <UiText message={"No tools discovered yet."} />
             </div>
         );
     }
@@ -318,7 +320,7 @@ function ToolList({
                                     {tool.title}
                                     {tool.write && (
                                         <span className="ml-2 text-xs font-normal text-gray-500">
-                                            Write
+                                            <UiText message={"Write"} />
                                         </span>
                                     )}
                                 </p>
@@ -326,7 +328,7 @@ function ToolList({
                                     checked={tool.enabled && !(readOnly && tool.write)}
                                     disabled={busyKey !== null || (readOnly && tool.write)}
                                     aria-busy={busy}
-                                    aria-label={`${tool.title} enabled`}
+                                    aria-label={tUi("{0} enabled", tool.title)}
                                     onCheckedChange={(enabled) =>
                                         onToolEnabled(tool.id, enabled)
                                     }

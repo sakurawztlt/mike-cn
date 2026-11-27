@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useState } from "react";
 import { LIQUID_GLASS_FLAT_CLASS, PillButtonUI } from "@mike/ui";
 import { MemorySaveStatus } from "@/app/components/memory/MemoryEditorState";
@@ -25,6 +26,7 @@ function normalizeInstructions(value: string) {
 }
 
 export function CustomInstructionsSection() {
+    const tUi = useUiText();
   const [persisted, setPersisted] = useState("");
   const [draft, setDraft] = useState("");
   const [loading, setLoading] = useState(true);
@@ -82,7 +84,7 @@ export function CustomInstructionsSection() {
     >
       <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between sm:gap-3">
         <SettingsHeading id="custom-instructions-heading">
-          Custom instructions
+          <UiText message={"Custom instructions"} />
         </SettingsHeading>
         {!loading && !loadError ? (
           <MemorySaveStatus
@@ -97,18 +99,18 @@ export function CustomInstructionsSection() {
         ) : null}
       </div>
       <SettingsDescription>
-        Tell Mike how you would like it to respond in chats.
+        <UiText message={"Tell Mike how you would like it to respond in chats."} />
       </SettingsDescription>
 
       {loading ? (
         <div
           className="h-96 animate-pulse rounded-xl bg-app-surface"
-          aria-label="Loading custom instructions"
+          aria-label={tUi("Loading custom instructions")}
         />
       ) : loadError ? (
         <div className="flex flex-wrap items-center justify-between gap-3">
           <p className="text-sm text-red-600" role="alert">
-            Could not load your custom instructions. Please try again.
+            <UiText message={"Could not load your custom instructions. Please try again."} />
           </p>
           <PillButtonUI
             tone="white"
@@ -119,13 +121,13 @@ export function CustomInstructionsSection() {
               setLoadVersion((current) => current + 1);
             }}
           >
-            Retry
+            <UiText message={"Retry"} />
           </PillButtonUI>
         </div>
       ) : (
         <>
           <textarea
-            aria-label="Custom instructions"
+            aria-label={tUi("Custom instructions")}
             value={draft}
             onChange={(event) => setDraft(event.target.value)}
             // The same flat surface as the settings cards above it. The ring
@@ -134,9 +136,8 @@ export function CustomInstructionsSection() {
           />
           {tooLong ? (
             <p className="text-xs text-red-600" role="alert">
-              Custom instructions must be{" "}
-              {CUSTOM_INSTRUCTIONS_MAX_LENGTH.toLocaleString()} characters or
-              fewer. Shorten them to save your changes.
+              <UiText message={"Custom instructions must be"} />{" "}
+              {CUSTOM_INSTRUCTIONS_MAX_LENGTH.toLocaleString()}{" "}<UiText message={"characters or fewer. Shorten them to save your changes."} />
             </p>
           ) : null}
         </>

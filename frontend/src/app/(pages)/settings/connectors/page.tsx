@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   useCallback,
   useEffect,
@@ -430,6 +431,7 @@ function WorkspaceConnectors({
   /** Whether the person has more than one workspace to tell apart. */
   multipleWorkspaces: boolean;
 }) {
+    const tUi = useUiText();
   // Which workspace these connectors are saved for, said only to someone
   // with more than one, and only once that workspace has a name to show.
   const savedFor = !multipleWorkspaces
@@ -1392,23 +1394,23 @@ function WorkspaceConnectors({
           className={`${savedFor ? "mb-1" : "mb-4"} flex items-center justify-between gap-3`}
         >
           <SettingsHeading id="installed-connectors-heading">
-            Installed
+            <UiText message={"Installed"} />
           </SettingsHeading>
           <PillButtonUI
             tone="white"
             size="xs"
             onClick={() => setAddOpen(true)}
-            aria-label="Add custom connector"
+            aria-label={tUi("Add custom connector")}
             className={`h-7 ${LIQUID_GLASS_SUBTLE_CLASS}`}
           >
             <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-            Custom
+            <UiText message={"Custom"} />
           </PillButtonUI>
         </div>
         {savedFor && (
           <div className="mb-4">
             <SettingsDescription>
-              Saved for {savedFor}. Each workspace has its own connectors.
+              <UiText message={"Saved for"} />{" "}{savedFor}<UiText message={". Each workspace has its own connectors."} />
             </SettingsDescription>
           </div>
         )}
@@ -1486,7 +1488,7 @@ function WorkspaceConnectors({
             installedGoogle.length === 0 &&
             !courtListener.installed && (
               <div className="@min-[32rem]:col-span-2">
-                <SettingsDescription>No connectors yet.</SettingsDescription>
+                <SettingsDescription><UiText message={"No connectors yet."} /></SettingsDescription>
               </div>
             )}
         </div>
@@ -1494,7 +1496,7 @@ function WorkspaceConnectors({
       <section className="mt-6" aria-labelledby="discover-connectors-heading">
         <div className="mb-4">
           <SettingsHeading id="discover-connectors-heading">
-            Discover
+            <UiText message={"Discover"} />
           </SettingsHeading>
         </div>
         {!initialLoading &&
@@ -1502,7 +1504,7 @@ function WorkspaceConnectors({
           !discoverCourtListener &&
           discoverPresets.length === 0 && (
             <SettingsDescription>
-              Every available connector is installed.
+              <UiText message={"Every available connector is installed."} />
             </SettingsDescription>
           )}
         <div
@@ -1703,7 +1705,7 @@ function WorkspaceConnectors({
                 }
               >
                 <FolderPlus className="h-3.5 w-3.5" aria-hidden="true" />
-                Add files from Google Drive
+                <UiText message={"Add files from Google Drive"} />
               </PillButtonUI>
               <p role="status" className="text-xs text-gray-500">
                 {drivePicker.message}
@@ -1748,7 +1750,7 @@ function WorkspaceConnectors({
       />
       <WarningPopup
         open={!!addError}
-        title="Could not add connector"
+        title={tUi("Could not add connector")}
         message={addError}
         onClose={() => {
           setAddError(null);
@@ -1761,13 +1763,13 @@ function WorkspaceConnectors({
       </WarningPopup>
       <WarningPopup
         open={!!detailError}
-        title="Connector update failed"
+        title={tUi("Connector update failed")}
         message={detailError}
         onClose={() => setDetailError(null)}
       />
       <WarningPopup
         open={!!detailSetupNotice}
-        title="Administrator setup required"
+        title={tUi("Administrator setup required")}
         message={detailSetupNotice}
         onClose={() => setDetailSetupNotice(null)}
       >
@@ -1798,6 +1800,7 @@ function ConnectorRow({
   onOpen: () => void;
   onEnabledChange: (enabled: boolean) => void;
 }) {
+    const tUi = useUiText();
   return (
     <ConnectorCard
       name={name}
@@ -1809,7 +1812,7 @@ function ConnectorRow({
           checked={enabled}
           disabled={busy}
           aria-busy={busy}
-          aria-label={`${name} connector`}
+          aria-label={tUi("{0} connector", name)}
           onCheckedChange={onEnabledChange}
         />
       }
@@ -1846,6 +1849,7 @@ function DiscoverCard({
   onAdd: () => void;
   onCancel: () => void;
 }) {
+    const tUi = useUiText();
   return (
     <ConnectorCard
       name={name}
@@ -1859,11 +1863,11 @@ function DiscoverCard({
           loading={adding}
           aria-label={
             authorizing
-              ? `Cancel ${name} authorization`
-              : `Add ${name} connector`
+              ? tUi("Cancel {0} authorization", name)
+              : tUi("Add {0} connector", name)
           }
         >
-          {authorizing ? "Cancel" : adding ? "Adding..." : "Add"}
+          {authorizing ? (<><UiText message={"Cancel"} /></>) : adding ? (<><UiText message={"Adding..."} /></>) : (<><UiText message={"Add"} /></>)}
         </PillButtonUI>
       }
     />

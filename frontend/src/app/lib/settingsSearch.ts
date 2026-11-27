@@ -122,6 +122,15 @@ export const SETTINGS_SEARCH_ENTRIES: readonly SettingsSearchEntry[] = [
 
     // Appearance
     {
+        id: "appearance-interface-language",
+        tabId: "appearance",
+        tab: "Appearance",
+        title: "Interface language",
+        description: "Choose the language for menus, buttons, and messages in Mike.",
+        keywords: ["display language", "Chinese", "English", "简体中文", "界面语言", "切换语言", "汉化"],
+        href: "/settings/appearance#interface-language",
+    },
+    {
         id: "appearance-dark-mode",
         tabId: "appearance",
         tab: "Appearance",
@@ -305,7 +314,7 @@ function normalise(text: string): string {
         .toLowerCase()
         .normalize("NFD")
         .replace(/[̀-ͯ]/g, "")
-        .replace(/[^a-z0-9]+/g, " ")
+        .replace(/[^\p{L}\p{N}]+/gu, " ")
         .trim();
 }
 

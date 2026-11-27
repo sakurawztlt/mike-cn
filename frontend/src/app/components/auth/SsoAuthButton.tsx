@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { PillButtonUI } from "@mike/ui";
@@ -21,7 +22,7 @@ export function SsoAuthButton({ disabled = false }: SsoAuthButtonProps) {
             onClick={() => router.push("/login/sso")}
         >
             <Globe aria-hidden="true" className="h-4 w-4" />
-            Continue with SSO
+            <UiText message={"Continue with SSO"} />
         </PillButtonUI>
     );
 }

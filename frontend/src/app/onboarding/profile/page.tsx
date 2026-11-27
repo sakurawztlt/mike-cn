@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingShell } from "@/app/components/auth/OnboardingShell";
@@ -40,6 +41,7 @@ function ProfileDetailsForm({
     initialName: string;
     initialOrganisation: string;
 }) {
+    const tUi = useUiText();
     const router = useRouter();
     const { reloadProfile } = useUserProfile();
     const [name, setName] = useState(initialName);
@@ -76,13 +78,13 @@ function ProfileDetailsForm({
     return (
         <OnboardingShell
             step="Step 1 of 4"
-            title="Tell us about you"
-            description="Add the details we should use across Mike."
+            title={tUi("Tell us about you")}
+            description={tUi("Add the details we should use across Mike.")}
         >
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <FieldLabel htmlFor="name">
-                        Name
+                        <UiText message={"Name"} />
                     </FieldLabel>
                     <InputUI
                         id="name"
@@ -96,7 +98,7 @@ function ProfileDetailsForm({
 
                 <div>
                     <FieldLabel htmlFor="organisation">
-                        Organisation
+                        <UiText message={"Organisation"} />
                     </FieldLabel>
                     <InputUI
                         id="organisation"
@@ -127,7 +129,7 @@ function ProfileDetailsForm({
                         disabled={submitting}
                         className="w-full"
                     >
-                        {submitting ? "Saving..." : "Continue"}
+                        {submitting ? (<><UiText message={"Saving..."} /></>) : (<><UiText message={"Continue"} /></>)}
                     </PillButtonUI>
                 </div>
             </form>

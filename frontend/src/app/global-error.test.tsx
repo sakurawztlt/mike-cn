@@ -28,8 +28,8 @@ describe("GlobalError", () => {
         const reset = vi.fn();
         renderError(reset);
 
-        const tryAgain = screen.getByRole("button", { name: "Try again" });
-        const back = screen.getByRole("button", { name: "Back" });
+        const tryAgain = screen.getByRole("button", { name: "重试" });
+        const back = screen.getByRole("button", { name: "返回" });
         expect(tryAgain.tagName).toBe("BUTTON");
         expect(tryAgain.getAttribute("type")).toBe("button");
         expect(back.getAttribute("type")).toBe("button");
@@ -41,7 +41,7 @@ describe("GlobalError", () => {
     it("offers support by email, the one channel a broken layout still has", () => {
         vi.spyOn(console, "error").mockImplementation(() => {});
         renderError();
-        const support = screen.getByRole("link", { name: "Contact support" });
+        const support = screen.getByRole("link", { name: "联系客服" });
         expect(support.getAttribute("href")).toMatch(/^mailto:/);
         expect(screen.getByText(/d1gest/)).toBeTruthy();
     });

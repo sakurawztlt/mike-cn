@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { GlassCardUI, PillButtonUI } from "@mike/ui";
 import { SettingsHeading } from "@/app/components/settings/SettingsHeading";
@@ -198,15 +199,15 @@ export function ResponseStyleSection() {
 
   return (
     <section className="space-y-3" aria-labelledby="response-style-heading">
-      <SettingsHeading id="response-style-heading">Response style</SettingsHeading>
+      <SettingsHeading id="response-style-heading"><UiText message={"Response style"} /></SettingsHeading>
       <SettingsDescription>
-        Choose how Mike shapes its answers in chats.
+        <UiText message={"Choose how Mike shapes its answers in chats."} />
       </SettingsDescription>
       <GlassCardUI>
         {loadError ? (
           <SettingsRow>
             <p className="text-sm text-red-600" role="alert">
-              Could not load your response style.
+              <UiText message={"Could not load your response style."} />
             </p>
             <PillButtonUI
               tone="white"
@@ -216,7 +217,7 @@ export function ResponseStyleSection() {
                 setLoadVersion((current) => current + 1);
               }}
             >
-              Retry
+              <UiText message={"Retry"} />
             </PillButtonUI>
           </SettingsRow>
         ) : (

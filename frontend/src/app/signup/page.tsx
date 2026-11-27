@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signup } from "@/app/lib/authApi";
@@ -83,6 +84,7 @@ import { useSignInOptions } from "@/app/hooks/useSignInOptions";
 import { FieldLabel } from "@/app/components/ui/form-field";
 
 function SignupContent() {
+    const tUi = useUiText();
     const router = useRouter();
     const searchParams = useSearchParams();
     const { isAuthenticated, authLoading, refreshSession } = useAuth();
@@ -183,10 +185,10 @@ function SignupContent() {
                 <div className="w-full max-w-md">
                     <div className={authGlassCardUIClassName}>
                         <h1 className="font-serif text-2xl font-medium text-gray-950">
-                            Account created!
+                            <UiText message={"Account created!"} />
                         </h1>
                         <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                            Redirecting you to finish setting up your account...
+                            <UiText message={"Redirecting you to finish setting up your account..."} />
                         </p>
                         <Link
                             href="/onboarding/profile"
@@ -196,7 +198,7 @@ function SignupContent() {
                                 className: "mt-6",
                             })}
                         >
-                            Continue
+                            <UiText message={"Continue"} />
                         </Link>
                     </div>
                 </div>
@@ -213,11 +215,10 @@ function SignupContent() {
                 <div className="w-full max-w-md">
                     <div className={authGlassCardUIClassName}>
                         <h1 className="font-serif text-2xl font-medium text-gray-950">
-                            Sign-up isn&apos;t open yet
+                            <UiText message={"Sign-up isn't open yet"} />
                         </h1>
                         <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                            Registration is currently closed. Ask your administrator
-                            for an account, or log in with an existing one.
+                            <UiText message={"Registration is currently closed. Ask your administrator for an account, or log in with an existing one."} />
                         </p>
                         <Link
                             href="/login"
@@ -227,7 +228,7 @@ function SignupContent() {
                                 className: "mt-6",
                             })}
                         >
-                            Log in
+                            <UiText message={"Log in"} />
                         </Link>
                     </div>
                 </div>
@@ -244,13 +245,13 @@ function SignupContent() {
             <div className="w-full max-w-md">
                 <div className={cn(authGlassCardUIClassName, "mb-4")}>
                     <h2 className="mb-6 text-left text-2xl font-medium font-serif text-gray-950">
-                        Sign Up
+                        <UiText message={"Sign Up"} />
                     </h2>
 
                     <form onSubmit={handleSignup} className="space-y-4">
                         <div>
                             <FieldLabel htmlFor="email">
-                                Email
+                                <UiText message={"Email"} />
                             </FieldLabel>
                             <InputUI
                                 id="email"
@@ -264,14 +265,14 @@ function SignupContent() {
 
                         <div>
                             <FieldLabel htmlFor="password">
-                                Password
+                                <UiText message={"Password"} />
                             </FieldLabel>
                             <InputUI
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                placeholder={`Min. ${MIN_PASSWORD_LENGTH} Characters`}
+                                placeholder={tUi("Min. {0} Characters", MIN_PASSWORD_LENGTH)}
                                 required
                                 className={`w-full ${authInputUIClassName}`}
                             />
@@ -279,7 +280,7 @@ function SignupContent() {
 
                         <div>
                             <FieldLabel htmlFor="confirmPassword">
-                                Confirm Password
+                                <UiText message={"Confirm Password"} />
                             </FieldLabel>
                             <InputUI
                                 id="confirmPassword"
@@ -295,23 +296,23 @@ function SignupContent() {
 
                         <div className="space-y-3 pt-2">
                             <div className="text-center text-xs text-gray-500">
-                                By signing up, you agree to our{" "}
+                                <UiText message={"By signing up, you agree to our"} />{" "}
                                 <Link
                                     href="https://mikeoss.com/terms"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline"
                                 >
-                                    Terms of Use
+                                    <UiText message={"Terms of Use"} />
                                 </Link>{" "}
-                                and{" "}
+                                <UiText message={"and"} />{" "}
                                 <Link
                                     href="https://mikeoss.com/privacy"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="text-blue-600 hover:underline"
                                 >
-                                    Privacy Policy
+                                    <UiText message={"Privacy Policy"} />
                                 </Link>
                             </div>
                             <PillButtonUI
@@ -321,7 +322,7 @@ function SignupContent() {
                                 disabled={loading}
                                 className="w-full"
                             >
-                                {loading ? "Creating account..." : "Sign up"}
+                                {loading ? (<><UiText message={"Creating account..."} /></>) : (<><UiText message={"Sign up"} /></>)}
                             </PillButtonUI>
                             {showGoogle && (
                                 <>
@@ -337,12 +338,12 @@ function SignupContent() {
                     </form>
                 </div>
                 <div className="text-center text-sm text-gray-500">
-                    Have an account?{" "}
+                    <UiText message={"Have an account?"} />{" "}
                     <Link
                         href="/login"
                         className="font-medium transition-colors hover:text-gray-950"
                     >
-                        Log in
+                        <UiText message={"Log in"} />
                     </Link>
                 </div>
             </div>
@@ -360,7 +361,7 @@ function SignupContent() {
                             )}
                             className={noticeActionClassName()}
                         >
-                            Contact support
+                            <UiText message={"Contact support"} />
                         </a>
                     ) : undefined
                 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState, type ReactNode } from "react";
 
 import { ByokProviderModal } from "@/app/components/settings/ByokProviderModal";
@@ -41,8 +42,7 @@ const PROVIDER_SECTIONS = [
 
 const DEFAULT_INTRO = (
     <SettingsDescription>
-        Your keys are used in your Personal workspace only. In an organization,
-        models run on the keys its admins set up.
+        <UiText message={"Your keys are used in your Personal workspace only. In an organization, models run on the keys its admins set up."} />
     </SettingsDescription>
 );
 
@@ -58,6 +58,7 @@ export function PersonalProviderKeys({
     /** The sentence above the grids; `null` when the page says it already. */
     intro?: ReactNode;
 }) {
+    const tUi = useUiText();
     const { profile, loading, updateApiKeyEnabled } = useUserProfile();
     const [busyProvider, setBusyProvider] = useState<ApiKeyProvider | null>(null);
     const [toggleError, setToggleError] = useState<string | null>(null);
@@ -123,11 +124,11 @@ export function PersonalProviderKeys({
                             tone="blue"
                             size="sm"
                             disabled={blocked}
-                            aria-label={`Add ${field.name}`}
+                            aria-label={tUi("Add {0}", field.name)}
                             aria-haspopup="dialog"
                             onClick={open}
                         >
-                            Add
+                            <UiText message={"Add"} />
                         </PillButtonUI>
                     )
                 }
@@ -196,7 +197,7 @@ export function PersonalProviderKeys({
             />
             <WarningPopup
                 open={toggleError !== null}
-                title="Provider update failed"
+                title={tUi("Provider update failed")}
                 message={toggleError}
                 onClose={() => setToggleError(null)}
             />

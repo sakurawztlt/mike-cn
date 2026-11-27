@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { Check, ChevronDown, Loader2, X } from "lucide-react";
 import {
@@ -245,7 +246,7 @@ export function RouterSettingsSection({
 
   return (
     <section id="routers" className="scroll-mt-6 space-y-3">
-      <FieldLabel as="p">Model Selections</FieldLabel>
+      <FieldLabel as="p"><UiText message={"Model Selections"} /></FieldLabel>
       <SettingsDescription>{source.description}</SettingsDescription>
       <div className="space-y-4">
         {visible.map((router) => (
@@ -281,6 +282,7 @@ function RouterModelsSetting({
   catalogWorkspace?: string;
   onSave: (models: string[]) => Promise<boolean>;
 }) {
+    const tUi = useUiText();
   const [catalog, setCatalog] = useState<RouterCatalogModel[]>([]);
   const [input, setInput] = useState("");
   const [catalogOpen, setCatalogOpen] = useState(false);
@@ -424,7 +426,7 @@ function RouterModelsSetting({
             id={`${provider}-model-input`}
             ref={inputRef}
             type="text"
-            aria-label={`${label} models`}
+            aria-label={tUi("{0} models", label)}
             // Without a catalog there is no list to control: a plain textbox.
             {...(loadCatalog
               ? {
@@ -440,7 +442,7 @@ function RouterModelsSetting({
               : {})}
             value={input}
             disabled={saving}
-            placeholder={`e.g. ${ROUTER_MODEL_ID[provider].example}`}
+            placeholder={tUi("e.g. {0}", ROUTER_MODEL_ID[provider].example)}
             className={loadCatalog ? "pr-9" : undefined}
             onChange={(event) => {
               setInput(event.target.value);
@@ -489,7 +491,7 @@ function RouterModelsSetting({
             <button
               type="button"
               disabled={saving || catalog.length === 0}
-              aria-label={`Choose ${label} model`}
+              aria-label={tUi("Choose {0} model", label)}
               aria-controls={catalogId}
               aria-expanded={catalogOpen}
               aria-haspopup="listbox"
@@ -526,14 +528,14 @@ function RouterModelsSetting({
                             disagree with aria-activedescendant. */}
             {typedModelId && (
               <div className="px-3 py-2 text-xs text-gray-400">
-                Press Enter to add this model ID.
+                <UiText message={"Press Enter to add this model ID."} />
               </div>
             )}
             <div
               id={catalogId}
               role="listbox"
               aria-multiselectable="true"
-              aria-label={`${label} model catalog`}
+              aria-label={tUi("{0} model catalog", label)}
             >
               {visibleCatalog.map((model, index) => {
                 const selected = selection.includes(model.id);
@@ -575,7 +577,7 @@ function RouterModelsSetting({
             </div>
             {visibleCatalog.length === 0 && (
               <div className="px-3 py-2 text-xs text-gray-400">
-                No matching models.
+                <UiText message={"No matching models."} />
               </div>
             )}
           </DropdownSurface>
@@ -588,8 +590,8 @@ function RouterModelsSetting({
               key={model}
               surface="flat"
               disabled={saving}
-              aria-label={`Remove ${model}`}
-              title={`Remove ${model}`}
+              aria-label={tUi("Remove {0}", model)}
+              title={tUi("Remove {0}", model)}
               onClick={() =>
                 void save(selection.filter((item) => item !== model))
               }

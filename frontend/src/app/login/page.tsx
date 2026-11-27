@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AuthApiError, login, signup } from "@/app/lib/authApi";
@@ -14,6 +15,7 @@ import {
 } from "@mike/ui";
 import Link from "next/link";
 import { SiteLogo } from "@/app/components/site-logo";
+import { InterfaceLanguageSelect } from "@/app/components/settings/InterfaceLanguageSelect";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { cn } from "@/app/lib/utils";
 import { SsoAuthButton } from "@/app/components/auth/SsoAuthButton";
@@ -269,14 +271,12 @@ export default function LoginPage() {
                 {/* Login Form */}
                 <div className={cn(authGlassCardUIClassName, "mb-4")}>
                     <h2 className="mb-6 text-left text-2xl font-medium font-serif text-gray-950">
-                        {guest ? "Your workspace on this Mac" : "Log In"}
+                        {guest ? (<><UiText message={"Your workspace on this Mac"} /></>) : (<><UiText message={"Log In"} /></>)}
                     </h2>
                     {guest && (
                         <div className="mb-6 space-y-3">
                             <p className="text-sm text-muted-foreground">
-                                Start without an account. Your work is saved on
-                                this Mac. You can add your practice details
-                                later in Settings.
+                                <UiText message={"Start without an account. Your work is saved on this Mac. You can add your practice details later in Settings."} />
                             </p>
                             <PillButtonUI
                                 type="button"
@@ -287,8 +287,8 @@ export default function LoginPage() {
                                 disabled={loading}
                             >
                                 {loading
-                                    ? "Opening workspace…"
-                                    : "Continue on this Mac"}
+                                    ? (<><UiText message={"Opening workspace…"} /></>)
+                                    : (<><UiText message={"Continue on this Mac"} /></>)}
                             </PillButtonUI>
                         </div>
                     )}
@@ -297,11 +297,11 @@ export default function LoginPage() {
                             hidden={!guest}
                             className="mb-4 cursor-pointer text-sm text-muted-foreground focus-visible:outline-2 focus-visible:outline-ring"
                         >
-                            Use a separate local account
+                            <UiText message={"Use a separate local account"} />
                         </summary>
                         <form onSubmit={handleLogin} className="space-y-4">
                             <div>
-                                <FieldLabel htmlFor="email">Email</FieldLabel>
+                                <FieldLabel htmlFor="email"><UiText message={"Email"} /></FieldLabel>
                                 <InputUI
                                     id="email"
                                     type="email"
@@ -315,13 +315,13 @@ export default function LoginPage() {
                             <div>
                                 <div className="flex items-start justify-between gap-3">
                                     <FieldLabel htmlFor="password">
-                                        Password
+                                        <UiText message={"Password"} />
                                     </FieldLabel>
                                     <Link
                                         href="/forgot-password"
                                         className="text-xs font-medium text-gray-500 transition-colors hover:text-gray-950"
                                     >
-                                        Forgot password?
+                                        <UiText message={"Forgot password?"} />
                                     </Link>
                                 </div>
                                 <InputUI
@@ -344,7 +344,7 @@ export default function LoginPage() {
                                     disabled={loading}
                                     className="w-full"
                                 >
-                                    {loading ? "Logging in..." : "Log in"}
+                                    {loading ? (<><UiText message={"Logging in..."} /></>) : (<><UiText message={"Log in"} /></>)}
                                 </PillButtonUI>
                             </div>
                             {!guest && (showGoogle || showSso) && (
@@ -370,15 +370,18 @@ export default function LoginPage() {
                 </div>
                 {signInOptionsLoaded && signInOptions.signup && (
                     <div className="text-center text-sm text-gray-500">
-                        Don&apos;t have an account?{" "}
+                        <UiText message={"Don't have an account?"} />{" "}
                         <Link
                             href="/signup"
                             className="font-medium transition-colors hover:text-gray-950"
                         >
-                            Sign up
+                            <UiText message={"Sign up"} />
                         </Link>
                     </div>
                 )}
+                <div className="flex justify-center">
+                    <InterfaceLanguageSelect />
+                </div>
             </div>
             <WarningPopup
                 open={!!error || sessionWarningOpen}
@@ -399,7 +402,7 @@ export default function LoginPage() {
                                 retryAction ? "secondary" : "primary",
                             )}
                         >
-                            Contact support
+                            <UiText message={"Contact support"} />
                         </a>
                     ) : undefined
                 }

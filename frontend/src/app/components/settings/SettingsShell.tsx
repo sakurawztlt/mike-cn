@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { settingsTabButtonClassName } from "@/app/(pages)/settings/settingsStyles";
+import { useUiText } from "@/app/i18n/uiLanguage";
 
 export interface SettingsShellTab {
     id: string;
@@ -37,6 +38,7 @@ export function SettingsShell({
     search?: ReactNode;
     children: ReactNode;
 }) {
+    const t = useUiText();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -44,7 +46,7 @@ export function SettingsShell({
         <div className="flex h-full flex-col overflow-y-auto">
             <header className="mx-auto flex h-16 w-full max-w-5xl shrink-0 items-end justify-between gap-4 px-6 pb-2 md:h-24 md:pb-4">
                 <h1 className="shrink-0 text-3xl font-medium font-eb-garamond">
-                    {title}
+                    {typeof title === "string" ? t(title) : title}
                 </h1>
                 {/* The search sits at the right end of the heading's row, so the
                     sections and the open page keep their places. */}
@@ -58,7 +60,7 @@ export function SettingsShell({
             <main className="@container/settings mx-auto w-full max-w-5xl flex-1 px-6 pb-10 pt-4 md:pt-6">
                 <div className="grid grid-cols-1 gap-y-6 @min-[52rem]/settings:grid-cols-[224px_minmax(0,1fr)] @min-[52rem]/settings:gap-x-10">
                     <nav
-                        aria-label={navLabel}
+                        aria-label={t(navLabel)}
                         className="z-10 -ml-3 min-w-0 self-start @min-[52rem]/settings:sticky @min-[52rem]/settings:top-4"
                     >
                         <div className="-m-1 min-w-0 p-1">
@@ -85,7 +87,7 @@ export function SettingsShell({
                                                         active,
                                                     )}
                                                 >
-                                                    {tab.label}
+                                                    {t(tab.label)}
                                                     {tab.badge ? <> {tab.badge}</> : null}
                                                 </button>
                                             </li>

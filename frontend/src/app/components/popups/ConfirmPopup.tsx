@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { createPortal } from "react-dom";
 import { useEffect, useId, type ReactNode } from "react";
 import { Trash2 } from "lucide-react";
@@ -35,6 +36,7 @@ export function ConfirmPopup({
   confirmDisabled = false,
   className,
 }: ConfirmPopupProps) {
+    const tUi = useUiText();
   const titleId = useId();
 
   /**
@@ -87,7 +89,7 @@ export function ConfirmPopup({
       <div
         role="dialog"
         aria-labelledby={title ? titleId : undefined}
-        aria-label={title ? undefined : "Confirm action"}
+        aria-label={title ? undefined : tUi("Confirm action")}
         className={cn(
           `pointer-events-auto relative w-[min(92vw,520px)] rounded-2xl p-2.5 pl-3 text-sm ${LIQUID_GLASS_FLOAT_CLASS}`,
           className,
@@ -95,23 +97,23 @@ export function ConfirmPopup({
       >
         <CloseButton
           onClick={onCancel}
-          label="Close confirmation"
+          label={tUi("Close confirmation")}
           size="sm"
           className="absolute right-2.5 top-2.5"
         />
         {title && (
           <div id={titleId} className="pr-4 text-sm font-medium text-gray-950 mb-3">
-            {title}
+            {typeof title === "string" ? tUi(title) : title}
           </div>
         )}
         {message && (
           <div className={cn("pr-4 text-xs text-gray-700", title && "mt-1")}>
-            {message}
+            {typeof message === "string" ? tUi(message) : message}
           </div>
         )}
         <div className="mt-3 flex items-center justify-end gap-2">
           <PillButtonUI tone="white" size="sm" onClick={onCancel}>
-            {cancelLabel}
+            {typeof cancelLabel === "string" ? tUi(cancelLabel) : cancelLabel}
           </PillButtonUI>
           <PillButtonUI
             tone={isDangerAction ? "danger" : "black"}
@@ -123,7 +125,7 @@ export function ConfirmPopup({
             {isDangerAction && confirmStatus !== "complete" && (
               <Trash2 className="h-3 w-3 shrink-0" />
             )}
-            {resolvedConfirmLabel}
+            {typeof resolvedConfirmLabel === "string" ? tUi(resolvedConfirmLabel) : resolvedConfirmLabel}
           </PillButtonUI>
         </div>
       </div>

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { ChevronDown, X } from "lucide-react";
 import {
@@ -214,14 +215,15 @@ export function PersonalisationFields({
     content: ReactNode,
   ) => ReactNode;
 }) {
+    const tUi = useUiText();
   const groups: Record<PersonalisationFieldGroup, ReactNode> = {
     professionalTitle: (
       <ProfileDropdown
         id="professional-title"
-        label="Title"
+        label={tUi("Title")}
         status={statusFor?.("professionalTitle")}
         value={form.professionalTitle}
-        placeholder="Select a title"
+        placeholder={tUi("Select a title")}
         options={PROFESSIONAL_TITLE_OPTIONS.map((title) => ({
           value: title,
           label: title,
@@ -234,10 +236,10 @@ export function PersonalisationFields({
     practiceSetting: (
       <ProfileDropdown
         id="practice-setting"
-        label="Professional setting"
+        label={tUi("Professional setting")}
         status={statusFor?.("practiceSetting")}
         value={form.practiceSetting}
-        placeholder="Select a professional setting"
+        placeholder={tUi("Select a professional setting")}
         options={PRACTICE_SETTING_OPTIONS}
         onChange={(value) =>
           form.setPracticeSetting(value ? (value as PracticeSetting) : null)
@@ -248,10 +250,10 @@ export function PersonalisationFields({
       <>
         <ProfileDropdown
           id="jurisdiction"
-          label="Jurisdiction of practice"
+          label={tUi("Jurisdiction of practice")}
           status={statusFor?.("jurisdiction")}
           value={form.jurisdictionChoice || null}
-          placeholder="Select a country"
+          placeholder={tUi("Select a country")}
           options={[
             ...COUNTRY_OPTIONS.map((country) => ({
               value: country,
@@ -268,7 +270,7 @@ export function PersonalisationFields({
         {form.jurisdictionChoice === OTHER_JURISDICTION_OPTION && (
           <div className="mt-4">
             <FieldLabelRow
-              label="Other jurisdiction"
+              label={tUi("Other jurisdiction")}
               htmlFor="other-jurisdiction"
               status={statusFor?.("otherJurisdiction")}
             />
@@ -279,7 +281,7 @@ export function PersonalisationFields({
                 form.setOtherJurisdiction(event.target.value)
               }
               maxLength={100}
-              placeholder="Enter your jurisdiction"
+              placeholder={tUi("Enter your jurisdiction")}
               className={`w-full ${authInputUIClassName}`}
             />
           </div>
@@ -289,7 +291,7 @@ export function PersonalisationFields({
     practiceAreas: (
       <div>
         <FieldLabelRow
-          label="Practice areas"
+          label={tUi("Practice areas")}
           status={statusFor?.("practiceAreas")}
         />
         <Dropdown>
@@ -305,8 +307,8 @@ export function PersonalisationFields({
             >
               <span className="truncate">
                 {form.practiceAreas.length
-                  ? `${form.practiceAreas.length} selected`
-                  : "Select practice areas"}
+                  ? (<><UiText message={"{0} selected"} values={[String(form.practiceAreas.length)]} /></>)
+                  : (<><UiText message={"Select practice areas"} /></>)}
               </span>
               <ChevronDown className="h-4 w-4 shrink-0 text-gray-400" />
             </button>
@@ -333,7 +335,7 @@ export function PersonalisationFields({
               }
               onSelect={(event) => event.preventDefault()}
             >
-              Other
+              <UiText message={"Other"} />
             </DropdownCheckboxItem>
           </DropdownContent>
         </Dropdown>
@@ -344,7 +346,7 @@ export function PersonalisationFields({
               <OptionPill
                 key={area}
                 onClick={() => form.toggleArea(area)}
-                aria-label={`Remove ${area}`}
+                aria-label={tUi("Remove {0}", area)}
               >
                 {area}
                 <X className="h-3 w-3" />
@@ -353,7 +355,7 @@ export function PersonalisationFields({
             {form.otherSelected && form.otherArea.trim() && (
               <OptionPill
                 onClick={() => form.setOtherSelected(false)}
-                aria-label={`Remove ${form.otherArea.trim()}`}
+                aria-label={tUi("Remove {0}", form.otherArea.trim())}
               >
                 {form.otherArea.trim()}
                 <X className="h-3 w-3" />
@@ -365,7 +367,7 @@ export function PersonalisationFields({
         {form.otherSelected && (
           <div className="mt-4">
             <FieldLabelRow
-              label="Other practice area"
+              label={tUi("Other practice area")}
               htmlFor="other-practice-area"
               status={statusFor?.("otherPracticeArea")}
             />
@@ -374,7 +376,7 @@ export function PersonalisationFields({
               value={form.otherArea}
               onChange={(event) => form.setOtherArea(event.target.value)}
               maxLength={100}
-              placeholder="Enter your practice area"
+              placeholder={tUi("Enter your practice area")}
               className={`w-full ${authInputUIClassName}`}
             />
           </div>
@@ -454,7 +456,7 @@ function ProfileDropdown({
             }
           >
             <DropdownRadioItem value={NOT_SET_OPTION}>
-              Not set
+              <UiText message={"Not set"} />
             </DropdownRadioItem>
             {options.map((option) => (
               <DropdownRadioItem key={option.value} value={option.value}>

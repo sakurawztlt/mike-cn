@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import {
   FieldLabel,
@@ -43,6 +44,7 @@ export function McpConnectorForm({
   onDraftChange: (draft: McpConnectorFormDraft) => void;
   onShowTokenChange: (show: boolean) => void;
 }) {
+    const tUi = useUiText();
   const labelId = `${idPrefix}-label`;
   const urlId = `${idPrefix}-url`;
   const tokenId = `${idPrefix}-token`;
@@ -51,19 +53,19 @@ export function McpConnectorForm({
   return (
     <div className={`grid gap-3 ${className}`}>
       <div className="min-w-0">
-        <FieldLabel htmlFor={labelId}>Label</FieldLabel>
+        <FieldLabel htmlFor={labelId}><UiText message={"Label"} /></FieldLabel>
         <FormTextInput
           id={labelId}
           value={draft.name}
           onChange={(event) =>
             onDraftChange({ ...draft, name: event.target.value })
           }
-          placeholder="Connector label"
+          placeholder={tUi("Connector label")}
           disabled={disabled}
         />
       </div>
       <div className="min-w-0">
-        <FieldLabel htmlFor={urlId}>URL endpoint</FieldLabel>
+        <FieldLabel htmlFor={urlId}><UiText message={"URL endpoint"} /></FieldLabel>
         <FormTextInput
           id={urlId}
           value={draft.serverUrl}
@@ -76,9 +78,9 @@ export function McpConnectorForm({
       </div>
       <div className="min-w-0">
         <div className="flex items-baseline justify-between gap-2">
-          <FieldLabel htmlFor={tokenId}>Bearer token</FieldLabel>
+          <FieldLabel htmlFor={tokenId}><UiText message={"Bearer token"} /></FieldLabel>
           <p className="mb-2 shrink-0 text-xs text-gray-500">
-            Tokens are stored encrypted.
+            <UiText message={"Tokens are stored encrypted."} />
           </p>
         </div>
         <div className="relative">
@@ -108,7 +110,7 @@ export function McpConnectorForm({
                 tokenAction ? "right-[3.75rem]" : "right-1.5"
               } flex items-center ${settingsGlassIconButtonClassName}`}
               onClick={() => onShowTokenChange(!showToken)}
-              aria-label={showToken ? "Hide token" : "Show token"}
+              aria-label={showToken ? tUi("Hide token") : tUi("Show token")}
               disabled={disabled}
             >
               {showToken ? (
@@ -141,9 +143,9 @@ export function McpConnectorForm({
       </div>
       <div className="min-w-0">
         <div className="flex items-baseline justify-between gap-2">
-          <FieldLabel htmlFor={headersId}>Custom headers</FieldLabel>
+          <FieldLabel htmlFor={headersId}><UiText message={"Custom headers"} /></FieldLabel>
           <p className="mb-2 shrink-0 text-xs text-gray-500">
-            Secrets are stored encrypted.
+            <UiText message={"Secrets are stored encrypted."} />
           </p>
         </div>
         <textarea
@@ -152,7 +154,7 @@ export function McpConnectorForm({
           onChange={(event) =>
             onDraftChange({ ...draft, customHeaders: event.target.value })
           }
-          placeholder='{"X-API-Key":"secret"}'
+          placeholder={tUi("{\"X-API-Key\":\"secret\"}")}
           className={`min-h-32 resize-y py-2 ${FORM_CONTROL_GLASS_CLASS}`}
           autoComplete="off"
           spellCheck={false}

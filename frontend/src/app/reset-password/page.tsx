@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -174,20 +175,19 @@ function ResetPasswordContent() {
                         <div>
                             <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
                             <h1 className="mt-4 font-serif text-2xl font-medium text-gray-950">
-                                Verifying your reset link...
+                                <UiText message={"Verifying your reset link..."} />
                             </h1>
                             <p className="mt-2 text-sm text-gray-500">
-                                This should only take a moment.
+                                <UiText message={"This should only take a moment."} />
                             </p>
                         </div>
                     ) : success ? (
                         <div>
                             <h1 className="text-2xl font-medium font-serif text-gray-950">
-                                Password updated
+                                <UiText message={"Password updated"} />
                             </h1>
                             <p className="mt-3 text-sm leading-relaxed text-gray-600">
-                                Your password has been changed. Log in again
-                                with your new password.
+                                <UiText message={"Your password has been changed. Log in again with your new password."} />
                             </p>
                             <Link
                                 href="/login"
@@ -197,13 +197,13 @@ function ResetPasswordContent() {
                                     className: "mt-6",
                                 })}
                             >
-                                Log in
+                                <UiText message={"Log in"} />
                             </Link>
                         </div>
                     ) : resetUnavailable ? (
                         <div>
                             <h1 className="text-2xl font-medium font-serif text-gray-950">
-                                Reset link unavailable
+                                <UiText message={"Reset link unavailable"} />
                             </h1>
                             <p className="mt-3 text-sm leading-relaxed text-gray-600">
                                 {displayedError}
@@ -216,16 +216,16 @@ function ResetPasswordContent() {
                                     className: "mt-6",
                                 })}
                             >
-                                Request another link
+                                <UiText message={"Request another link"} />
                             </Link>
                         </div>
                     ) : (
                         <>
                             <h1 className="text-2xl font-medium font-serif text-gray-950">
-                                Choose a new password
+                                <UiText message={"Choose a new password"} />
                             </h1>
                             <p className="mt-2 text-sm text-gray-500">
-                                Use at least {MIN_PASSWORD_LENGTH} characters.
+                                <UiText message={"Use at least"} />{" "}{MIN_PASSWORD_LENGTH}{" "}<UiText message={"characters."} />
                             </p>
                             <form
                                 onSubmit={handleSubmit}
@@ -233,7 +233,7 @@ function ResetPasswordContent() {
                             >
                                 <div>
                                     <FieldLabel htmlFor="password">
-                                        New password
+                                        <UiText message={"New password"} />
                                     </FieldLabel>
                                     <InputUI
                                         id="password"
@@ -249,7 +249,7 @@ function ResetPasswordContent() {
                                 </div>
                                 <div>
                                     <FieldLabel htmlFor="confirmPassword">
-                                        Confirm new password
+                                        <UiText message={"Confirm new password"} />
                                     </FieldLabel>
                                     <InputUI
                                         id="confirmPassword"
@@ -279,7 +279,7 @@ function ResetPasswordContent() {
                                                 )}
                                                 className="ml-2 underline underline-offset-2"
                                             >
-                                                Contact support
+                                                <UiText message={"Contact support"} />
                                             </a>
                                         )}
                                     </div>
@@ -294,8 +294,8 @@ function ResetPasswordContent() {
                                     className="w-full"
                                 >
                                     {loading
-                                        ? "Updating password..."
-                                        : "Update password"}
+                                        ? (<><UiText message={"Updating password..."} /></>)
+                                        : (<><UiText message={"Update password"} /></>)}
                                 </PillButtonUI>
                             </form>
                         </>

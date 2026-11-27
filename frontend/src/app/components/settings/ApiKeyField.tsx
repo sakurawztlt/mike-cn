@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useId, useState, type ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import {
@@ -76,6 +77,7 @@ export function ApiKeyField({
     removeAction: ApiKeyFieldAction | undefined,
   ) => ReactNode;
 }) {
+    const tUi = useUiText();
   const settingInputId = useId();
   const settingErrorId = useId();
   const keyErrorId = useId();
@@ -296,7 +298,7 @@ export function ApiKeyField({
                 type="button"
                 onClick={() => setReveal((current) => !current)}
                 className={`absolute inset-y-1 right-1.5 flex items-center ${settingsGlassIconButtonClassName}`}
-                aria-label={reveal ? "Hide key" : "Show key"}
+                aria-label={reveal ? tUi("Hide key") : tUi("Show key")}
               >
                 {reveal ? (
                   <EyeOff className="h-4 w-4" />

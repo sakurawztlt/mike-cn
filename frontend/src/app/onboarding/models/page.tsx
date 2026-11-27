@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { OnboardingShell } from "@/app/components/auth/OnboardingShell";
@@ -109,6 +110,7 @@ function stepDescription(
 }
 
 function ModelStep({ userId }: { userId: string }) {
+    const tUi = useUiText();
     const router = useRouter();
     const { profile, completeOnboarding } = useUserProfile();
     const joined = useJoinedOrganization(userId);
@@ -131,7 +133,7 @@ function ModelStep({ userId }: { userId: string }) {
     return (
         <OnboardingShell
             step="Step 4 of 4"
-            title="Connect a model"
+            title={tUi("Connect a model")}
             description={stepDescription(profile?.apiKeys, joined)}
             width="wide"
         >
@@ -139,8 +141,8 @@ function ModelStep({ userId }: { userId: string }) {
             <WarningPopup
                 open={error}
                 onClose={() => setError(false)}
-                title="Unable to finish setup"
-                message="Please try again."
+                title={tUi("Unable to finish setup")}
+                message={tUi("Please try again.")}
             />
             <div className="flex items-center justify-between gap-3 pt-6">
                 <PillButtonUI
@@ -150,7 +152,7 @@ function ModelStep({ userId }: { userId: string }) {
                     disabled={submitting}
                     onClick={() => router.push("/onboarding/invitations")}
                 >
-                    Back
+                    <UiText message={"Back"} />
                 </PillButtonUI>
                 <PillButtonUI
                     type="button"
@@ -159,7 +161,7 @@ function ModelStep({ userId }: { userId: string }) {
                     disabled={submitting}
                     onClick={() => void finish()}
                 >
-                    {submitting ? "Finishing..." : "Finish"}
+                    {submitting ? (<><UiText message={"Finishing..."} /></>) : (<><UiText message={"Finish"} /></>)}
                 </PillButtonUI>
             </div>
         </OnboardingShell>

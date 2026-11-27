@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -183,11 +184,10 @@ export default function VerifyMfaPage() {
             <div className={`w-full max-w-md ${authGlassCardUIClassName}`}>
                 <div className="mb-8 space-y-2">
                     <h1 className="font-serif text-2xl font-medium text-gray-950">
-                        Verify your identity
+                        <UiText message={"Verify your identity"} />
                     </h1>
                     <p className="text-sm text-gray-500">
-                        Enter the six-digit code from your authenticator app to
-                        continue.
+                        <UiText message={"Enter the six-digit code from your authenticator app to continue."} />
                     </p>
                 </div>
 
@@ -195,12 +195,11 @@ export default function VerifyMfaPage() {
                     {displayedLoading ? (
                         <div className="flex h-13 items-center justify-center text-sm text-gray-500">
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Loading authenticator...
+                            <UiText message={"Loading authenticator..."} />
                         </div>
                     ) : displayedFactors.length === 0 ? (
                         <p className="rounded-lg bg-gray-100 px-3 py-2 text-sm text-gray-600">
-                            No verified authenticator factor is available for
-                            this session.
+                            <UiText message={"No verified authenticator factor is available for this session."} />
                         </p>
                     ) : (
                         <>
@@ -218,7 +217,7 @@ export default function VerifyMfaPage() {
                                             value={factor.id}
                                         >
                                             {factor.friendly_name ||
-                                                "Authenticator app"}
+                                                (<><UiText message={"Authenticator app"} /></>)}
                                         </option>
                                     ))}
                                 </select>
@@ -245,7 +244,7 @@ export default function VerifyMfaPage() {
                                     )}
                                     className="ml-2 underline underline-offset-2"
                                 >
-                                    Contact support
+                                    <UiText message={"Contact support"} />
                                 </a>
                             )}
                         </p>
@@ -258,7 +257,7 @@ export default function VerifyMfaPage() {
                             disabled={verifying}
                             className="px-3 py-1.5 text-sm font-medium text-gray-600 transition-colors hover:text-gray-950 disabled:cursor-not-allowed disabled:text-gray-400"
                         >
-                            Cancel
+                            <UiText message={"Cancel"} />
                         </button>
                         <PillButtonUI
                             tone="black"
@@ -268,7 +267,7 @@ export default function VerifyMfaPage() {
                             disabled={!canVerify}
                             loading={verifying}
                         >
-                            {verifying ? "Verifying..." : "Verify"}
+                            {verifying ? (<><UiText message={"Verifying..."} /></>) : (<><UiText message={"Verify"} /></>)}
                         </PillButtonUI>
                     </div>
                 </div>

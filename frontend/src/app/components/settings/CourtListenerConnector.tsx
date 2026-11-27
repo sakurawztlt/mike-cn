@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { Modal } from "@/app/components/modals/Modal";
@@ -127,6 +128,7 @@ export function CourtListenerTokenModal({
   /** The active organization's name, or null in Personal. */
   organizationName: string | null;
 }) {
+    const tUi = useUiText();
   if (!open) return null;
   const status = connector.status;
   const hasOwnToken = status?.ownToken === true;
@@ -135,7 +137,7 @@ export function CourtListenerTokenModal({
   return (
     <ApiKeyField
       variant="modal"
-      label="CourtListener API token"
+      label={tUi("CourtListener API token")}
       keyLabel={organizationToken ? "Your API token (optional)" : "API token"}
       hasSavedKey={hasOwnToken}
       onSave={async (value) => {
@@ -154,13 +156,13 @@ export function CourtListenerTokenModal({
         <Modal
           open
           onClose={onClose}
-          breadcrumbs={["Connectors", COURTLISTENER_NAME]}
+          breadcrumbs={[tUi("Connectors"), COURTLISTENER_NAME]}
           size="sm"
           className="h-auto max-h-[calc(100vh-2rem)]"
           primaryAction={{ ...saveAction, variant: "blue" }}
           secondaryAction={
             removeAction
-              ? { ...removeAction, label: "Delete", variant: "danger" }
+              ? { ...removeAction, label: tUi("Delete"), variant: "danger" }
               : undefined
           }
         >
@@ -170,13 +172,12 @@ export function CourtListenerTokenModal({
           >
             {organizationToken && (
               <p className="text-sm break-words text-gray-500">
-                {organizationName ?? "Your organization"} provides a
-                CourtListener token, so your own token is optional.
+                {organizationName ?? (<><UiText message={"Your organization"} /></>)}{" "}<UiText message={"provides a CourtListener token, so your own token is optional."} />
               </p>
             )}
             {status?.bulkData && connector.enabled && (
               <p className="text-sm text-gray-500">
-                Bulk data installed and in use
+                <UiText message={"Bulk data installed and in use"} />
               </p>
             )}
             {fields}

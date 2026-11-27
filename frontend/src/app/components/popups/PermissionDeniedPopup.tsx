@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText } from "@/app/i18n/uiLanguage";
 import { Lock } from "lucide-react";
 import { WarningPopup } from "../popups/WarningPopup";
 import {
@@ -118,14 +119,14 @@ export function PermissionDeniedPopup({
         >
             {contact && (
                 <p className="mt-1 text-xs text-gray-600">
-                    Ask{" "}
+                    <UiText message={"Ask"} />{" "}
                     <span className="text-gray-600">
                         {contact.name
                             ? `${contact.name} (${contact.email})`
                             : contact.email}
                     </span>{" "}
-                    if you need {PROJECT_ROLE_LABELS[requiredRole].toLowerCase()}{" "}
-                    access.
+                    <UiText message={"if you need"} />{" "}{PROJECT_ROLE_LABELS[requiredRole].toLowerCase()}{" "}
+                    <UiText message={"access."} />
                 </p>
             )}
         </WarningPopup>
