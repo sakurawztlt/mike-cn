@@ -332,7 +332,7 @@ export function ProjectsOverview() {
     );
     const cmFilterButton = (
         <TableSortFilter
-            label="Sort by CM"
+            label="按项目编号排序"
             value={cmSortDirection}
             onChange={(direction) => handleSortChange("cm", direction)}
         />
@@ -678,7 +678,7 @@ export function ProjectsOverview() {
                         </TableHeaderCell>
                         <TableHeaderCell className="w-32">
                             <div className="flex items-center gap-1">
-                                <span>CM</span>
+                                <span>项目编号</span>
                                 {!loading && cmFilterButton}
                             </div>
                         </TableHeaderCell>

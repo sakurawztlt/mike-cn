@@ -1034,6 +1034,25 @@ describe("NewProjectModal sharing", () => {
         expect(onClose).not.toHaveBeenCalled();
     });
 
+    it("queues dropped files and submits only the ones still selected", async () => {
+        const user = userEvent.setup({ delay: null });
+        renderModal();
+        await user.type(screen.getByPlaceholderText("Add project name"), "Matter");
+        await user.click(screen.getByRole("button", { name: "Next" }));
+        await user.click(screen.getByRole("button", { name: "Next" }));
+
+        const area = screen.getByRole("region", { name: "拖放上传文件" });
+        const files = [new File(["a"], "remove.pdf"), new File(["b"], "keep.pdf")];
+        fireEvent.drop(area, { dataTransfer: { types: ["Files"], files } });
+        await user.click(screen.getByRole("button", { name: "移除 remove.pdf" }));
+        expect(screen.queryByText("remove.pdf")).not.toBeInTheDocument();
+        expect(screen.getByText("keep.pdf")).toBeVisible();
+
+        await user.click(screen.getByRole("button", { name: "Create project" }));
+        await waitFor(() => expect(uploadProjectDocuments).toHaveBeenCalled());
+        expect(vi.mocked(uploadProjectDocuments).mock.calls[0][1].map(input => input.file.name)).toEqual(["keep.pdf"]);
+    });
+
     it("keeps two files that happen to share a name", async () => {
         // The picker deduplicated by NAME, so the second `contract.pdf` — a
         // normal thing to attach from two different folders — was dropped
@@ -1149,11 +1168,11 @@ describe("NewProjectModal sharing", () => {
         await user.click(screen.getByRole("button", { name: "Back" }));
 
         expect(screen.getByLabelText("Project name")).toBeDisabled();
-        expect(screen.getByLabelText("CM number")).toBeDisabled();
+        expect(screen.getByLabelText("项目编号（选填）")).toBeDisabled();
         expect(screen.getByLabelText("Practice")).toBeDisabled();
         expect(
             screen.getByText(
-                /name, CM\s+number and practice can no longer be changed\s+here/,
+                /name, project number and practice area can no longer be changed\s+here/,
             ),
         ).toBeInTheDocument();
 

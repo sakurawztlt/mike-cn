@@ -102,13 +102,13 @@ const SETTINGS: {
     },
   },
   language: {
-    label: "Language",
+    label: "Reply language",
     options: languageOptions({
       "en-US": "English (US)",
       "en-GB": "English (UK)",
       ar: "Arabic",
-      "zh-Hans": "Chinese (Simplified)",
-      "zh-Hant": "Chinese (Traditional)",
+      "zh-Hans": "简体中文",
+      "zh-Hant": "繁體中文",
       cs: "Czech",
       da: "Danish",
       nl: "Dutch",

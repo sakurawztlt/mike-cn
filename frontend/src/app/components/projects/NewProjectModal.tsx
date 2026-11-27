@@ -13,6 +13,12 @@ import {
     uploadProjectDocuments,
 } from "@/app/lib/mikeApi";
 import { FileDirectory } from "../shared/FileDirectory";
+import { DocumentDropZone } from "../shared/DocumentDropZone";
+import {
+    formatUnsupportedDocumentWarning,
+    partitionSupportedDocumentFiles,
+    SUPPORTED_DOCUMENT_ACCEPT,
+} from "@/app/lib/documentUploadValidation";
 import type { ContentVisibility, Document, Project } from "../shared/types";
 import { useAuth } from "@/app/contexts/AuthContext";
 import { useUserProfile } from "@/app/contexts/UserProfileContext";
@@ -75,6 +81,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
     const memoryEditedRef = useRef(false);
     const [selectedDocuments, setSelectedDocuments] = useState<Document[]>([]);
     const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+    const [uploadWarning, setUploadWarning] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     // A project created with only some of its files attached. The modal holds
@@ -142,14 +149,20 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
     function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
         const files = Array.from(e.target.files ?? []);
         e.target.value = "";
-        if (!files.length) return;
+        queueFiles(files);
+    }
+
+    function queueFiles(files: File[]) {
+        if (loading || !files.length) return;
+        const { supported, unsupported } = partitionSupportedDocumentFiles(files);
+        setUploadWarning(formatUnsupportedDocumentWarning(unsupported));
         // Deduplicated by identity, not by name. The old name test silently
         // dropped the second of two files called `contract.pdf` — a normal
         // thing to attach from two different folders — and the user was never
         // told one of their picks had not been taken.
         setPendingFiles((prev) => [
             ...prev,
-            ...files.filter((file) => !prev.includes(file)),
+            ...supported.filter((file) => !prev.includes(file)),
         ]);
     }
 
@@ -313,9 +326,11 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
             const links = await settleBulkRequests(documentsToLink, (document) =>
                 addDocumentToProject(project.id, document.id),
             );
-            links.succeeded.forEach((document) =>
-                linkedDocumentIdsRef.current.add(document.id),
-            );
+            const linkedIds = new Set(links.succeeded.map((document) => document.id));
+            for (const id of linkedIds) linkedDocumentIdsRef.current.add(id);
+            if (linkedIds.size) {
+                setSelectedDocuments((current) => current.filter((document) => !linkedIds.has(document.id)));
+            }
             const failedLinkNames = links.failed.map(
                 (document) => document.filename,
             );
@@ -336,11 +351,15 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
             const recordCompletedUploads = (
                 outcomes: { clientId: string; status: string }[],
             ) => {
+                const completed = new Set<File>();
                 for (const outcome of outcomes) {
                     const file = fileByClientId.get(outcome.clientId);
-                    if (outcome.status === "completed" && file)
+                    if (outcome.status === "completed" && file) {
                         uploadedFilesRef.current.add(file);
+                        completed.add(file);
+                    }
                 }
+                if (completed.size) setPendingFiles((current) => current.filter((file) => !completed.has(file)));
             };
             let uploadFailure: string | null = null;
             if (uploadInputs.length > 0) {
@@ -454,6 +473,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
         setOrgOverrides([]);
         setSelectedDocuments([]);
         setPendingFiles([]);
+        setUploadWarning(null);
         setVisibility("private");
         setMemoryEnabled(projectMemoryDefault);
         setError("");
@@ -559,6 +579,7 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
             <input
                 ref={fileInputRef}
                 type="file"
+                accept={SUPPORTED_DOCUMENT_ACCEPT}
                 multiple
                 className="hidden"
                 onChange={handleFileChange}
@@ -594,14 +615,14 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
 
                         <div>
                             <FieldLabel htmlFor="new-project-cm-number">
-                                CM number
+                                项目编号（选填）
                             </FieldLabel>
                             <FormTextInput
                                 id="new-project-cm-number"
                                 type="text"
                                 value={cmNumber}
                                 onChange={(e) => setCmNumber(e.target.value)}
-                                placeholder="Add a CM number..."
+                                placeholder="例如：律所内部编号"
                                 variant="minimal"
                                 className="text-xl text-gray-600"
                                 disabled={projectExists}
@@ -641,8 +662,8 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                         ) : null}
                         {projectExists && (
                             <p className="text-sm text-gray-500">
-                                The project has been created, so its name, CM
-                                number and practice can no longer be changed
+                                The project has been created, so its name,
+                                project number and practice area can no longer be changed
                                 here. Edit them from the project once this
                                 finishes.
                             </p>
@@ -677,13 +698,30 @@ export function NewProjectModal({ open, onClose, onCreated }: Props) {
                         visibility={visibility}
                     />
                 ) : (
-                    <div className="flex min-h-0 flex-1 flex-col">
+                    <DocumentDropZone
+                        disabled={loading}
+                        onFiles={queueFiles}
+                        selected={[
+                            ...pendingFiles.map((file, index) => ({
+                                key: index, name: file.name,
+                                remove: () => {
+                                    uploadClientIdsRef.current.delete(file);
+                                    setPendingFiles((current) => current.filter((item) => item !== file));
+                                },
+                            })),
+                            ...selectedDocuments.map((document) => ({
+                                key: document.id, name: document.filename,
+                                remove: () => setSelectedDocuments((current) => current.filter((item) => item.id !== document.id)),
+                            })),
+                        ]}
+                    >
+                        {uploadWarning && <p role="alert" className="shrink-0 px-2 py-1 text-sm text-red-600">{uploadWarning}</p>}
                         <FileDirectory
                             selectedDocuments={selectedDocuments}
                             onChange={setSelectedDocuments}
                             showTabs
                         />
-                    </div>
+                    </DocumentDropZone>
                 )}
 
                 {error && (

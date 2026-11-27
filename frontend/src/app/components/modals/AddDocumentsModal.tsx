@@ -4,6 +4,7 @@ import { useWorkspaceIdentity } from "@/app/hooks/useWorkspaceIdentity";
 
 import { useEffect, useRef, useState } from "react";
 import { AlertCircle, Upload, Loader2, X } from "lucide-react";
+import { DocumentDropZone } from "@/app/components/shared/DocumentDropZone";
 import {
     UploadBatchError,
     failedUploadMessage,
@@ -293,16 +294,18 @@ function AddDocumentsModalForWorkspace({
         onClose();
     }
 
-    async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
         const files = Array.from(e.target.files || []);
-        if (!files.length) return;
+        e.target.value = "";
+        void uploadFiles(files);
+    }
+
+    async function uploadFiles(files: File[]) {
+        if (!files.length || uploading) return;
         const { supported, unsupported } =
             partitionSupportedDocumentFiles(files);
         setUploadWarning(formatUnsupportedDocumentWarning(unsupported));
-        if (supported.length === 0) {
-            if (fileInputRef.current) fileInputRef.current.value = "";
-            return;
-        }
+        if (supported.length === 0) return;
         const uploadInputs = supported.map((file) => ({
             file,
             clientId: crypto.randomUUID(),
@@ -380,7 +383,6 @@ function AddDocumentsModalForWorkspace({
         } finally {
             setUploading(false);
             setUploadingFiles([]);
-            if (fileInputRef.current) fileInputRef.current.value = "";
         }
     }
 
@@ -475,7 +477,15 @@ function AddDocumentsModalForWorkspace({
                 </div>
             )}
 
-            <div className="flex min-h-0 flex-1 flex-col">
+            <DocumentDropZone
+                disabled={uploading}
+                onFiles={(files) => void uploadFiles(files)}
+                selected={selectedDocuments.map((document) => ({
+                    key: document.id,
+                    name: document.filename,
+                    remove: () => setSelectedDocuments((current) => current.filter((item) => item.id !== document.id)),
+                }))}
+            >
                 <FileDirectory
                     documents={directoryDocuments}
                     folders={projectDocumentsOnly ? projectFolders : undefined}
@@ -513,7 +523,7 @@ function AddDocumentsModalForWorkspace({
                         handleLoadMoreProjectLevel(null)
                     }
                 />
-            </div>
+            </DocumentDropZone>
         </Modal>
     );
 }

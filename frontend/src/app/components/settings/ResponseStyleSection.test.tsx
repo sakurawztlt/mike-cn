@@ -60,14 +60,14 @@ describe("ResponseStyleSection", () => {
 
   it("offers English variants and other languages, and saves the choice", async () => {
     render(<ResponseStyleSection />);
-    await waitFor(() => expect(trigger("Language")).toBeEnabled());
-    expect(trigger("Language")).toHaveTextContent("Automatic");
+    await waitFor(() => expect(trigger("Reply language")).toBeEnabled());
+    expect(trigger("Reply language")).toHaveTextContent("Automatic");
     expect(
       screen.getByText("Mike replies in the language you write in."),
     ).toBeInTheDocument();
 
     fireEvent.pointerDown(
-      trigger("Language"),
+      trigger("Reply language"),
       new MouseEvent("pointerdown", { bubbles: true, cancelable: true }),
     );
     const options = (await screen.findAllByRole("menuitemradio")).map(
@@ -79,13 +79,13 @@ describe("ResponseStyleSection", () => {
       "English (UK)",
     ]);
     expect(options).toEqual(
-      expect.arrayContaining(["French", "Spanish", "Chinese (Simplified)"]),
+      expect.arrayContaining(["French", "Spanish", "简体中文"]),
     );
     fireEvent.click(screen.getByRole("menuitemradio", { name: "English (UK)" }));
 
     expect(updateResponseStyle).toHaveBeenCalledWith({ language: "en-GB" });
     await waitFor(() =>
-      expect(trigger("Language")).toHaveTextContent("English (UK)"),
+      expect(trigger("Reply language")).toHaveTextContent("English (UK)"),
     );
     expect(screen.getByText("Mike replies in English (UK).")).toBeInTheDocument();
   });

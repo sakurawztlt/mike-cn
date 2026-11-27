@@ -68,6 +68,24 @@ function document(id: string, filename: string) {
 describe("AddDocumentsModal upload progress", () => {
     beforeEach(() => { vi.clearAllMocks(); scope.accountId = "u1"; scope.workspace = "personal"; });
 
+    it("uploads a dropped document and lets the user remove it from the pending selection", async () => {
+        const uploaded = document("drop-1", "evidence.pdf");
+        apiMocks.uploadStandaloneDocuments.mockResolvedValueOnce([
+            { clientId: "drop", status: "completed", result: uploaded },
+        ]);
+        const onSelect = vi.fn();
+        render(<AddDocumentsModal open onClose={vi.fn()} onSelect={onSelect} breadcrumb={["Documents"]} />);
+        const file = new File(["contents"], "evidence.pdf", { type: "application/pdf" });
+        fireEvent.drop(screen.getByRole("region", { name: "拖放上传文件" }), {
+            dataTransfer: { types: ["Files"], files: [file] },
+        });
+        expect(apiMocks.uploadStandaloneDocuments.mock.calls[0][0][0].file).toBe(file);
+        fireEvent.click(await screen.findByRole("button", { name: "移除 evidence.pdf" }));
+        expect(screen.queryByRole("button", { name: "移除 evidence.pdf" })).not.toBeInTheDocument();
+        expect(screen.getByTestId("loaded-files")).toHaveTextContent("evidence.pdf");
+        expect(onSelect).not.toHaveBeenCalled();
+    });
+
     it("replaces each loading row as that file completes and names failures", async () => {
         let finishUpload!: () => void;
         const uploadCanFinish = new Promise<void>((resolve) => {

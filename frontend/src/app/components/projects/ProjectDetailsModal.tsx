@@ -209,7 +209,7 @@ export function ProjectDetailsModal({
 
                 <div>
                     <FieldLabel htmlFor="project-details-cm">
-                        CM number
+                        项目编号（选填）
                     </FieldLabel>
                     <FormTextInput
                         id="project-details-cm"
@@ -220,7 +220,7 @@ export function ProjectDetailsModal({
                             setError(null);
                         }}
                         disabled={!canEdit || saving}
-                        placeholder="Add a CM number..."
+                        placeholder="例如：律所内部编号"
                         variant="minimal"
                         className="text-xl text-gray-600"
                     />

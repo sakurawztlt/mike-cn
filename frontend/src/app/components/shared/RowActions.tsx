@@ -198,7 +198,7 @@ export function RowActionMenuItems({
             {onUpdateCmNumber && (
                 <DropdownItem onSelect={run(onUpdateCmNumber)}>
                     <Hash className="h-3.5 w-3.5" />
-                    Edit CM No.
+                    编辑项目编号
                 </DropdownItem>
             )}
             {onDownload && (
