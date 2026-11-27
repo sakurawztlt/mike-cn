@@ -1,3 +1,4 @@
+import { UiText } from "@/app/i18n/uiLanguage";
 import { CircleAlert } from "lucide-react";
 import type { Citation, DocumentCitationQuote } from "../../shared/types";
 import { PillButtonUI } from "@mike/ui";
@@ -80,13 +81,10 @@ export function CitationVerificationBadge({
         className="z-[220] w-72"
       >
         <span className="block text-xs font-medium text-gray-900">
-          Quote not found in document
+          <UiText message={"Quote not found in document"} />
         </span>
         <span className="mt-1 block text-xs font-normal leading-5 text-gray-600">
-          The language model produced a quote that could not be found in the
-          source document. Treat it as hallucinated and double-check the
-          related section of the assistant response against the document
-          before relying on it.
+          <UiText message={"The language model produced a quote that could not be found in the source document. Treat it as hallucinated and double-check the related section of the assistant response against the document before relying on it."} />
         </span>
       </PopoverContent>
     </Popover>

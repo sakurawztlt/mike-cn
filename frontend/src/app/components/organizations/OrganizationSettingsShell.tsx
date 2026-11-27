@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
   createContext,
   useCallback,
@@ -86,6 +87,7 @@ export function OrganizationSettingsProvider({
   orgId: string;
   children: ReactNode;
 }) {
+    const tUi = useUiText();
   const router = useRouter();
   const { workspaceId, organizations } = useWorkspace();
   const [org, setOrg] = useState<Org | null>(null);
@@ -131,15 +133,15 @@ export function OrganizationSettingsProvider({
       <TableEmptyState>
         <EmptyState
           icon={<OrganizationSkeuoIcon />}
-          title="Organization"
-          description="These settings are not available."
+          title={tUi("Organization")}
+          description={tUi("These settings are not available.")}
           action={
             <PillButtonUI
               tone="white"
               size="sm"
               onClick={() => router.push("/settings/organizations")}
             >
-              Your organizations
+              <UiText message={"Your organizations"} />
             </PillButtonUI>
           }
         />
@@ -155,7 +157,7 @@ export function OrganizationSettingsProvider({
       <TableEmptyState>
         <EmptyState
           icon={<OrganizationSkeuoIcon />}
-          title="Organization"
+          title={tUi("Organization")}
           description={loadError}
           tone="error"
           action={
@@ -167,7 +169,7 @@ export function OrganizationSettingsProvider({
                 void reload();
               }}
             >
-              Try again
+              <UiText message={"Try again"} />
             </PillButtonUI>
           }
         />
@@ -187,6 +189,7 @@ export function OrganizationSettingsFrame({
 }: {
   children: ReactNode;
 }) {
+    const tUi = useUiText();
   const { orgId, org } = useOrganizationSettings();
   const canManage = org !== null && isOrgAdmin(org.role);
   const isOwner = org !== null && isOrgOwner(org.role);
@@ -236,7 +239,7 @@ export function OrganizationSettingsFrame({
 
   return (
     <SettingsShell
-      title="Organization"
+      title={tUi("Organization")}
       navLabel="Organization"
       tabs={tabs}
       rootHref={organizationSettingsHref(orgId)}

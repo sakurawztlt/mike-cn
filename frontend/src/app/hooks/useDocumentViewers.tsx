@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useRef, useState } from "react";
 import { ConfirmPopup } from "@/app/components/popups/ConfirmPopup";
 import { downloadDocumentFile } from "@/app/lib/downloadDocument";
@@ -7,6 +8,7 @@ import type { DocxCloseGuard } from "@/app/components/shared/views/DocxRenderer.
 
 /** Share live editor downloads and protect closing/replacing dirty viewers. */
 export function useDocumentViewers() {
+    const tUi = useUiText();
     const downloads = useRef(new Map<string, () => Promise<void>>());
     const guards = useRef(new Map<string, DocxCloseGuard>());
     const busy = useRef(false);
@@ -43,11 +45,11 @@ export function useDocumentViewers() {
     }, []);
     const confirmation = <ConfirmPopup
         open={!!pending}
-        title="Discard unsaved changes?"
-        message="Your changes could not be saved. Keep the document open to retry or download a copy, or discard the unsaved changes."
-        confirmLabel="Discard changes"
+        title={tUi("Discard unsaved changes?")}
+        message={tUi("Your changes could not be saved. Keep the document open to retry or download a copy, or discard the unsaved changes.")}
+        confirmLabel={tUi("Discard changes")}
         confirmVariant="danger"
-        cancelLabel="Keep editing"
+        cancelLabel={tUi("Keep editing")}
         onCancel={() => { setPending(null); busy.current = false; }}
         onConfirm={() => {
             pending?.guards.forEach((guard) => guard.discard());

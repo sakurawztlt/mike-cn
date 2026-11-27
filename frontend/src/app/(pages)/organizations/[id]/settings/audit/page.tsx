@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useRouter } from "next/navigation";
 import { AuditHistory } from "@/app/components/history/AuditHistory";
 import {
@@ -10,14 +11,15 @@ import { EmptyState } from "@/app/components/ui/empty-state";
 import { isOrgAdmin } from "@/app/lib/permissions";
 
 export default function OrganizationAuditPage() {
+    const tUi = useUiText();
   const router = useRouter();
   const { orgId, org } = useOrganizationSettings();
   if (!org) return null;
   if (!isOrgAdmin(org.role))
     return (
       <EmptyState
-        title="Audit log"
-        description="Only organization owners and admins can view the audit log."
+        title={tUi("Audit log")}
+        description={tUi("Only organization owners and admins can view the audit log.")}
       />
     );
   return (

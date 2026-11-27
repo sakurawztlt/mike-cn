@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState, type ReactElement } from "react";
 import { useChatHistoryContext } from "@/app/contexts/ChatHistoryContext";
 import { buildChatHistoryItems } from "@/app/components/shared/ChatPanelHeader";
@@ -25,6 +26,7 @@ export function AssistantChatHistoryMenu({
     hiddenChatId?: string | null;
     onLoad: (chatId: string) => void;
 }) {
+    const tUi = useUiText();
     const { chats, hasMoreChats, loadingMoreChats, loadMoreChats } =
         useChatHistoryContext();
     const [query, setQuery] = useState("");
@@ -51,7 +53,7 @@ export function AssistantChatHistoryMenu({
             query={query}
             onQueryChange={setQuery}
             loading={chats === null}
-            emptyLabel={chats?.length ? "No matches." : "No chats yet."}
+            emptyLabel={chats?.length ? tUi("No matches.") : tUi("No chats yet.")}
             items={buildChatHistoryItems({
                 chats: chats ?? [],
                 currentChatId,

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { Check } from "lucide-react";
 import { QuoteIcon } from "@radix-ui/react-icons";
@@ -92,6 +93,7 @@ export function CitationQuotesSection({
     onIndexChange,
     onClose,
 }: Props) {
+    const tUi = useUiText();
     const quotes = useMemo(
         () =>
             document ? documentQuoteItems(document) : (suppliedQuotes ?? []),
@@ -114,12 +116,12 @@ export function CitationQuotesSection({
         <div className="px-2 pb-2">
             <div className={`${RESPONSE_GLASS_SURFACE} p-2`}>
                 <div className="mb-2 flex items-center justify-between">
-                    <ContextNumberBadge number={citationRef} label="Citation" />
+                    <ContextNumberBadge number={citationRef} label={tUi("Citation")} />
                     <div className="ml-auto flex items-center gap-2">
                         {hasMultipleQuotes && (
                             <div className="flex items-center gap-1">
                                 <span className="mr-0.5 text-xs font-medium text-gray-500">
-                                    Quotes
+                                    <UiText message={"Quotes"} />
                                 </span>
                                 {quotes.map((quote, index) => {
                                     const isUnverified =
@@ -170,12 +172,12 @@ export function CitationQuotesSection({
                         />
                     ) : (
                         <RelevantQuoteMessage>
-                            No relevant quotes.
+                            <UiText message={"No relevant quotes."} />
                         </RelevantQuoteMessage>
                     )}
                     {onClose && (isLoading || error || !currentQuote) && (
                         <div className="mt-2 flex justify-end">
-                            <TextButtonUI size="xs" title="Close citation" onClick={onClose}>Close</TextButtonUI>
+                            <TextButtonUI size="xs" title={tUi("Close citation")} onClick={onClose}><UiText message={"Close"} /></TextButtonUI>
                         </div>
                     )}
                 </div>
@@ -228,6 +230,7 @@ function QuoteItem({
     onView: () => void;
     onClose?: () => void;
 }) {
+    const tUi = useUiText();
     const isUnverified = quote.verificationState === "unverified";
     const isSelected = isActive && !isUnverified;
 
@@ -273,8 +276,8 @@ function QuoteItem({
                     />
                 )}
                 {onClose && (
-                    <TextButtonUI size="xs" title="Close citation" onClick={onClose} className="ml-auto">
-                        Close
+                    <TextButtonUI size="xs" title={tUi("Close citation")} onClick={onClose} className="ml-auto">
+                        <UiText message={"Close"} />
                     </TextButtonUI>
                 )}
                 <PillButtonUI
@@ -283,7 +286,7 @@ function QuoteItem({
                     disabled={isUnverified}
                     onClick={onView}
                 >
-                    View
+                    <UiText message={"View"} />
                 </PillButtonUI>
             </div>
         </div>
@@ -302,6 +305,7 @@ function CiteQuoteButton({
     quoteText: string;
     quoteLabel: string;
 }) {
+    const tUi = useUiText();
     const [isCopied, setIsCopied] = useState(false);
     const resetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -331,7 +335,7 @@ function CiteQuoteButton({
             tone="white"
             size="xs"
             onClick={handleClick}
-            title="Copy Quote and Citation"
+            title={tUi("Copy Quote and Citation")}
         >
             {isCopied ? (
                 <Check aria-hidden="true" className="h-3 w-3 text-green-600" />
@@ -339,7 +343,7 @@ function CiteQuoteButton({
                 <QuoteIcon aria-hidden="true" className="h-3 w-3" />
             )}
             {/* The visible label is the accessible name; do not override it. */}
-            <span role="status">{isCopied ? "Copied" : "Cite"}</span>
+            <span role="status">{isCopied ? (<><UiText message={"Copied"} /></>) : (<><UiText message={"Cite"} /></>)}</span>
         </PillButtonUI>
     );
 }

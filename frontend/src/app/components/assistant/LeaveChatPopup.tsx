@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { ConfirmPopup } from "@/app/components/popups/ConfirmPopup";
 import { WarningPopup } from "@/app/components/popups/WarningPopup";
@@ -15,6 +16,7 @@ export function LeaveChatPopup({
     onClose: () => void;
     onLeft: () => void;
 }) {
+    const tUi = useUiText();
     const { leaveChat } = useChatHistoryContext();
     const [leaving, setLeaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -40,16 +42,16 @@ export function LeaveChatPopup({
         <>
             <ConfirmPopup
                 open={!error}
-                title="Leave chat?"
-                message="Your shared access will be removed. An owner can share this chat with you again."
-                confirmLabel="Leave"
+                title={tUi("Leave chat?")}
+                message={tUi("Your shared access will be removed. An owner can share this chat with you again.")}
+                confirmLabel={tUi("Leave")}
                 confirmStatus={leaving ? "loading" : "idle"}
                 onConfirm={() => void confirmLeave()}
                 onCancel={() => { if (!leaving) onClose(); }}
             />
             <WarningPopup
                 open={!!error}
-                title="Chat not left"
+                title={tUi("Chat not left")}
                 message={error}
                 onClose={() => { setError(null); onClose(); }}
             />

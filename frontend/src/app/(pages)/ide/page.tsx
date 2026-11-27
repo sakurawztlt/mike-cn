@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { SvgAssetIcon } from "@/app/components/ui/svg-asset-icon";
 import ide from "../../../../public/icons/features/ide-new.svg";
@@ -14,6 +15,7 @@ import { LIQUID_GLASS_FLAT_CLASS } from "@/app/components/ui/liquid-surface";
 import { cn } from "@/app/lib/utils";
 
 export default function IdePage() {
+    const tUi = useUiText();
     const router = useRouter();
     const projectPicker = useProjectPicker();
     const [newProjectOpen, setNewProjectOpen] = useState(false);
@@ -44,10 +46,10 @@ export default function IdePage() {
                             height={32}
                         />
                     }
-                    title="Integrated Drafting Environment"
+                    title={tUi("Integrated Drafting Environment")}
                     description={
                         projectPicker.error ??
-                        "Open a Project to start drafting and reviewing with the help of the Project Assistant."
+                        tUi("Open a Project to start drafting and reviewing with the help of the Project Assistant.")
                     }
                     tone={projectPicker.error ? "error" : "default"}
                     action={
@@ -58,14 +60,14 @@ export default function IdePage() {
                                 onClick={() => void projectPicker.openPicker()}
                                 loading={projectPicker.loading}
                             >
-                                Open project
+                                <UiText message={"Open project"} />
                             </PillButtonUI>
                             <PillButtonUI
                                 tone="white"
                                 size="sm"
                                 onClick={() => setNewProjectOpen(true)}
                             >
-                                New project
+                                <UiText message={"New project"} />
                             </PillButtonUI>
                         </div>
                     }
@@ -79,9 +81,9 @@ export default function IdePage() {
                 loading={projectPicker.loading}
                 selectedId={projectPicker.selectedId}
                 onSelect={projectPicker.setSelectedId}
-                breadcrumbs={["IDE", "Open project"]}
+                breadcrumbs={[tUi("IDE"), tUi("Open project")]}
                 primaryAction={{
-                    label: "Open",
+                    label: tUi("Open"),
                     variant: "blue",
                     type: "button",
                     onClick: openSelectedProject,

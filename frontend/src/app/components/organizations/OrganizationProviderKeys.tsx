@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { MfaVerificationPopup } from "@/app/components/popups/MfaVerificationPopup";
 import { WarningPopup } from "@/app/components/popups/WarningPopup";
@@ -52,6 +53,7 @@ export function OrganizationProviderKeys({
   orgId: string;
   orgName: string;
 }) {
+    const tUi = useUiText();
   const { refreshOrgApiKeys } = useWorkspace();
   const [settings, setSettings] = useState<OrgApiKeySettings | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -176,7 +178,7 @@ export function OrganizationProviderKeys({
           ) : !canManage ? (
             // Read-only: say what the switch would say, as plain text.
             <span className="text-sm text-gray-500">
-              {isEnabled(field.provider) ? "On" : "Off"}
+              {isEnabled(field.provider) ? (<><UiText message={"On"} /></>) : (<><UiText message={"Off"} /></>)}
             </span>
           ) : saved ? (
             renderToggle(field, `${field.name} provider`)
@@ -185,11 +187,11 @@ export function OrganizationProviderKeys({
               tone="blue"
               size="sm"
               disabled={blocked}
-              aria-label={`Add ${field.name}`}
+              aria-label={tUi("Add {0}", field.name)}
               aria-haspopup="dialog"
               onClick={open}
             >
-              Add
+              <UiText message={"Add"} />
             </PillButtonUI>
           )
         }
@@ -202,7 +204,7 @@ export function OrganizationProviderKeys({
       <div className="space-y-3" role="alert">
         <SettingsDescription>{loadError}</SettingsDescription>
         <PillButtonUI tone="white" size="sm" onClick={() => void load()}>
-          Try again
+          <UiText message={"Try again"} />
         </PillButtonUI>
       </div>
     );
@@ -222,19 +224,18 @@ export function OrganizationProviderKeys({
           className="space-y-3"
         >
           <SettingsHeading id="org-providers-saved">
-            Organization Providers
+            <UiText message={"Organization Providers"} />
           </SettingsHeading>
           <SettingsDescription>
-            Members&rsquo; own keys are never used for work in this
-            organization.
+            <UiText message={"Members’ own keys are never used for work in this organization."} />
           </SettingsDescription>
           {loading ? (
             <span className="block h-5 w-56 max-w-full animate-pulse rounded bg-gray-200" />
           ) : savedFields.length === 0 ? (
             <SettingsDescription>
               {canManage
-                ? "No providers yet. Add an API key to one of the providers below."
-                : "This organization has not set up a model provider yet."}
+                ? (<><UiText message={"No providers yet. Add an API key to one of the providers below."} /></>)
+                : (<><UiText message={"This organization has not set up a model provider yet."} /></>)}
             </SettingsDescription>
           ) : (
             <div className="grid grid-cols-1 gap-3 @min-[32rem]:grid-cols-2">
@@ -252,11 +253,11 @@ export function OrganizationProviderKeys({
             className="space-y-3"
           >
             <SettingsHeading id="org-providers-available">
-              Available Providers
+              <UiText message={"Available Providers"} />
             </SettingsHeading>
             {availableFields.length === 0 ? (
               <SettingsDescription>
-                Every provider has a key saved.
+                <UiText message={"Every provider has a key saved."} />
               </SettingsDescription>
             ) : (
               <div
@@ -320,7 +321,7 @@ export function OrganizationProviderKeys({
       />
       <WarningPopup
         open={actionError !== null}
-        title="Provider update failed"
+        title={tUi("Provider update failed")}
         message={actionError}
         onClose={() => setActionError(null)}
       />

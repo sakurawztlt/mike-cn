@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
@@ -38,6 +39,7 @@ const CARD_GRID_CLASS = "grid grid-cols-1 gap-3 @min-[32rem]:grid-cols-2";
  * offers a switch to its workspace instead, from where its settings open.
  */
 export function OrganizationsOverview() {
+    const tUi = useUiText();
   const router = useRouter();
   const { workspaceId, setWorkspace, refreshOrganizations } = useWorkspace();
   // `null` is "no workspace to compare with" (outside a WorkspaceProvider),
@@ -138,18 +140,18 @@ export function OrganizationsOverview() {
       <section aria-labelledby="my-organizations-heading">
         <div className="mb-4 flex items-center justify-between gap-3">
           <SettingsHeading id="my-organizations-heading">
-            Organizations
+            <UiText message={"Organizations"} />
           </SettingsHeading>
           <PillButtonUI
             tone="white"
             size="xs"
             onClick={() => setCreateOpen(true)}
-            aria-label="New organization"
+            aria-label={tUi("New organization")}
             aria-haspopup="dialog"
             className={`h-7 ${LIQUID_GLASS_SUBTLE_CLASS}`}
           >
             <Plus className="h-3.5 w-3.5" aria-hidden="true" />
-            New
+            <UiText message={"New"} />
           </PillButtonUI>
         </div>
         {loading ? (
@@ -173,14 +175,13 @@ export function OrganizationsOverview() {
                 <SettingsDescription>{loadError}</SettingsDescription>
               </div>
               <PillButtonUI tone="white" size="sm" onClick={() => void load()}>
-                Try again
+                <UiText message={"Try again"} />
               </PillButtonUI>
             </div>
           </GlassCardUI>
         ) : listedOrgs.length === 0 ? (
           <SettingsDescription>
-            No organizations yet. Create one to share projects and
-            workflows with your team.
+            <UiText message={"No organizations yet. Create one to share projects and workflows with your team."} />
           </SettingsDescription>
         ) : (
           <div className={CARD_GRID_CLASS}>
@@ -203,21 +204,21 @@ export function OrganizationsOverview() {
                       <PillButtonUI
                         tone="blue"
                         size="sm"
-                        aria-label={`Manage ${org.name}`}
+                        aria-label={tUi("Manage {0}", org.name)}
                         onClick={() =>
                           router.push(organizationSettingsHref(org.id))
                         }
                       >
-                        Manage
+                        <UiText message={"Manage"} />
                       </PillButtonUI>
                     ) : (
                       <PillButtonUI
                         tone="black"
                         size="sm"
-                        aria-label={`Switch to ${org.name}`}
+                        aria-label={tUi("Switch to {0}", org.name)}
                         onClick={() => setWorkspace(org.id)}
                       >
-                        Switch
+                        <UiText message={"Switch"} />
                       </PillButtonUI>
                     )
                   }
@@ -234,7 +235,7 @@ export function OrganizationsOverview() {
         <section aria-labelledby="my-invitations-heading">
           <div className="mb-4">
             <SettingsHeading id="my-invitations-heading">
-              Invitations
+              <UiText message={"Invitations"} />
             </SettingsHeading>
           </div>
           {invitationsError ? (
@@ -251,7 +252,7 @@ export function OrganizationsOverview() {
                   size="sm"
                   onClick={() => void load()}
                 >
-                  Try again
+                  <UiText message={"Try again"} />
                 </PillButtonUI>
               </div>
             </GlassCardUI>
@@ -273,20 +274,20 @@ export function OrganizationsOverview() {
                           tone="white"
                           size="sm"
                           disabled={answering}
-                          aria-label={`Decline ${name}`}
+                          aria-label={tUi("Decline {0}", name)}
                           onClick={() => void answer(invitation, false)}
                         >
-                          Decline
+                          <UiText message={"Decline"} />
                         </PillButtonUI>
                         <PillButtonUI
                           tone="blue"
                           size="sm"
                           disabled={answering}
                           loading={answering}
-                          aria-label={`Accept ${name}`}
+                          aria-label={tUi("Accept {0}", name)}
                           onClick={() => void answer(invitation, true)}
                         >
-                          Accept
+                          <UiText message={"Accept"} />
                         </PillButtonUI>
                       </span>
                     }
@@ -319,7 +320,7 @@ export function OrganizationsOverview() {
       />
       <WarningPopup
         open={invitationError !== null}
-        title="Invitation not updated"
+        title={tUi("Invitation not updated")}
         message={invitationError}
         onClose={() => setInvitationError(null)}
       />

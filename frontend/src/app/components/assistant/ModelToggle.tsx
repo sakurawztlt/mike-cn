@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect } from "react";
 import {
   ModelToggleUI,
@@ -80,6 +81,7 @@ export function ModelToggle({
   reasoningLevel,
   onReasoningChange,
 }: Props) {
+    const tUi = useUiText();
   const ollamaModels = useOllamaModels();
   const configuredModels = useConfiguredModels();
   const models = mergeConfiguredModelOptions(configuredModels, [
@@ -136,7 +138,7 @@ export function ModelToggle({
       modalInput={modalInput}
       toolbar={toolbar}
       triggerClassName={triggerClassName}
-      emptyLabel="No Models"
+      emptyLabel={tUi("No Models")}
       onEmptyClick={
         onNoModelsClick ? () => onNoModelsClick(emptyReason) : undefined
       }

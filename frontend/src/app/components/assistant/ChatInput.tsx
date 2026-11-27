@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import {
     useState,
     useCallback,
@@ -181,6 +182,7 @@ function ChatInputForChatImpl(
     }: Props,
     ref: ForwardedRef<ChatInputHandle>,
 ) {
+    const tUi = useUiText();
     // A document attached to a chat outside a project belongs to the
     // workspace it is uploaded in.
     const workspace = useDocumentWorkspace();
@@ -762,7 +764,7 @@ function ChatInputForChatImpl(
                                             );
                                             setWorkflowModalOpen(true);
                                         }}
-                                        aria-label={`Open workflow ${selectedWorkflow.title}`}
+                                        aria-label={tUi("Open workflow {0}", selectedWorkflow.title)}
                                         className="inline-flex min-w-0 items-center gap-1 rounded-full transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                                     >
                                         <Waypoints className="h-2.5 w-2.5 shrink-0" />
@@ -927,7 +929,7 @@ function ChatInputForChatImpl(
                             <button
                                 type="button"
                                 aria-label={
-                                    isLoading ? "Stop response" : "Send message"
+                                    isLoading ? tUi("Stop response") : tUi("Send message")
                                 }
                                 className={cn(
                                     COMPOSER_SEND_BUTTON_CLASS,
@@ -963,7 +965,7 @@ function ChatInputForChatImpl(
                 accept={SUPPORTED_DOCUMENT_ACCEPT}
                 multiple
                 hidden
-                aria-label="Upload Documents"
+                aria-label={tUi("Upload Documents")}
                 disabled={!composerOpen}
                 onChange={(event) => {
                     const files = Array.from(event.currentTarget.files ?? []);
@@ -1016,8 +1018,8 @@ function ChatInputForChatImpl(
                 }
                 breadcrumbs={
                     projectName
-                        ? ["Projects", projectName, "Assistant", "Add playbook"]
-                        : ["Assistant", "Add playbook"]
+                        ? [tUi("Projects"), projectName, tUi("Assistant"), tUi("Add playbook")]
+                        : [tUi("Assistant"), tUi("Add playbook")]
                 }
                 initialPlaybookId={playbookModalInitialId}
             />
@@ -1032,8 +1034,8 @@ function ChatInputForChatImpl(
             <WarningPopup
                 open={modelRequiredWarning}
                 onClose={() => setModelRequiredWarning(false)}
-                title="Select a model"
-                message="Choose a model before sending your message."
+                title={tUi("Select a model")}
+                message={tUi("Choose a model before sending your message.")}
             />
             <UploadOverlay
                 open={isDraggingFiles}

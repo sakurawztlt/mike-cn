@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useState, useSyncExternalStore } from "react";
 import { WarningPopup } from "@/app/components/popups/WarningPopup";
 import type { MemoryCurrent } from "@/app/lib/mikeApi";
@@ -24,6 +25,7 @@ export function MemoryUpdateFailedPopup({
   /** Stable per-file key, such as `app` or `project:<id>`. */
   scopeKey: string;
 }) {
+    const tUi = useUiText();
   const storageKey = `${DISMISSAL_PREFIX}${scopeKey}`;
   const currentFailureId = failureId(memory);
   const [sessionDismissedFailureId, setSessionDismissedFailureId] = useState<
@@ -75,7 +77,7 @@ export function MemoryUpdateFailedPopup({
         currentFailureId !== sessionDismissedFailureId
       }
       onClose={dismiss}
-      message="The latest automatic update failed. Existing memory is unchanged."
+      message={tUi("The latest automatic update failed. Existing memory is unchanged.")}
     />
   );
 }

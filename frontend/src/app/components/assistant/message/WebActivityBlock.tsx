@@ -1,3 +1,6 @@
+"use client";
+
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useState, type ReactNode } from "react";
 import type { WebSource } from "@mike/contracts";
 import type { AssistantEvent } from "../../shared/types";
@@ -87,16 +90,16 @@ export function WebSearchBlock({
 }) {
     const [open, setOpen] = useState(false);
     const query = event.query.trim();
-    const forQuery = query ? <> for &ldquo;{query}&rdquo;</> : null;
+    const forQuery = query ? <>{" "}<UiText message={"for “"} />{query}&rdquo;</> : null;
     const error = event.error;
     const label: ReactNode = isStreaming ? (
-        <>Searching the web{forQuery}</>
+        <><UiText message={"Searching the web"} />{forQuery}</>
     ) : interrupted ? (
-        <>Web search stopped{forQuery}</>
+        <><UiText message={"Web search stopped"} />{forQuery}</>
     ) : error ? (
-        query ? <>Web search failed{forQuery}</> : "Web search unavailable"
+        query ? <><UiText message={"Web search failed"} />{forQuery}</> : "Web search unavailable"
     ) : (
-        <>Searched the web{forQuery}</>
+        <><UiText message={"Searched the web"} />{forQuery}</>
     );
     const results = event.results;
 
@@ -145,12 +148,12 @@ export function WebReadBlock({
         >
             <EventLabel>
                 {isStreaming
-                    ? "Reading"
+                    ? (<><UiText message={"Reading"} /></>)
                     : error
-                      ? "Read failed"
+                      ? (<><UiText message={"Read failed"} /></>)
                       : interrupted
-                        ? "Read stopped"
-                        : "Read"}
+                        ? (<><UiText message={"Read stopped"} /></>)
+                        : (<><UiText message={"Read"} /></>)}
             </EventLabel>{" "}
             {/* Only a page the server actually read is a link: the model
                 picks the URL, and it may not be one the user should open. */}
@@ -165,13 +168,14 @@ export function WebReadBlock({
 }
 
 export function WebSourcesBlock({ sources }: { sources: WebSource[] }) {
+    const tUi = useUiText();
     const [open, setOpen] = useState(false);
     return (
         <EventBlock>
             <EventDisclosureButton
                 open={open}
                 onToggle={() => setOpen((value) => !value)}
-                label="Sources"
+                label={tUi("Sources")}
                 detail={`${sources.length} ${sources.length === 1 ? "web page" : "web pages"}`}
             />
             {open && <WebPageList sources={sources} />}

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { UserAvatar } from "@/app/components/ui/user-avatar";
 
 import {
@@ -153,6 +154,7 @@ export function OrganizationMembers({
   /** Opens on the Departed view, for a link that leads straight to it. */
   initialTab?: "all" | "departed";
 }) {
+    const tUi = useUiText();
   const router = useRouter();
   const { user } = useAuth();
   const { refreshOrganizations } = useWorkspace();
@@ -449,10 +451,10 @@ export function OrganizationMembers({
       >
         <Trash2 className="h-3.5 w-3.5" />
         {appliesToSelection
-          ? "Remove all selected"
+          ? (<><UiText message={"Remove all selected"} /></>)
           : member?.user_id === user?.id
-            ? "Leave organization"
-            : "Remove member"}
+            ? (<><UiText message={"Leave organization"} /></>)
+            : (<><UiText message={"Remove member"} /></>)}
       </DropdownItem>
     );
   }
@@ -468,11 +470,11 @@ export function OrganizationMembers({
         loading={loading}
         breadcrumbs={[
           {
-            label: "Organization",
+            label: tUi("Organization"),
             onClick: () => router.push(`/organizations/${orgId}/settings`),
-            title: "Back to Organization",
+            title: tUi("Back to Organization"),
           },
-          { label: "Members", cursor: "text" },
+          { label: tUi("Members"), cursor: "text" },
         ]}
         actions={[
           {
@@ -485,13 +487,13 @@ export function OrganizationMembers({
               setSelectedMemberIds([]);
             },
             placeholder:
-              tab === "departed" ? "Search departed members…" : "Search members…",
+              tab === "departed" ? tUi("Search departed members…") : tUi("Search members…"),
           },
           {
             type: "new",
             title: isAdmin
-              ? "Add member"
-              : "Only organization admins can add members",
+              ? tUi("Add member")
+              : tUi("Only organization admins can add members"),
             disabled: !isAdmin,
             onClick: () => {
               setInviteOpen(true);
@@ -579,15 +581,15 @@ export function OrganizationMembers({
         open={pendingSelfRoleChange !== null}
         title={
           pendingSelfRoleChange?.role === "admin"
-            ? "Step down to admin?"
-            : "Give up owner access?"
+            ? tUi("Step down to admin?")
+            : tUi("Give up owner access?")
         }
         message={
           pendingSelfRoleChange?.role === "admin"
-            ? "You will stay an admin, but can no longer delete this organization or appoint and remove its admins and owners."
-            : "You will lose owner access to this organization and can no longer manage its people, settings or invitations."
+            ? tUi("You will stay an admin, but can no longer delete this organization or appoint and remove its admins and owners.")
+            : tUi("You will lose owner access to this organization and can no longer manage its people, settings or invitations.")
         }
-        confirmLabel="Continue"
+        confirmLabel={tUi("Continue")}
         confirmStatus={busyMemberId ? "loading" : "idle"}
         onCancel={() => {
           if (busyMemberId) return;
@@ -618,7 +620,7 @@ export function OrganizationMembers({
       ) : null}
       <WarningPopup
         open={actionError !== null}
-        title="Organization action failed"
+        title={tUi("Organization action failed")}
         message={actionError}
         onClose={() => setActionError(null)}
       />
@@ -661,6 +663,7 @@ function PeopleTable({
   onRemove: (member: OrgMember) => void;
   renderActions: (member: OrgMember, close?: () => void) => ReactNode;
 }) {
+    const tUi = useUiText();
   const selectedMemberIdSet = useIdSet(selectedMemberIds);
   const [sort, setSort] = useState<{
     key: "name" | "email" | "added";
@@ -765,13 +768,13 @@ function PeopleTable({
                 }}
                 onChange={toggleAllVisible}
                 className={TABLE_CHECKBOX_CLASS}
-                aria-label="Select all people"
+                aria-label={tUi("Select all people")}
               />
             )}
             {/* How many people the open tab and the search come to, drawn
                 or not. Plain text beside the column's name. */}
             <span className="mr-1">
-              Name
+              <UiText message={"Name"} />
               {!loading && !error ? (
                 <>
                   {" "}
@@ -783,7 +786,7 @@ function PeopleTable({
             </span>
             {!loading ? (
               <TableSortFilter
-                label="Sort by name"
+                label={tUi("Sort by name")}
                 value={sort?.key === "name" ? sort.direction : null}
                 allLabel="Default order"
                 align="right"
@@ -792,10 +795,10 @@ function PeopleTable({
             ) : null}
           </TableStickyCell>
           <TableHeaderCell className="ml-auto w-64">
-            <span className="mr-1">Email</span>
+            <span className="mr-1"><UiText message={"Email"} /></span>
             {!loading ? (
               <TableSortFilter
-                label="Sort by email"
+                label={tUi("Sort by email")}
                 value={sort?.key === "email" ? sort.direction : null}
                 allLabel="Default order"
                 onChange={(direction) => setSortFor("email", direction)}
@@ -803,13 +806,13 @@ function PeopleTable({
             ) : null}
           </TableHeaderCell>
           <TableHeaderCell className="w-32">
-            <span className="mr-1">Role</span>
+            <span className="mr-1"><UiText message={"Role"} /></span>
           </TableHeaderCell>
           <TableHeaderCell className="w-36">
-            <span className="mr-1">Added</span>
+            <span className="mr-1"><UiText message={"Added"} /></span>
             {!loading ? (
               <TableSortFilter
-                label="Sort by date added"
+                label={tUi("Sort by date added")}
                 value={sort?.key === "added" ? sort.direction : null}
                 allLabel="Default order"
                 onChange={(direction) => setSortFor("added", direction)}
@@ -828,22 +831,20 @@ function PeopleTable({
         <TableEmptyState>
           <EmptyState
             icon={<OrganizationSkeuoIcon />}
-            title="People"
-            description="This organization has no members."
+            title={tUi("People")}
+            description={tUi("This organization has no members.")}
           />
         </TableEmptyState>
       ) : visibleMembers.length === 0 ? (
         <TableEmptyState>
           <p className="text-sm text-gray-400">
             {search.trim()
-              ? "No people match this search."
-              : `This organization has no ${
-                  roleFilter === "owner"
+              ? (<><UiText message={"No people match this search."} /></>)
+              : (<><UiText message={"This organization has no {0}."} values={[String(roleFilter === "owner"
                     ? "owners"
                     : roleFilter === "admin"
                       ? "admins"
-                      : "ordinary members"
-                }.`}
+                      : "ordinary members")]} /></>)}
           </p>
         </TableEmptyState>
       ) : (
@@ -879,7 +880,7 @@ function PeopleTable({
                   </span>
                   {member.user_id === currentUserId ? (
                     <span className="ml-1 text-[10px] text-gray-400">
-                      (You)
+                      <UiText message={"(You)"} />
                     </span>
                   ) : null}
                 </TablePrimaryCell>
@@ -901,7 +902,7 @@ function PeopleTable({
                 <TableCell className="flex w-10 justify-end overflow-visible">
                   {canRemove ? (
                     <HeaderActionsMenu
-                      title={`Actions for ${label}`}
+                      title={tUi("Actions for {0}", label)}
                       items={[
                         {
                           label:
@@ -947,6 +948,7 @@ function OrganizationRoleTab({
   disabled: boolean;
   onChange: (role: OrgRole) => void;
 }) {
+    const tUi = useUiText();
   const editable = assignableRoles.length > 1;
   const tone =
     role === "owner"
@@ -965,7 +967,7 @@ function OrganizationRoleTab({
       <DropdownTrigger asChild>
         <button
           type="button"
-          aria-label={`Change role for ${label}`}
+          aria-label={tUi("Change role for {0}", label)}
           disabled={disabled}
           className={`${className} transition-opacity hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:cursor-wait disabled:opacity-50`}
         >
@@ -1030,11 +1032,12 @@ function ErrorState({
   error: string;
   onRetry: () => Promise<void>;
 }) {
+    const tUi = useUiText();
   return (
     <TableEmptyState>
       <EmptyState
         icon={<OrganizationSkeuoIcon />}
-        title="Organization"
+        title={tUi("Organization")}
         description={error}
         tone="error"
         action={
@@ -1044,7 +1047,7 @@ function ErrorState({
             className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-700 hover:text-gray-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
           >
             <Loader2 className="h-3.5 w-3.5" />
-            Try again
+            <UiText message={"Try again"} />
           </button>
         }
       />

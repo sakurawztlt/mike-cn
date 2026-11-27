@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { findPendingAskInput } from "@/app/lib/pendingAskInput";
 import {
     useCallback,
@@ -227,6 +228,7 @@ export function AssistantChatColumn({
     incomingExcerpt,
     onIncomingExcerptAdded,
 }: ColumnProps) {
+    const tUi = useUiText();
     const router = useRouter();
     const {
         tabs,
@@ -825,8 +827,8 @@ export function AssistantChatColumn({
                     historyMenu(
                         <button
                             type="button"
-                            aria-label="Chat history"
-                            title="Chat history"
+                            aria-label={tUi("Chat history")}
+                            title={tUi("Chat history")}
                             className={headerButtonClassName({
                                 iconOnly: true,
                             })}
@@ -837,8 +839,8 @@ export function AssistantChatColumn({
                 ) : (
                     <HeaderButtonUI
                         iconOnly
-                        aria-label="New chat"
-                        title="New chat"
+                        aria-label={tUi("New chat")}
+                        title={tUi("New chat")}
                         onClick={onNewChat}
                     >
                         <Plus className="h-4 w-4" />
@@ -853,7 +855,7 @@ export function AssistantChatColumn({
                     className="relative inline-flex"
                 >
                 <HeaderActionsMenu
-                    title="Chat actions"
+                    title={tUi("Chat actions")}
                     // One header menu at a time: opening another closes it.
                     modal={false}
                     onCloseAutoFocus={(event) => {
@@ -1245,7 +1247,7 @@ export function AssistantChatColumn({
                             >
                                 <button
                                     type="button"
-                                    aria-label="Scroll to bottom"
+                                    aria-label={tUi("Scroll to bottom")}
                                     onClick={scrollToBottom}
                                     className={`cursor-pointer rounded-full p-2 transition-all ${LIQUID_GLASS_TRANSLUCENT_ACTION_CLASS}`}
                                 >
@@ -1344,12 +1346,10 @@ export function AssistantChatColumn({
 
             <ApiKeyMissingPopup
                 open={rejectedApiKey !== null}
-                title="API key rejected"
-                message={`${
-                    rejectedKeyProvider
+                title={tUi("API key rejected")}
+                message={tUi("{0} was rejected. If it is your own key, check it in Settings; otherwise contact your administrator.", rejectedKeyProvider
                         ? `The ${providerLabel(rejectedKeyProvider)} API key`
-                        : "That API key"
-                } was rejected. If it is your own key, check it in Settings; otherwise contact your administrator.`}
+                        : "That API key")}
                 onClose={() => onDismissInvalidApiKey?.()}
             />
             {leaveChatId && leaveChatId === permissionChat?.id && <LeaveChatPopup
@@ -1363,8 +1363,8 @@ export function AssistantChatColumn({
             />}
             <RenameModal
                 open={renameOpen}
-                breadcrumbs={["Assistant", "Rename Chat"]}
-                label="Chat title"
+                breadcrumbs={[tUi("Assistant"), tUi("Rename Chat")]}
+                label={tUi("Chat title")}
                 initialValue={activeChat?.title?.trim() || "Untitled chat"}
                 saving={renaming}
                 onClose={() => {
@@ -1374,7 +1374,7 @@ export function AssistantChatColumn({
             />
             <WarningPopup
                 open={!!actionError}
-                title={actionError?.title ?? "Chat action failed"}
+                title={actionError?.title ?? tUi("Chat action failed")}
                 message={actionError?.message ?? null}
                 onClose={() => setActionError(null)}
             />

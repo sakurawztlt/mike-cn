@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useMemo, useRef, useState } from "react";
 import DOMPurify from "dompurify";
 import { Loader2 } from "lucide-react";
@@ -110,6 +111,7 @@ export function CaseView({
     onRetry?: () => void;
     onClearQuote?: () => void;
 }) {
+    const tUi = useUiText();
     const subdocuments = useMemo(
         () => document.subdocuments ?? [],
         [document.subdocuments],
@@ -215,7 +217,7 @@ export function CaseView({
                 {visibleLoading && (
                     <div
                         role="status"
-                        aria-label="Loading document"
+                        aria-label={tUi("Loading document")}
                         className={cn(
                             "flex h-full min-h-0 items-center justify-center p-5",
                             surfaceClassName,
@@ -239,7 +241,7 @@ export function CaseView({
                         </p>
                         {onRetry && (
                             <PillButtonUI tone="white" onClick={onRetry}>
-                                Try again
+                                <UiText message={"Try again"} />
                             </PillButtonUI>
                         )}
                     </div>
@@ -253,7 +255,7 @@ export function CaseView({
                                 surfaceClassName,
                             )}
                         >
-                            No content was returned for this document.
+                            <UiText message={"No content was returned for this document."} />
                         </p>
                     )}
                 {!visibleLoading && !visibleError && activeSubdocument && (
@@ -308,7 +310,7 @@ function CaseSubdocument({
                 />
             ) : (
                 <div data-case-text-body className="whitespace-pre-wrap font-serif text-sm leading-7 text-gray-900 [&_p]:my-3">
-                    {subdocument.text || "No document text returned."}
+                    {subdocument.text || (<><UiText message={"No document text returned."} /></>)}
                 </div>
             )}
         </article>

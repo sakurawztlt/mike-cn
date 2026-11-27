@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useEffect, useState } from "react";
 import { Check, X } from "lucide-react";
 import { CloseButton, PillButtonUI, TabPillButtonUI } from "@mike/ui";
@@ -44,6 +45,7 @@ export function AskInputPopup({
     ) => void | string | null | Promise<void | string | null>;
     onDismiss?: () => void;
 }) {
+    const tUi = useUiText();
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [multiAnswers, setMultiAnswers] = useState<Record<string, string[]>>(
         {},
@@ -427,7 +429,7 @@ export function AskInputPopup({
 
     return (
         <>
-            {submitFailed && <p role="alert" className="px-3 py-2 text-sm text-red-600">Could not send these inputs. Please try again.</p>}
+            {submitFailed && <p role="alert" className="px-3 py-2 text-sm text-red-600"><UiText message={"Could not send these inputs. Please try again."} /></p>}
             <div
                 className={`w-full overflow-hidden rounded-[18px] pb-3 font-serif md:rounded-[22px] ${LIQUID_GLASS_TRANSLUCENT_CLASS}`}
             >
@@ -435,7 +437,7 @@ export function AskInputPopup({
                     <div className="flex min-w-0 items-center">
                         <div className="text-sm text-gray-500">
                             {submitted ? (
-                                isSubmitting ? "Sending inputs…" : "Inputs sent"
+                                isSubmitting ? (<><UiText message={"Sending inputs…"} /></>) : (<><UiText message={"Inputs sent"} /></>)
                             ) : (
                                 <div className="flex flex-wrap gap-x-1.5 gap-y-1">
                                     {event.items.map((item) => {
@@ -474,7 +476,7 @@ export function AskInputPopup({
                     {!submitted && (
                         <CloseButton
                             onClick={dismiss}
-                            label="Dismiss"
+                            label={tUi("Dismiss")}
                             size="md"
                         />
                     )}
@@ -490,8 +492,7 @@ export function AskInputPopup({
                                             <DocumentPrompt />
                                         ) : activeItem.kind === "approval" ? (
                                             <p className="text-sm text-gray-800">
-                                                Mike wants to run this action.
-                                                Approve it to run it now.
+                                                <UiText message={"Mike wants to run this action. Approve it to run it now."} />
                                             </p>
                                         ) : (
                                             <p className="text-sm text-gray-800">
@@ -668,7 +669,7 @@ export function AskInputPopup({
                                         }
                                         className="font-sans"
                                     >
-                                        Reject
+                                        <UiText message={"Reject"} />
                                     </PillButtonUI>
                                     <PillButtonUI
                                         tone="black"
@@ -685,11 +686,11 @@ export function AskInputPopup({
                                         {answers[activeItem.id] ===
                                         "approve" ? (
                                             <>
-                                                Approved
+                                                <UiText message={"Approved"} />
                                                 <Check className="h-3 w-3" />
                                             </>
                                         ) : (
-                                            "Approve"
+                                            (<><UiText message={"Approve"} /></>)
                                         )}
                                     </PillButtonUI>
                                 </div>
@@ -707,8 +708,8 @@ export function AskInputPopup({
                                         className="px-1 font-sans text-[10px] text-gray-500 transition-colors hover:text-gray-800"
                                     >
                                         {skipped.has(activeItem.id)
-                                            ? "Unskip"
-                                            : "Skip"}
+                                            ? (<><UiText message={"Unskip"} /></>)
+                                            : (<><UiText message={"Skip"} /></>)}
                                     </button>
                                     <PillButtonUI
                                         tone="black"
@@ -726,11 +727,11 @@ export function AskInputPopup({
                                     >
                                         {confirmed.has(activeItem.id) ? (
                                             <>
-                                                Confirmed
+                                                <UiText message={"Confirmed"} />
                                                 <Check className="h-3 w-3" />
                                             </>
                                         ) : (
-                                            "Confirm"
+                                            (<><UiText message={"Confirm"} /></>)
                                         )}
                                     </PillButtonUI>
                                 </div>
@@ -783,6 +784,7 @@ function OpenTextInput({
     disabled?: boolean;
     onChange: (value: string) => void;
 }) {
+    const tUi = useUiText();
     return (
         <div className="mt-2">
             <textarea
@@ -796,7 +798,7 @@ function OpenTextInput({
                 onChange={(event) =>
                     onChange(event.target.value.slice(0, OPEN_TEXT_MAX_LENGTH))
                 }
-                placeholder="Type your answer..."
+                placeholder={tUi("Type your answer...")}
                 className="min-h-28 w-full resize-y rounded-lg bg-gray-100/70 px-3 py-2 text-sm leading-5 text-gray-700 outline-none transition-colors placeholder:text-gray-400 focus:bg-gray-200/70 disabled:cursor-default disabled:opacity-60"
             />
             <p
@@ -829,6 +831,7 @@ function OptionInput({
     onOtherOpen: () => void;
     onOtherValue: (value: string) => void;
 }) {
+    const tUi = useUiText();
     return (
         <div className="mt-2 grid gap-1.5">
             {item.options.map((option, idx) => {
@@ -880,7 +883,7 @@ function OptionInput({
                             <span className="min-w-0 flex-1 flex items-start gap-2">
                                 <textarea
                                     name={`other-${item.id}`}
-                                    aria-label={item.other_label || "Other"}
+                                    aria-label={item.other_label || tUi("Other")}
                                     aria-describedby={`other-${item.id}-limit`}
                                     maxLength={MAX_CHOICE_LENGTH}
                                     rows={1}
@@ -898,7 +901,7 @@ function OptionInput({
                                         e.target.style.height = "auto";
                                         e.target.style.height = `${e.target.scrollHeight}px`;
                                     }}
-                                    placeholder="Type your answer..."
+                                    placeholder={tUi("Type your answer...")}
                                     className="flex-1 resize-none overflow-hidden bg-transparent text-sm leading-5 text-gray-600 outline-none placeholder:text-gray-400"
                                 />
                                 <span id={`other-${item.id}-limit`} className="mt-0.5 shrink-0 font-sans text-[10px] text-gray-400">
@@ -907,7 +910,7 @@ function OptionInput({
                             </span>
                         ) : (
                             <span className="min-w-0 flex-1 text-sm text-gray-700">
-                                {item.other_label || "Other"}
+                                {item.other_label || (<><UiText message={"Other"} /></>)}
                             </span>
                         )}
                         {otherOpen && (
@@ -923,7 +926,7 @@ function OptionInput({
 function DocumentPrompt() {
     return (
         <p className="mt-0.5 text-sm text-gray-800">
-            Add the following documents if available:
+            <UiText message={"Add the following documents if available:"} />
         </p>
     );
 }
@@ -1021,7 +1024,7 @@ function DocumentInput({
                             <span className="mt-0.5 shrink-0 whitespace-nowrap font-sans text-[10px] text-gray-500">
                                 {docs.length > 0
                                     ? `${docs.length} file${docs.length === 1 ? "" : "s"} added`
-                                    : "+ Add"}
+                                    : (<><UiText message={"+ Add"} /></>)}
                             </span>
                         </span>
                     </div>

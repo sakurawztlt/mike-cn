@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useLatestRef } from "@/app/hooks/useLatestRef";
 import { useMarkdownCheckpoint } from "./message/markdownCheckpoint";
 import { createCitationPreprocessor } from "./message/citationPreprocessor";
@@ -162,6 +163,7 @@ function AssistantMessageImpl({
     isEditReloading,
     resolvedEditStatuses,
 }: Props) {
+    const tUi = useUiText();
     const contentDivRef = useRef<HTMLDivElement | null>(null);
     const [isCopied, setIsCopied] = useState(false);
     // Per-document override of the download URL, set as Accept/Reject resolves
@@ -470,7 +472,7 @@ function AssistantMessageImpl({
                     showConnector={showConnector}
                     isStreaming
                 >
-                    <span>Thinking...</span>
+                    <span><UiText message={"Thinking..."} /></span>
                 </EventBlock>
             );
         }
@@ -494,7 +496,7 @@ function AssistantMessageImpl({
                             className="h-3.5 w-3.5 shrink-0"
                         />
                         <span className="min-w-0 break-words">
-                            {event.isStreaming ? "Using connector..." : label}
+                            {event.isStreaming ? (<><UiText message={"Using connector..."} /></>) : label}
                         </span>
                     </span>
                     {isError && event.error && (
@@ -696,12 +698,12 @@ function AssistantMessageImpl({
                     key={globalIdx}
                     label={
                         event.isStreaming
-                            ? "Searching case law"
+                            ? tUi("Searching case law")
                             : event.error
-                              ? "Case law search failed"
+                              ? tUi("Case law search failed")
                               : event.interrupted
-                                ? "Case law search stopped"
-                                : "Searched case law"
+                                ? tUi("Case law search stopped")
+                                : tUi("Searched case law")
                     }
                     detail={detail}
                     isStreaming={!!event.isStreaming}
@@ -736,12 +738,12 @@ function AssistantMessageImpl({
                     key={globalIdx}
                     label={
                         event.isStreaming
-                            ? `Fetching ${displayLabel}`
+                            ? tUi("Fetching {0}", displayLabel)
                             : event.error
-                              ? "Case fetch failed"
+                              ? tUi("Case fetch failed")
                               : event.interrupted
-                                ? `Fetch of ${displayLabel} stopped`
-                                : `Fetched ${displayLabel}`
+                                ? tUi("Fetch of {0} stopped", displayLabel)
+                                : tUi("Fetched {0}", displayLabel)
                     }
                     detail={detail}
                     isStreaming={!!event.isStreaming}
@@ -799,12 +801,12 @@ function AssistantMessageImpl({
                         key={globalIdx}
                         label={
                             event.isStreaming
-                                ? `Running ${searchLabel}`
+                                ? tUi("Running {0}", searchLabel)
                                 : event.error
-                                  ? "Case searches failed"
+                                  ? tUi("Case searches failed")
                                   : event.interrupted
-                                    ? `Stopped ${searchLabel}`
-                                    : `Ran ${searchLabel}`
+                                    ? tUi("Stopped {0}", searchLabel)
+                                    : tUi("Ran {0}", searchLabel)
                         }
                         detail={detail}
                         isStreaming={!!event.isStreaming}
@@ -831,12 +833,12 @@ function AssistantMessageImpl({
                     key={globalIdx}
                     label={
                         event.isStreaming
-                            ? "Searching case"
+                            ? tUi("Searching case")
                             : event.error
-                              ? "Case search failed"
+                              ? tUi("Case search failed")
                               : event.interrupted
-                                ? "Case search stopped"
-                                : "Searched case"
+                                ? tUi("Case search stopped")
+                                : tUi("Searched case")
                     }
                     detail={detail}
                     isStreaming={!!event.isStreaming}
@@ -863,12 +865,12 @@ function AssistantMessageImpl({
                     key={globalIdx}
                     label={
                         event.isStreaming
-                            ? `Reading case ${caseLabel}`
+                            ? tUi("Reading case {0}", caseLabel)
                             : event.error
-                              ? `Case read failed ${caseLabel}`
+                              ? tUi("Case read failed {0}", caseLabel)
                               : event.interrupted
-                                ? `Case read stopped ${caseLabel}`
-                                : `Read case ${caseLabel}`
+                                ? tUi("Case read stopped {0}", caseLabel)
+                                : tUi("Read case {0}", caseLabel)
                     }
                     detail={detail}
                     isStreaming={!!event.isStreaming}
@@ -905,12 +907,12 @@ function AssistantMessageImpl({
                     key={globalIdx}
                     label={
                         event.isStreaming
-                            ? `Verifying ${citationLabel}`
+                            ? tUi("Verifying {0}", citationLabel)
                             : event.error
-                              ? "Citation verification failed"
+                              ? tUi("Citation verification failed")
                               : event.interrupted
-                                ? `Verification of ${citationLabel} stopped`
-                                : `Verified ${citationLabel}`
+                                ? tUi("Verification of {0} stopped", citationLabel)
+                                : tUi("Verified {0}", citationLabel)
                     }
                     detail={detail}
                     isStreaming={!!event.isStreaming}
@@ -1304,7 +1306,7 @@ function AssistantMessageImpl({
                         <button
                             type="button"
                             aria-label={
-                                isCopied ? "Response copied" : "Copy response"
+                                isCopied ? tUi("Response copied") : tUi("Copy response")
                             }
                             className="-ml-1.5 p-1.5 rounded text-gray-500 hover:text-gray-700 hover:bg-gray-100"
                             onClick={handleCopy}

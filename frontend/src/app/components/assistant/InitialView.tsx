@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from "react";
 import { SvgAssetIcon } from "@/app/components/ui/svg-asset-icon";
 import quickActionsIcon from "../../../../public/icons/features/quick-actions.svg";
@@ -27,6 +28,7 @@ export function InitialView({
     quickActions,
     onEditQuickActions,
 }: InitialViewProps) {
+    const tUi = useUiText();
     const { user } = useAuth();
     const { profile } = useUserProfile();
     const [loaded, setLoaded] = useState(false);
@@ -106,7 +108,7 @@ export function InitialView({
                                 "transform 900ms cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 800ms ease-in-out 300ms",
                         }}
                     >
-                        Hi, {username}
+                        <UiText message={"Hi,"} />{" "}{username}
                     </h1>
                 </div>
             </div>
@@ -124,7 +126,7 @@ export function InitialView({
             <div className="min-h-0 w-full max-w-4xl justify-self-center px-0 pt-1 xl:px-8">
                 <div className="text-center">
                     <p className="text-xs py-2 mb-12 text-gray-500">
-                        AI can make mistakes. Answers are not legal advice.
+                        <UiText message={"AI can make mistakes. Answers are not legal advice."} />
                     </p>
                 </div>
 
@@ -139,12 +141,12 @@ export function InitialView({
                                     aria-hidden="true"
                                     className="h-3.5 w-3.5 shrink-0"
                                 />
-                                Quick actions
+                                <UiText message={"Quick actions"} />
                             </span>
                             <button
                                 type="button"
                                 onClick={onEditQuickActions}
-                                aria-label="Configure quick actions"
+                                aria-label={tUi("Configure quick actions")}
                                 className="absolute left-full ml-1.5 flex h-5 w-5 items-center justify-center text-gray-400 opacity-0 transition-all hover:text-gray-700 group-hover:opacity-100 focus:opacity-100"
                             >
                                 <MoreHorizontal className="h-3.5 w-3.5" />

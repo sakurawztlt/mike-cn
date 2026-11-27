@@ -1,3 +1,4 @@
+import { UiText } from "@/app/i18n/uiLanguage";
 import { useState, type ReactNode } from "react";
 import { EditCardsSectionUI, PillButtonUI } from "@mike/ui";
 import { RESPONSE_GLASS_SURFACE } from "./messageStyles";
@@ -138,7 +139,7 @@ function BulkEditActions({
                 disabled={!!busy}
                 loading={busy === "accept"}
             >
-                {busy === "accept" ? "Accepting all..." : "Accept all"}
+                {busy === "accept" ? (<><UiText message={"Accepting all..."} /></>) : (<><UiText message={"Accept all"} /></>)}
             </PillButtonUI>
             <PillButtonUI
                 tone="white"
@@ -147,7 +148,7 @@ function BulkEditActions({
                 disabled={!!busy}
                 loading={busy === "reject"}
             >
-                {busy === "reject" ? "Rejecting all..." : "Reject all"}
+                {busy === "reject" ? (<><UiText message={"Rejecting all..."} /></>) : (<><UiText message={"Reject all"} /></>)}
             </PillButtonUI>
             {progress && (
                 <span className="text-xs font-sans text-gray-500">
@@ -164,7 +165,7 @@ function BulkEditActions({
                     disabled={!!busy}
                     className="ml-auto"
                 >
-                    View
+                    <UiText message={"View"} />
                 </PillButtonUI>
             )}
         </div>

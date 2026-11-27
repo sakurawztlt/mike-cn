@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/app/lib/utils";
 
@@ -35,6 +36,7 @@ export function AssistantChatDivider({
 }: {
     onResize: (dx: number) => void;
 }) {
+    const tUi = useUiText();
     const [dragging, setDragging] = useState(false);
     const lastX = useRef(0);
     const onResizeRef = useRef(onResize);
@@ -65,7 +67,7 @@ export function AssistantChatDivider({
         <div
             role="separator"
             aria-orientation="vertical"
-            aria-label="Resize chats"
+            aria-label={tUi("Resize chats")}
             tabIndex={0}
             onMouseDown={(event) => {
                 event.preventDefault();

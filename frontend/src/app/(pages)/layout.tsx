@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useCallback, useMemo, useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { PanelLeft } from "lucide-react";
@@ -19,6 +20,7 @@ export default function MikeLayout({
 }: {
     children: React.ReactNode;
 }) {
+    const tUi = useUiText();
     preloadSidebarIcons();
     const { isAuthenticated, authLoading } = useAuth();
     const [hasMounted, setHasMounted] = useState(false);
@@ -154,8 +156,8 @@ export default function MikeLayout({
                                             <HeaderButtonUI
                                                 iconOnly
                                                 onClick={handleSidebarToggle}
-                                                title="Open sidebar"
-                                                aria-label="Open sidebar"
+                                                title={tUi("Open sidebar")}
+                                                aria-label={tUi("Open sidebar")}
                                             >
                                                 <PanelLeft className="h-4 w-4" />
                                             </HeaderButtonUI>

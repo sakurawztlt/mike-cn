@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { LogOut, Trash2, Upload } from "lucide-react";
@@ -57,6 +58,7 @@ const AFTER_DEPARTURE = "/settings/organizations";
 type Pending = "leave" | "delete";
 
 export function OrganizationGeneralSettings() {
+    const tUi = useUiText();
   const router = useRouter();
   const { user } = useAuth();
   const { refreshOrganizations } = useWorkspace();
@@ -246,7 +248,7 @@ export function OrganizationGeneralSettings() {
   return (
     <div className="space-y-8">
       <section aria-labelledby="org-general-details" className="space-y-3">
-        <SettingsHeading id="org-general-details">General</SettingsHeading>
+        <SettingsHeading id="org-general-details"><UiText message={"General"} /></SettingsHeading>
         <GlassCardUI>
           <SettingsRow layout="stacked">
             {!org ? (
@@ -258,7 +260,7 @@ export function OrganizationGeneralSettings() {
               <div>
                 <div className="flex items-start justify-between gap-3">
                   <FieldLabel htmlFor="organization-name">
-                    Organization name
+                    <UiText message={"Organization name"} />
                   </FieldLabel>
                   <span
                     className={`text-xs ${typeof nameStatus === "object" ? "text-red-600" : "text-gray-400"}`}
@@ -287,7 +289,7 @@ export function OrganizationGeneralSettings() {
               </div>
             ) : (
               <div className="space-y-1">
-                <SettingsLabel>Organization name</SettingsLabel>
+                <SettingsLabel><UiText message={"Organization name"} /></SettingsLabel>
                 <p className="text-sm break-words text-gray-500">{org.name}</p>
               </div>
             )}
@@ -303,7 +305,7 @@ export function OrganizationGeneralSettings() {
                     // eslint-disable-next-line @next/next/no-img-element -- a small inline data URL, not an optimizable remote image
                     <img
                       src={logo}
-                      alt="Current logo"
+                      alt={tUi("Current logo")}
                       className="h-8 w-8 rounded-[5px] object-contain"
                     />
                   ) : logo === undefined ? (
@@ -313,9 +315,9 @@ export function OrganizationGeneralSettings() {
                   )}
                 </span>
                 <div className="min-w-0 space-y-1">
-                  <SettingsLabel>Logo</SettingsLabel>
+                  <SettingsLabel><UiText message={"Logo"} /></SettingsLabel>
                   <SettingsDescription>
-                    Shown at the top of the sidebar. PNG, JPEG or WebP.
+                    <UiText message={"Shown at the top of the sidebar. PNG, JPEG or WebP."} />
                   </SettingsDescription>
                 </div>
               </div>
@@ -325,20 +327,20 @@ export function OrganizationGeneralSettings() {
                   size="sm"
                   disabled={logoBusy !== null}
                   loading={logoBusy === "upload"}
-                  aria-label={hasLogo ? "Edit logo" : "Upload logo"}
+                  aria-label={hasLogo ? tUi("Edit logo") : tUi("Upload logo")}
                   onClick={() => {
                     if (hasLogo) setLogoEditing(true);
                     else logoInputRef.current?.click();
                   }}
                 >
                   {!hasLogo && <Upload aria-hidden className="h-4 w-4 shrink-0" />}
-                  {hasLogo ? "Edit" : "Upload"}
+                  {hasLogo ? (<><UiText message={"Edit"} /></>) : (<><UiText message={"Upload"} /></>)}
                 </PillButtonUI>
                 <input
                   ref={logoInputRef}
                   type="file"
                   accept={ORG_LOGO_ACCEPT}
-                  aria-label="Logo image"
+                  aria-label={tUi("Logo image")}
                   className="hidden"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
@@ -356,12 +358,12 @@ export function OrganizationGeneralSettings() {
 
       <section aria-labelledby="org-general-membership" className="space-y-3">
         <SettingsHeading id="org-general-membership">
-          Your Membership
+          <UiText message={"Your Membership"} />
         </SettingsHeading>
         <GlassCardUI>
           <SettingsRow layout="stacked">
             <div className="space-y-1">
-              <SettingsLabel>Your role</SettingsLabel>
+              <SettingsLabel><UiText message={"Your role"} /></SettingsLabel>
               {org ? (
                 <p className="text-sm text-gray-500">
                   {ORG_ROLE_LABELS[org.role]}
@@ -373,10 +375,9 @@ export function OrganizationGeneralSettings() {
           </SettingsRow>
           <SettingsRow>
             <div className="space-y-1">
-              <SettingsLabel>Leave organization</SettingsLabel>
+              <SettingsLabel><UiText message={"Leave organization"} /></SettingsLabel>
               <SettingsDescription>
-                You will lose access to everything shared with you in this
-                organization.
+                <UiText message={"You will lose access to everything shared with you in this organization."} />
               </SettingsDescription>
             </div>
             <PillButtonUI
@@ -388,7 +389,7 @@ export function OrganizationGeneralSettings() {
               className="w-full shrink-0 sm:w-auto"
             >
               <LogOut className="h-4 w-4 shrink-0" />
-              Leave
+              <UiText message={"Leave"} />
             </PillButtonUI>
           </SettingsRow>
         </GlassCardUI>
@@ -397,15 +398,14 @@ export function OrganizationGeneralSettings() {
       {canDelete ? (
         <section aria-labelledby="org-general-delete" className="space-y-3">
           <SettingsHeading id="org-general-delete" tone="danger">
-            Delete Organization
+            <UiText message={"Delete Organization"} />
           </SettingsHeading>
           <GlassCardUI>
             <SettingsRow>
               <div className="space-y-1">
-                <SettingsLabel>Delete this organization</SettingsLabel>
+                <SettingsLabel><UiText message={"Delete this organization"} /></SettingsLabel>
                 <SettingsDescription>
-                  Remove access for all members. Owners can restore the
-                  organization for 30 days before its content is permanently deleted.
+                  <UiText message={"Remove access for all members. Owners can restore the organization for 30 days before its content is permanently deleted."} />
                 </SettingsDescription>
               </div>
               <PillButtonUI
@@ -417,7 +417,7 @@ export function OrganizationGeneralSettings() {
                 className="w-full shrink-0 sm:w-auto"
               >
                 <Trash2 className="h-4 w-4 shrink-0" />
-                Delete
+                <UiText message={"Delete"} />
               </PillButtonUI>
             </SettingsRow>
           </GlassCardUI>
@@ -447,9 +447,9 @@ export function OrganizationGeneralSettings() {
       ) : null}
       <ConfirmPopup
         open={pending === "delete"}
-        title={`Delete ${org?.name ?? "this organization"}?`}
-        message="This removes access to the organization for all members. Its content and memberships are kept for 30 days. An owner can restore it from Settings → Organizations during that period. After 30 days, it is permanently deleted."
-        confirmLabel="Delete"
+        title={tUi("Delete {0}?", org?.name ?? "this organization")}
+        message={tUi("This removes access to the organization for all members. Its content and memberships are kept for 30 days. An owner can restore it from Settings → Organizations during that period. After 30 days, it is permanently deleted.")}
+        confirmLabel={tUi("Delete")}
         confirmVariant="danger"
         confirmStatus={working ? "loading" : "idle"}
         onCancel={() => {
@@ -465,12 +465,12 @@ export function OrganizationGeneralSettings() {
           setMfaPending(false);
           void confirm("delete");
         }}
-        title="Two-factor verification required"
-        message="This action is sensitive. Enter a code from your authenticator app to continue."
+        title={tUi("Two-factor verification required")}
+        message={tUi("This action is sensitive. Enter a code from your authenticator app to continue.")}
       />
       <WarningPopup
         open={failure !== null}
-        title={failure?.title ?? "Organization not updated"}
+        title={failure?.title ?? tUi("Organization not updated")}
         message={failure?.message ?? null}
         onClose={() => setFailure(null)}
       />

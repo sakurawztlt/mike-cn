@@ -1,3 +1,6 @@
+"use client";
+
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useMarkdownCheckpoint } from "./markdownCheckpoint";
 import { memo, useEffect, useRef, useState, type ReactNode } from "react";
 import { useReasoningDisclosure, DocEditBlockUI, DocFindBlockUI, DocReadBlockUI } from "@mike/ui";
@@ -179,6 +182,7 @@ export function ReasoningBlock({
     isStreaming: boolean;
     showConnector?: boolean;
 }) {
+    const tUi = useUiText();
     const { isContentOpen, toggleContent } = useReasoningDisclosure(isStreaming);
     const [thinkingIndex, setThinkingIndex] = useState(0);
 
@@ -202,7 +206,7 @@ export function ReasoningBlock({
                 label={
                     isStreaming
                         ? THINKING_PHRASES[thinkingIndex]
-                        : "Thought process"
+                        : tUi("Thought process")
                 }
             />
             {isContentOpen && <ReasoningContent text={text} streaming={isStreaming} />}
@@ -296,10 +300,10 @@ export function DocCreatedBlock({
             <div className="flex min-w-0 items-center gap-1.5">
                 <EventLabel className="shrink-0">
                     {isStreaming
-                        ? "Creating"
+                        ? (<><UiText message={"Creating"} /></>)
                         : interrupted
-                          ? "Creation stopped"
-                          : "Created"}
+                          ? (<><UiText message={"Creation stopped"} /></>)
+                          : (<><UiText message={"Created"} /></>)}
                 </EventLabel>
                 {isStreaming || !onClick ? (
                     <span className="flex min-w-0 items-center gap-1.5">
@@ -436,6 +440,7 @@ export function DocDownloadBlock({
     isReloading?: boolean;
     versionNumber?: number | null;
 }) {
+    const tUi = useUiText();
     const extMatch = filename.match(/\.(\w+)$/);
     const rawBasename = extMatch
         ? filename.slice(0, -extMatch[0].length)
@@ -508,7 +513,7 @@ export function DocDownloadBlock({
         <button
             type="button"
             onClick={handleDownload}
-            aria-label={`Download ${filename}`}
+            aria-label={tUi("Download {0}", filename)}
             className="shrink-0 flex items-center bg-white/25 px-4 text-gray-500 transition-colors hover:bg-white/55 hover:text-gray-700 cursor-pointer @md:px-6"
         >
             <Download className="size-3 @md:size-[13px]" />
@@ -568,15 +573,16 @@ export function WorkflowAppliedBlock({
     showConnector?: boolean;
     onClick?: () => void;
 }) {
+    const tUi = useUiText();
     return (
         <EventBlock showConnector={showConnector} dotColor="green">
             <div className="flex min-w-0 items-center gap-1.5">
-                <EventLabel className="shrink-0">Read</EventLabel>
+                <EventLabel className="shrink-0"><UiText message={"Read"} /></EventLabel>
                 {onClick ? (
                     <button
                         type="button"
                         onClick={onClick}
-                        aria-label={`Open workflow ${title}`}
+                        aria-label={tUi("Open workflow {0}", title)}
                         className="flex min-w-0 cursor-pointer items-center gap-1.5 text-left transition-colors hover:text-gray-700"
                     >
                         <WorkflowSkeuoIcon className="h-3.5 w-3.5 shrink-0" />
@@ -651,15 +657,15 @@ export function AskInputsBlock({
                                 <p className="text-xs text-gray-500">
                                     {index + 1}.{" "}
                                     {item.kind === "documents"
-                                        ? "Documents"
+                                        ? (<><UiText message={"Documents"} /></>)
                                         : item.kind === "approval"
-                                          ? "Approval"
-                                          : "Question"}
+                                          ? (<><UiText message={"Approval"} /></>)
+                                          : (<><UiText message={"Question"} /></>)}
                                 </p>
                                 <p className="mt-0.5 [overflow-wrap:anywhere]">
                                     {item.kind === "documents"
                                         ? item.document_types.join(", ") ||
-                                          "Documents requested"
+                                          (<><UiText message={"Documents requested"} /></>)
                                         : item.kind === "approval"
                                           ? `${item.connector_name}: ${item.title}`
                                           : item.question}

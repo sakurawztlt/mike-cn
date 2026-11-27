@@ -1,3 +1,4 @@
+import { UiText } from "@/app/i18n/uiLanguage";
 import Link from "next/link";
 import { MikeIcon } from "@mike/ui";
 
@@ -45,7 +46,7 @@ export function SiteLogo({
             >
                 <MikeIcon size={iconSizes[size]} />
             </span>
-            <span>Mike</span>
+            <span><UiText message={"Mike"} /></span>
         </h1>
     );
 

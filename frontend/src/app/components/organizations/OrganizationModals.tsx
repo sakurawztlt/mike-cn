@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import { useEffect, useState } from "react";
 import { Loader2, RotateCw, X } from "lucide-react";
 import { AddUserInput } from "@/app/components/shared/AddUserInput";
@@ -67,6 +68,7 @@ export function CreateOrganizationModal({
   onClose: () => void;
   onCreated: (org: Org) => void;
 }) {
+    const tUi = useUiText();
   const [name, setName] = useState("");
   const [memberEmails, setMemberEmails] = useState<string[]>([]);
   const [createdOrg, setCreatedOrg] = useState<Org | null>(null);
@@ -126,13 +128,13 @@ export function CreateOrganizationModal({
           if (creating) return;
           onClose();
         }}
-        breadcrumbs={["Organizations", "New organization"]}
+        breadcrumbs={[tUi("Organizations"), tUi("New organization")]}
         primaryAction={{
           label: createdOrg
-            ? "Open organization"
+            ? tUi("Open organization")
             : creating
-              ? "Creating..."
-              : "Create",
+              ? tUi("Creating...")
+              : tUi("Create"),
           icon: creating ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : undefined,
@@ -143,13 +145,13 @@ export function CreateOrganizationModal({
         <div className="space-y-5 py-1">
           <div>
             <FieldLabel htmlFor="new-organization-name">
-              Organization name
+              <UiText message={"Organization name"} />
             </FieldLabel>
             <FormTextInput
               id="new-organization-name"
               autoFocus
               value={name}
-              placeholder="e.g. Elite Law LLP"
+              placeholder={tUi("e.g. Elite Law LLP")}
               disabled={creating || createdOrg !== null}
               onChange={(event) => {
                 setName(event.target.value);
@@ -163,16 +165,16 @@ export function CreateOrganizationModal({
               }}
             />
             <p className="mt-2 text-xs text-gray-400">
-              You will become the first administrator.
+              <UiText message={"You will become the first administrator."} />
             </p>
           </div>
 
           <div>
-            <FieldLabel as="p">Invite members</FieldLabel>
+            <FieldLabel as="p"><UiText message={"Invite members"} /></FieldLabel>
             <AddUserInput
               requireExistingUser={false}
               busy={creating || createdOrg !== null}
-              placeholder="Add member by email…"
+              placeholder={tUi("Add member by email…")}
               submitLabel="Add member"
               validateEmail={(email) =>
                 memberEmails.includes(email)
@@ -195,7 +197,7 @@ export function CreateOrganizationModal({
                     <span className="min-w-0 flex-1 truncate">{email}</span>
                     <button
                       type="button"
-                      aria-label={`Remove ${email}`}
+                      aria-label={tUi("Remove {0}", email)}
                       disabled={creating || createdOrg !== null}
                       onClick={() =>
                         setMemberEmails((current) =>
@@ -211,8 +213,7 @@ export function CreateOrganizationModal({
               </div>
             ) : null}
             <p className="mt-2 text-xs text-gray-400">
-              Members receive an invitation. You can also add people later from
-              the organization page.
+              <UiText message={"Members receive an invitation. You can also add people later from the organization page."} />
             </p>
           </div>
         </div>
@@ -221,8 +222,8 @@ export function CreateOrganizationModal({
         open={open && error !== null}
         title={
           createdOrg
-            ? "Some invitations were not sent"
-            : "Organization not created"
+            ? tUi("Some invitations were not sent")
+            : tUi("Organization not created")
         }
         message={error}
         onClose={() => setError(null)}
@@ -244,6 +245,7 @@ export function InviteOrganizationMemberModal({
   onClose: () => void;
   onChanged: () => Promise<void> | void;
 }) {
+    const tUi = useUiText();
   const [role, setRole] = useState<InvitableOrgRole>("member");
   // Inviting somebody as an admin is appointing one, which only an owner may
   // do, so an admin is offered Member alone and the picker has nothing to ask.
@@ -316,7 +318,7 @@ export function InviteOrganizationMemberModal({
       <Modal
         open={open}
         onClose={onClose}
-        breadcrumbs={["Organizations", org.name, "Add member"]}
+        breadcrumbs={[tUi("Organizations"), org.name, tUi("Add member")]}
         size="md"
         footerStatus={
           notice ? (
@@ -329,7 +331,7 @@ export function InviteOrganizationMemberModal({
           <div>
             {invitableRoles.length > 1 ? (
               <>
-                <FieldLabel htmlFor="organization-invite-role">Role</FieldLabel>
+                <FieldLabel htmlFor="organization-invite-role"><UiText message={"Role"} /></FieldLabel>
                 <ModalSelect
                   id="organization-invite-role"
                   value={role}
@@ -342,7 +344,7 @@ export function InviteOrganizationMemberModal({
               </>
             ) : (
               <>
-                <FieldLabel as="p">Role</FieldLabel>
+                <FieldLabel as="p"><UiText message={"Role"} /></FieldLabel>
                 <p className="text-sm text-gray-700">
                   {ORG_ROLE_LABELS[role]}
                 </p>
@@ -352,16 +354,16 @@ export function InviteOrganizationMemberModal({
               {ORG_ROLE_DESCRIPTIONS[role]}
               {invitableRoles.length > 1
                 ? null
-                : " Only an organization owner can invite admins."}
+                : (<> {" "}<UiText message={"Only an organization owner can invite admins."} /></>)}
             </p>
           </div>
 
           <div>
-            <FieldLabel as="p">Email address</FieldLabel>
+            <FieldLabel as="p"><UiText message={"Email address"} /></FieldLabel>
             <AddUserInput
               autoFocus
               requireExistingUser={false}
-              placeholder="Invite by email…"
+              placeholder={tUi("Invite by email…")}
               submitLabel="Send invitation"
               onAdd={(user) => invite(user.email)}
             />
@@ -370,7 +372,7 @@ export function InviteOrganizationMemberModal({
           {pending.length > 0 ? (
             <div className="min-h-0 border-t border-white/60 pt-4">
               <p className="mb-2 text-xs font-medium text-gray-600">
-                Pending invitations
+                <UiText message={"Pending invitations"} />
               </p>
               <div className="max-h-48 space-y-1 overflow-y-auto">
                 {pending.map((invitation) => {
@@ -392,13 +394,13 @@ export function InviteOrganizationMemberModal({
                         <p className="text-[10px] text-gray-400">
                           {ORG_ROLE_LABELS[invitation.role]} ·{" "}
                           {invitation.status === "expired"
-                            ? "Expired"
-                            : "Pending"}
+                            ? (<><UiText message={"Expired"} /></>)
+                            : (<><UiText message={"Pending"} /></>)}
                         </p>
                       </div>
                       <button
                         type="button"
-                        aria-label={`Resend invitation to ${invitation.email}`}
+                        aria-label={tUi("Resend invitation to {0}", invitation.email)}
                         title={canManage ? undefined : OWNER_ONLY_INVITATION}
                         disabled={!canManage || busyId === invitation.id}
                         onClick={() =>
@@ -410,7 +412,7 @@ export function InviteOrganizationMemberModal({
                       </button>
                       <button
                         type="button"
-                        aria-label={`Cancel invitation to ${invitation.email}`}
+                        aria-label={tUi("Cancel invitation to {0}", invitation.email)}
                         title={canManage ? undefined : OWNER_ONLY_INVITATION}
                         disabled={!canManage || busyId === invitation.id}
                         onClick={() =>
@@ -430,7 +432,7 @@ export function InviteOrganizationMemberModal({
       </Modal>
       <WarningPopup
         open={open && error !== null}
-        title="Invitation action failed"
+        title={tUi("Invitation action failed")}
         message={error}
         onClose={() => setError(null)}
       />

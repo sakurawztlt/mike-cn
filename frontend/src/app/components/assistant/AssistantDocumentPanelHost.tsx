@@ -1,5 +1,6 @@
 "use client";
 
+import { useUiText } from "@/app/i18n/uiLanguage";
 import { useState } from "react";
 import { AddDocumentsModal } from "@/app/components/modals/AddDocumentsModal";
 import { ConfirmPopup } from "@/app/components/popups/ConfirmPopup";
@@ -26,6 +27,7 @@ export function AssistantDocumentPanelHost({
 }: {
     panel: AssistantDocumentPanel;
 }) {
+    const tUi = useUiText();
     const [deleteTarget, setDeleteTarget] = useState<PanelDocument | null>(
         null,
     );
@@ -41,9 +43,9 @@ export function AssistantDocumentPanelHost({
         <>
             <ConfirmPopup
                 open={!!deleteTarget}
-                title="Delete file?"
-                message={`Delete “${deleteTarget?.title ?? "this file"}” and its versions? This cannot be undone.`}
-                confirmLabel="Delete file"
+                title={tUi("Delete file?")}
+                message={tUi("Delete “{0}” and its versions? This cannot be undone.", deleteTarget?.title ?? "this file")}
+                confirmLabel={tUi("Delete file")}
                 confirmVariant="danger"
                 confirmStatus={deletingDocument ? "loading" : "idle"}
                 onCancel={() => { if (!deletingDocument) setDeleteTarget(null); }}
@@ -73,7 +75,7 @@ export function AssistantDocumentPanelHost({
             />
             <WarningPopup
                 open={!!actionError}
-                title={actionError?.title ?? "Chat action failed"}
+                title={actionError?.title ?? tUi("Chat action failed")}
                 message={actionError?.message ?? null}
                 onClose={() => setActionError(null)}
             />

@@ -1,5 +1,6 @@
 "use client";
 
+import { UiText, useUiText } from "@/app/i18n/uiLanguage";
 import {
     useCallback,
     useEffect,
@@ -242,6 +243,7 @@ export function AssistantSidePanel({
     onOpenDocuments,
     chatCount = 1,
 }: Props) {
+    const tUi = useUiText();
     const panelRef = useRef<HTMLDivElement>(null);
     const permissions = useDocumentPermissions(tabs.filter((tab) => !documentCapabilities(tab.document).external).map((tab) => tab.document.document_id), canEdit);
     const viewers = useDocumentViewers();
@@ -343,7 +345,7 @@ export function AssistantSidePanel({
             />
 
             <DocumentTabBar
-                label="Assistant documents"
+                label={tUi("Assistant documents")}
                 idPrefix="assistant-document"
                 activeTabId={active?.id ?? null}
                 onActivate={onActivateTab}
@@ -384,7 +386,7 @@ export function AssistantSidePanel({
                             className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
                         >
                             <BookOpenText aria-hidden="true" className="h-4 w-4" />
-                            Open Documents
+                            <UiText message={"Open Documents"} />
                         </button>
                     </div>
                 ) : null}
