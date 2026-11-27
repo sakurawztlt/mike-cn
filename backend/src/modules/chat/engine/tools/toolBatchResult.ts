@@ -6,6 +6,7 @@ import type {
   TextCardEvent,
 } from "@mike/contracts";
 import type { McpToolEvent } from "../../../../lib/mcpConnectors";
+import type { LlmToolImage } from "../../../../lib/llm/types";
 import type { AskInputsEvent } from "../types";
 import type { CaseCitationEvent, CourtlistenerToolEvent } from "./courtlistenerTools";
 import type {
@@ -17,6 +18,8 @@ import type {
 /** What one batch of tool calls produced. */
 export type ToolCallBatchResult = {
   toolResults: unknown[];
+  /** Originals used by the model adapter for this request only. */
+  toolImages?: Map<string, LlmToolImage[]>;
   docsRead: {
     filename: string;
     document_id?: string;

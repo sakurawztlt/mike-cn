@@ -1,4 +1,6 @@
 import { readChinaLegalSource, searchChinaLegalSources } from "./chinaLegalSources";
+import { readPhotoEvidence, type PhotoReadBudget } from "./photoEvidence";
+import { rasterDocumentContentType } from "../../../../lib/documentTypes";
 import type { ConnectorApprovalItem, DocumentSearchEvent } from "@mike/contracts";
 import { textCardEvent } from "./textCard";
 import { internalFailure } from "../../../../lib/serviceResult";
@@ -399,6 +401,8 @@ export async function runToolCalls(
     documentLocks?: KeyedLock;
     /** A subagent scoped to its docStore's documents: searches stay inside them. */
     documentsScoped?: boolean;
+    /** Shared across the interactive turn's tool batches. Scripts receive text only. */
+    photoBudget?: PhotoReadBudget;
     /**
      * The turn's abort signal. Calls run one after another, so a turn stopped
      * by Stop or a stream deadline starts none of the batch's remaining tools
@@ -431,6 +435,36 @@ export async function runToolCalls(
     caseCitationEvents,
     mcpEvents,
   } = results;
+  const readPhoto = async (
+    docId: string,
+    callId: string,
+    identity: Awaited<ReturnType<typeof getTurnReadIdentity>>,
+  ): Promise<string | undefined> => {
+    const doc = docStore.get(docId);
+    if (!doc || !options.photoBudget || doc.search_source || !rasterDocumentContentType(doc.file_type)) return undefined;
+    if (!identity?.storagePath) return "This photo has no readable original file.";
+    const result = await readPhotoEvidence({
+      label: docId,
+      fileType: doc.file_type,
+      storagePath: identity.storagePath,
+      budget: options.photoBudget,
+      signal: options.signal,
+    });
+    if ("error" in result) return result.error;
+    const images = (results.toolImages ??= new Map());
+    const current = images.get(callId) ?? [];
+    images.set(callId, [...current, result.image]);
+    turnReadState?.set(identity.key, identity);
+    const read = {
+      filename: doc.filename,
+      document_id: identity.documentId,
+      version_id: identity.versionId ?? null,
+      version_number: identity.versionNumber ?? null,
+    };
+    docsRead.push(read);
+    write(`data: ${JSON.stringify({ type: "doc_read", ...read })}\n\n`);
+    return `Photo ${docId}: ${spotlightFilename(doc.filename, nonce)}. The original image is supplied as visual evidence. Refer to the filename, report unreadable details, and do not present a visual reading as a verified text citation.`;
+  };
   const approvalItems: ConnectorApprovalItem[] = [];
   const documentLocks = options.documentLocks ?? createKeyedLock();
   const courtState: CourtlistenerTurnState = courtlistenerState ?? {
@@ -773,6 +807,11 @@ export async function runToolCalls(
         });
         continue;
       }
+      const photo = await readPhoto(docId, tc.id, readIdentity);
+      if (photo !== undefined) {
+        toolResults.push({ role: "tool", tool_call_id: tc.id, content: photo });
+        continue;
+      }
       const content = await readDocumentContent(
         docId,
         docStore,
@@ -1015,6 +1054,11 @@ export async function runToolCalls(
               readIdentity,
             )}`,
           );
+          continue;
+        }
+        const photo = await readPhoto(docId, tc.id, readIdentity);
+        if (photo !== undefined) {
+          parts.push(`--- ${docId} ---\n${photo}`);
           continue;
         }
         const content = await readDocumentContent(

@@ -61,7 +61,7 @@ export const PROJECT_EXTRA_TOOLS = [
     function: {
       name: "fetch_documents",
       description:
-        "Read the full text content of multiple documents in a single call. Use this instead of calling read_document repeatedly when you need to read several documents at once. In one response, fetch each document/version at most once; after it has been fetched, use the prior tool result or find_in_document for targeted checks.",
+        "Read several available documents in one call: text for documents and visual evidence for JPEG, PNG and WebP photos. Fetch each document/version at most once per response. Use the prior result for targeted checks; find_in_document searches text only.",
       parameters: {
         type: "object",
         properties: {
@@ -301,7 +301,7 @@ export const TOOLS = [
     function: {
       name: "read_document",
       description:
-        "Read the full text content of an available document. Always call this before answering questions about, summarising, citing from, or editing a document, but call it at most once per document/version in a single response. After this returns, use the prior tool result or find_in_document for targeted checks instead of reading the same document/version again.",
+        "Read an available document's text or visually inspect a JPEG, PNG or WebP photo. Always read the relevant material before answering questions about, summarising, citing from, or editing a document. Read each document/version at most once per response. Use the prior result for targeted checks; find_in_document searches text only.",
       parameters: {
         type: "object",
         properties: {

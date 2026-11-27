@@ -573,6 +573,7 @@ export async function runLLMStream(params: {
   // one assistant response. The guard is invalidated when edit_document
   // changes that document so a post-edit verification read can still happen.
   const turnReadState: TurnReadState = new Map();
+  const photoBudget = { count: 0, bytes: 0 };
   const courtlistenerTurnState: CourtlistenerTurnState =
     subagentRun?.courtlistenerTurnState ?? { casesByClusterId: new Map() };
   const webTurnState =
@@ -1160,6 +1161,7 @@ export async function runLLMStream(params: {
                 model: selectedModel,
                 documentLocks,
                 documentsScoped: subagentRun?.documentsScoped,
+                photoBudget: byScript ? undefined : photoBudget,
                 signal,
                 results: batch,
               },
@@ -1264,7 +1266,12 @@ export async function runLLMStream(params: {
         if (askInputsEvents.length > 0) {
           throw new AssistantStreamAskInputsPause();
         }
-        return results;
+        // Binary evidence goes only to the adapter. The subagent recorder
+        // above, SSE events and stored messages see the text receipt only.
+        return results.map((result) => {
+          const images = completed.toolImages?.get(result.tool_use_id);
+          return images?.length ? { ...result, images } : result;
+        });
       },
     }).finally(() => providerWebSearch.release());
     await recordDelegations();
