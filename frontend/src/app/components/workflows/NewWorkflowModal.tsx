@@ -612,7 +612,10 @@ export function NewWorkflowModal({
             <ModalSelect
                 id="workflow-jurisdiction"
                 value={jurisdiction}
-                options={jurisdictionOptions}
+                options={jurisdictionOptions.map((option) => ({
+                    value: option,
+                    label: (JURISDICTION_OPTIONS as readonly string[]).includes(option) ? tUi(option) : option,
+                }))}
                 placeholder={tUi("Select jurisdiction")}
                 disabled={viewOnly}
                 open={openDropdown === "jurisdiction"}
@@ -639,7 +642,10 @@ export function NewWorkflowModal({
                     id="workflow-jurisdiction-region"
                     className="mt-2"
                     value={jurisdictionRegion}
-                    options={jurisdictionRegionOptions}
+                    options={jurisdictionRegionOptions.map((option) => ({
+                        value: option,
+                        label: tUi(option === "Georgia" && jurisdiction === "United States" ? "Georgia (US)" : option),
+                    }))}
                     disabled={viewOnly}
                     placeholder={
                         jurisdiction === "United States"
@@ -856,7 +862,10 @@ export function NewWorkflowModal({
                                 <ModalSelect
                                     id="workflow-language"
                                     value={language}
-                                    options={languageOptions}
+                                    options={languageOptions.map((option) => ({
+                                        value: option,
+                                        label: (LANGUAGE_OPTIONS as readonly string[]).includes(option) ? tUi(option) : option,
+                                    }))}
                                     disabled={viewOnly}
                                     open={openDropdown === "language"}
                                     onOpenChange={(nextOpen) =>
@@ -898,7 +907,7 @@ export function NewWorkflowModal({
                                 <ModalSelect
                                     id="workflow-practice"
                                     value={practice}
-                                    options={PRACTICE_OPTIONS}
+                                    options={PRACTICE_OPTIONS.map((option) => ({ value: option, label: tUi(option) }))}
                                     placeholder={tUi("Select practice area")}
                                     disabled={viewOnly}
                                     open={openDropdown === "practice"}

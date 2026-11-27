@@ -1,5 +1,7 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { ProjectPracticeField } from "@/app/components/projects/ProjectPracticeField";
 import { InterfaceLanguageSelect } from "@/app/components/settings/InterfaceLanguageSelect";
 import { UI_LANGUAGE_STORAGE_KEY } from "./messages";
 import { UiLanguageProvider, UiText } from "./uiLanguage";
@@ -29,5 +31,18 @@ describe("interface language", () => {
         first.unmount();
         render(<Example />);
         expect(screen.getByRole("combobox", { name: "Interface language" })).toHaveValue("en");
+    });
+
+    it("localizes project practice choices without translating their saved values", async () => {
+        const user = userEvent.setup();
+        const change = vi.fn();
+        render(
+            <UiLanguageProvider>
+                <ProjectPracticeField id="practice" value="" onChange={change} />
+            </UiLanguageProvider>,
+        );
+        await user.click(screen.getByRole("button", { name: "未指定" }));
+        await user.click(screen.getByRole("menuitem", { name: "一般商事交易" }));
+        expect(change).toHaveBeenCalledWith("General Transactions");
     });
 });

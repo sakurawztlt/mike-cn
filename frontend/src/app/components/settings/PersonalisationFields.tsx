@@ -226,7 +226,7 @@ export function PersonalisationFields({
         placeholder={tUi("Select a title")}
         options={PROFESSIONAL_TITLE_OPTIONS.map((title) => ({
           value: title,
-          label: title,
+          label: tUi(title),
         }))}
         onChange={(value) =>
           form.setProfessionalTitle(value ? (value as ProfessionalTitle) : null)
@@ -240,7 +240,7 @@ export function PersonalisationFields({
         status={statusFor?.("practiceSetting")}
         value={form.practiceSetting}
         placeholder={tUi("Select a professional setting")}
-        options={PRACTICE_SETTING_OPTIONS}
+        options={PRACTICE_SETTING_OPTIONS.map((option) => ({ ...option, label: tUi(option.label) }))}
         onChange={(value) =>
           form.setPracticeSetting(value ? (value as PracticeSetting) : null)
         }
@@ -257,11 +257,11 @@ export function PersonalisationFields({
           options={[
             ...COUNTRY_OPTIONS.map((country) => ({
               value: country,
-              label: country,
+              label: tUi(country),
             })),
             {
               value: OTHER_JURISDICTION_OPTION,
-              label: OTHER_JURISDICTION_OPTION,
+              label: tUi(OTHER_JURISDICTION_OPTION),
             },
           ]}
           onChange={form.setJurisdictionChoice}
@@ -325,7 +325,7 @@ export function PersonalisationFields({
                 onCheckedChange={() => form.toggleArea(area)}
                 onSelect={(event) => event.preventDefault()}
               >
-                {area}
+                {tUi(area)}
               </DropdownCheckboxItem>
             ))}
             <DropdownCheckboxItem

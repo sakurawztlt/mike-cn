@@ -33,10 +33,10 @@ export function ProjectPracticeField({
         selectedOption === OPTION_OTHER && value !== OPTION_OTHER ? value : "";
     const options = useMemo<ModalSelectOption[]>(
         () => [
-            { value: OPTION_NONE, label: "None" },
-            ...PRACTICE_OPTIONS,
+            { value: OPTION_NONE, label: tUi("None") },
+            ...PRACTICE_OPTIONS.map((option) => ({ value: option, label: tUi(option) })),
         ],
-        [],
+        [tUi],
     );
 
     function handleSelect(option: string) {

@@ -104,7 +104,10 @@ export function PlaybookDetailsFields({
         label={tUi("Jurisdictions")}
         value={value.jurisdictions}
         placeholder={tUi("England and Wales, New York")}
-        options={PLAYBOOK_JURISDICTION_OPTIONS}
+        options={PLAYBOOK_JURISDICTION_OPTIONS.map((option) => ({
+          ...option,
+          label: tUi(option.value === "Georgia (US)" ? option.value : option.label),
+        }))}
         onChange={(jurisdictions) => onChange({ ...value, jurisdictions })}
         disabled={disabled}
       />
